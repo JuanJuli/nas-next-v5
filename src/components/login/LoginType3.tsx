@@ -26,7 +26,8 @@ export default function LoginType3({
   listLsp = [], 
   handleGenerateToken, 
   token,
-  errorMessage = '' 
+  errorMessage = '',
+  headerActions
 }: { 
   handleLogin: (values: { username: string; password: string }) => Promise<void>; 
   loading: boolean;
@@ -34,6 +35,7 @@ export default function LoginType3({
   handleGenerateToken?: (payload: iPayloadGenerateToken, token: string) => Promise<void>;
   token?: string;
   errorMessage?: string;
+  headerActions?: React.ReactNode;
 }) {
   const { token: themeToken } = useToken();
   const router = useRouter();
@@ -42,36 +44,43 @@ export default function LoginType3({
   // Show LSP selection UI if listLsp has items
   if (listLsp.length > 0) {
     return (
-      <SelectLspRole
-        listLsp={listLsp}
-        handleGenerateToken={handleGenerateToken}
-        token={token}
-        errorMessage={errorMessage}
-        loading={loading}
-        maxWidth={isMobile ? '100%' : '30vw'}
-        showLogo={true}
-        logoElement={
-          <div
-            style={{
-              width: '100%',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-            }}
-          >
-            <Image
-              src={logo}
-              alt="Logo"
-              width={120}
-              height={40}
-              style={{ objectFit: 'contain' }}
-            />
+      <div style={{ position: 'relative', minHeight: '100vh' }}>
+        {headerActions && (
+          <div style={{ position: 'absolute', top: 12, right: 12, zIndex: 2 }}>
+            {headerActions}
           </div>
-        }
-        containerStyle={{
-          backgroundColor: '#f5f5f5',
-        }}
-      />
+        )}
+        <SelectLspRole
+          listLsp={listLsp}
+          handleGenerateToken={handleGenerateToken}
+          token={token}
+          errorMessage={errorMessage}
+          loading={loading}
+          maxWidth={isMobile ? '100%' : '30vw'}
+          showLogo={true}
+          logoElement={
+            <div
+              style={{
+                width: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <Image
+                src={logo}
+                alt="Logo"
+                width={120}
+                height={40}
+                style={{ objectFit: 'contain' }}
+              />
+            </div>
+          }
+          containerStyle={{
+            backgroundColor: '#f5f5f5',
+          }}
+        />
+      </div>
     );
   }
 
@@ -106,6 +115,11 @@ export default function LoginType3({
           position: 'relative',
         }}
       >
+          {headerActions && (
+            <div style={{ position: 'absolute', top: 12, right: 12, zIndex: 2 }}>
+              {headerActions}
+            </div>
+          )}
           {/* Logo - Top */}
           <div
             style={{

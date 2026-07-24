@@ -23,7 +23,8 @@ export default function LoginType1({
   listLsp = [], 
   handleGenerateToken, 
   token,
-  errorMessage = '' 
+  errorMessage = '',
+  headerActions
 }: { 
   handleLogin: (values: { username: string; password: string }) => Promise<void>; 
   loading: boolean;
@@ -31,6 +32,7 @@ export default function LoginType1({
   handleGenerateToken?: (payload: iPayloadGenerateToken, token: string) => Promise<void>;
   token?: string;
   errorMessage?: string;
+  headerActions?: React.ReactNode;
 }) {
   const { token: themeToken } = useToken();
   const router = useRouter();
@@ -41,14 +43,21 @@ export default function LoginType1({
   // Show LSP selection UI if listLsp has items
   if (listLsp.length > 0) {
     return (
-      <SelectLspRole
-        listLsp={listLsp}
-        handleGenerateToken={handleGenerateToken}
-        token={token}
-        errorMessage={errorMessage}
-        loading={loading}
-        maxWidth="800px"
-      />
+      <div style={{ position: 'relative', minHeight: '100vh' }}>
+        {headerActions && (
+          <div style={{ position: 'absolute', top: 12, right: 12, zIndex: 2 }}>
+            {headerActions}
+          </div>
+        )}
+        <SelectLspRole
+          listLsp={listLsp}
+          handleGenerateToken={handleGenerateToken}
+          token={token}
+          errorMessage={errorMessage}
+          loading={loading}
+          maxWidth="800px"
+        />
+      </div>
     );
   }
 
@@ -138,6 +147,11 @@ export default function LoginType1({
             overflow: 'hidden',
           }}
         >
+          {headerActions && (
+            <div style={{ position: 'absolute', top: 12, right: 12, zIndex: 2 }}>
+              {headerActions}
+            </div>
+          )}
           {/* Top-right decoration */}
           <div
             style={{

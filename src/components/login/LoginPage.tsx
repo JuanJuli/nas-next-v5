@@ -8,6 +8,8 @@ import LoginType3 from '@/components/login/LoginType3';
 import { DefaultApiResponse } from '@/types/defaultApiResponse';
 import { LspLoginResponse } from '@/types/login';
 import { useSearchParams } from 'next/navigation';
+import FloatChangeLogin from './FloatChangeLogin';
+import ThemeLangButtons from './ThemeLangButtons';
 
 interface iPayloadGenerateToken {
   lsp_id: string;
@@ -24,6 +26,18 @@ export default function LoginPage({ loginType = 1 }: { loginType?: number }) {
   const [errorMessage, setErrorMessage] = useState('');
   const [listLsp, setListLsp] = useState<LspLoginResponse[]>([]);
   const [token, setToken] = useState<string>('');
+
+  const fixLoginType = useMemo(() => {
+    let currLoginType = loginType;
+    const loginTypeParams = searchParams.get('loginType')
+    if (loginTypeParams) {
+      const parseLtp = parseInt(loginTypeParams);
+      if (parseLtp > 0) {
+        currLoginType = parseLtp;
+      }
+    };
+    return currLoginType;
+  }, [searchParams || loginType])
 
   const handleGenerateToken = async (payload: iPayloadGenerateToken,  token:string) => {
     setLoading(true);
@@ -114,7 +128,7 @@ export default function LoginPage({ loginType = 1 }: { loginType?: number }) {
   };
 
   const LoginComponent = useMemo(() => {
-    switch (loginType) {
+    switch (fixLoginType) {
       case 1:
         return LoginType1;
       case 2:
@@ -126,16 +140,20 @@ export default function LoginPage({ loginType = 1 }: { loginType?: number }) {
       default:
         return LoginType1;
     }
-  }, [loginType]);
+  }, [fixLoginType]);
 
   return (
-    <LoginComponent 
-      handleLogin={handleLogin} 
-      loading={loading} 
-      listLsp={listLsp}
-      handleGenerateToken={handleGenerateToken}
-      token={token}
-      errorMessage={errorMessage}
-    />
+    <>
+      <FloatChangeLogin />
+      <LoginComponent 
+        handleLogin={handleLogin} 
+        loading={loading} 
+        listLsp={listLsp}
+        handleGenerateToken={handleGenerateToken}
+        token={token}
+        errorMessage={errorMessage}
+        headerActions={<ThemeLangButtons />}
+      />
+    </>
   );
 }
