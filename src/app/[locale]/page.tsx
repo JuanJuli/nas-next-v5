@@ -1,7 +1,7 @@
 'use client';
 
 import { Result, theme } from 'antd';
-import Link from 'next/link';
+import { Link } from '@/i18n/navigation'
 import { SmileOutlined } from '@ant-design/icons';
 
 const { useToken } = theme;

@@ -9,14 +9,16 @@ import { RoleCode } from "@/constants/roles"
 export default function RoleGuard({
   children,
   allowedRoles,
+  roleCode,
 }: {
   children: React.ReactNode
   allowedRoles?: RoleCode[]
+  roleCode?: string;
 }) {
   const { isInitialized } = useAuthStore()
   const pathname = usePathname()
   const router = useRouter()
-  const { isAuthorized } = useRoleGuard(undefined, allowedRoles)
+  const { isAuthorized } = useRoleGuard(undefined, allowedRoles, roleCode)
   const hasRedirected = useRef(false)
 
   useEffect(() => {

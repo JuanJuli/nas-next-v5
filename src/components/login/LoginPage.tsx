@@ -47,7 +47,7 @@ export default function LoginPage({ loginType = 1 }: { loginType?: number }) {
       setErrorMessage(''); // Clear any previous error messages
       setLoading(false); // Stop loading before redirecting
 
-      router.push(redirectTo);
+      router.replace(redirectTo);
     } catch (error) {
       setErrorMessage('An error occurred while generating token. Please try again.');
     } finally {

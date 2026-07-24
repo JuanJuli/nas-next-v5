@@ -27,7 +27,7 @@ export default async function DashboardLayout({
     <Layout style={{ minHeight: '100vh' }}>
       <AccessRoleProvider value={accessRole}>
         <ProtectedRouteGuard>
-          <RoleGuard>
+          <RoleGuard roleCode={roleCode?.value}>
             {children}
           </RoleGuard>
         </ProtectedRouteGuard>
