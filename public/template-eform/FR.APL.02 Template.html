@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FR.APL.02. Asesmen Mandiri</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .page-break {
+            page-break-before: always;
+        }
+        .section {
+          margin-top: 15px;
+          padding-left: 15px;
+        }
+
+        .section-title {
+          font-weight: bold;
+          margin-bottom: 5px;
+        }
+        .tg {
+          border-collapse:collapse;
+          border-spacing:0;
+        }
+        .tg td{
+          border-color:black;
+          border-style:solid;
+          border-width:1px;
+          font-family:Arial, sans-serif;
+          font-size:14px;
+          overflow:hidden;
+          padding:10px 5px;
+          word-break:normal;
+        }
+        .tg th{
+          border-color:black;
+          border-style:solid;
+          border-width:1px;
+          font-family:Arial, sans-serif;
+          font-size:14px;
+          font-weight:normal;
+          overflow:hidden;
+          padding:10px 5px;
+          word-break:normal;
+        }
+        .tg .tg-0lax{
+          text-align:left;
+          vertical-align:top;
+        }
+        .line-through {
+          text-decoration: line-through;
+        }
+        
+        input[type="checkbox"] {
+          
+          /* Atur ukuran dan border */
+          width: 18px;
+          height: 18px;
+          border: 2px solid #000000; /* Border lebih tebal & gelap */
+          border-radius: 3px;
+          background-color: rgb(0, 0, 0);
+          
+          /* Warna saat dicentang */
+          accent-color: rgb(255, 255, 255);
+          cursor: pointer;
+        }
+        </style>
+    </style>
+</head>
+<body>
+  <p><strong>FR.APL.02. Asesmen Mandiri</strong></p>
+  <table class="tg" style="width: 100%; border-collapse: collapse; border: 1px solid #000; margin-top: 20px;">
+    <tbody>
+      <tr>
+          <td rowspan="2" style="text-align: left; vertical-align: center;">
+            <p style="margin: 0;">Skema Sertifikasi</p>
+            <div>(<span style="text-decoration: line-through;">KKNI</span>/Okupasi/<span style="text-decoration: line-through;">Klaster</span>)</div>
+          </td>
+          <td>Judul</td>
+          <td style="text-align: center;">:</td>
+          <td>{{judulSkema}}</td>
+      </tr>
+      <tr>
+          <td>Nomor</td>
+          <td style="text-align: center;">:</td>
+          <td>{{nomorSkema}}</td>
+      </tr>
+    </tbody>
+  </table>
+  <table class="tg" style="width: 100%; border-collapse: collapse; border: 1px solid #000; margin-top: 20px;">
+    <thead>
+      <tr>
+        <td style="text-align: left; vertical-align: top;">
+          <p style="margin: 0;"><strong>PANDUAN ASESMEN MANDIRI</strong></p>
+        </td>
+    </thead>
+    <tbody>
+      <tr>
+        <td>
+          <strong>Intruksi:</strong>
+          <!-- List bullet -->
+          <ul style="margin-top: 0;">
+            <li>Baca setiap pertanyaan di kolom sebelah kiri.</li>
+            <li>Beri tanda centang (√) pada kotak jika Anda yakin dapat melakukan tugas yang dijelaskan.</li>
+            <li>Isi kolom di sebelah kanan dengan menuliskan  bukti yang  relevan  anda miliki untuk menunjukkan  bahwa anda melakukan pekerjaan.</li>
+          </ul>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  {{#each unitKompetensi}}
+  <table class="tg" style="width: 100%; border-collapse: collapse; border: 1px solid #000; margin-top: 20px;">
+    <tbody>
+      <tr>
+          <td rowspan="2" style="text-align: left; vertical-align: center;">
+            <strong>Unit Kompetensi {{no}}</strong>
+          </td>
+          <td>Kode Unit</td>
+          <td style="text-align: center;">:</td>
+          <td>{{kodeUnit}}</td>
+      </tr>
+      <tr>
+          <td>Judul Unit</td>
+          <td style="text-align: center;">:</td>
+          <td>{{judulUnit}}</td>
+      </tr>
+    </tbody>
+  </table>
+  <table class="tg" style="width: 100%; border-collapse: collapse; border: 1px solid #000;border-top: 0;">
+    <thead>
+      <tr>
+        <th style="text-align: left; vertical-align: top;font-weight: bold;border-top:0;">Dapatkah Saya ?</th>
+        <th style="text-align: center; vertical-align: middle;font-weight: bold;border-top:0;width:100px">K</th>
+        <th style="text-align: center; vertical-align: middle;font-weight: bold;border-top:0;width:100px;">BK</th>
+        <th style="text-align: center; vertical-align: middle;font-weight: bold;border-top:0;width:150px;">Bukti yang relavan</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each requirement}}
+      <tr>
+        <td>
+          <p style="margin:0;">{{no_req}} Elemen: <strong>{{namaDokumen}}</strong></p>
+          <ul>
+            <li>Kriteria Unjuk Kerja:</li>
+          </ul>
+          {{#each kuks}}
+          <p style="padding-left: 40px;margin:0;">{{namaKuk}}</p>
+          {{/each}}
+        </td>
+        <td style="text-align: center;"><input {{#if k}}checked{{/if}} type="checkbox" /></td>
+        <td style="text-align: center;"><input {{#if bk}}checked{{/if}} type="checkbox" /></td>
+        <td class="tg-0lax" style="height: 100%;border:0;text-align: center; display: flex; align-items: center; justify-content: center;">
+            {{#if file}}
+              <img src="{{file}}" style="max-width: 75px; max-height: 75px;" />
+            {{else}}
+              -
+            {{/if}}
+          </td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+  {{/each}}
+
+  <div class="page-break"></div>
+  <table class="tg" style="width: 100%; border-collapse: collapse; border: 1px solid #000; margin-top: 20px;">
+    <thead>
+      <tr>
+        <th rowspan="7" style="text-align: left; vertical-align: top; width: 50%; border-top: 0;">
+          <p style="margin: 0;"><strong>Rekomendasi untuk asesi:</strong></p>
+          <!-- Coret yang tidak sesuai -->
+          <p style="margin: 0;">
+            <strong>
+              {{#if rekomendasi.dilanjutkan}}
+                Asesmen Dapat / <span style="text-decoration: line-through;">tidak dapat dilanjutkan</span>
+              {{else}}
+                {{#if rekomendasi.tidakDilanjutkan}}
+                  <span style="text-decoration: line-through;">Asesmen Dapat</span> / tidak dapat dilanjutkan
+                {{else}}
+                  Asesmen Dapat / tidak dapat dilanjutkan
+                {{/if}}
+              {{/if}}
+            </strong> 
+          </p>
+          <p style="margin: 0;">*coret yang tidak sesuai</p>
+
+        </th>
+        <th colspan="2" style="font-weight: bold;text-align: left;">Asesi :</th>
+      </tr>
+      <tr>
+        <th style="text-align: left;">Nama</th>
+        <th style="text-align: left;">{{pemohon.nama}}</th>
+      </tr>
+      <tr>
+        <th style="text-align: left;">Tanda tangan/ Tanggal</th>
+        <th style="width: 35%;">
+          {{#if pemohon.ttd}}<img src="{{pemohon.ttd}}" style="max-width: 150px; max-height: 75px;" />{{/if}}<br/>
+          {{pemohon.tanggal}}
+        </th>
+      </tr>
+      <tr>
+        <td colspan="2" style="font-weight: bold;">Ditinjau Oleh Asesor: </td>
+      </tr>
+      <tr>
+        <td>No. Reg</td>
+        <td>{{assessor.noReg}}</td>
+      </tr>
+      <tr>
+        <td>Nama</td>
+        <td style="text-align: left;">{{assessor.nama}}</td>
+      </tr>
+      <tr>
+        <td>Tanda tangan/ Tanggal</td>
+        <td>
+          {{#if assessor.ttd}}<img src="{{assessor.ttd}}" style="max-width: 150px; max-height: 75px;" />{{/if}}<br/>
+          {{assessor.tanggal}}
+        </td>
+      </tr>
+    </thead>
+</table>
+</body>
+</html>

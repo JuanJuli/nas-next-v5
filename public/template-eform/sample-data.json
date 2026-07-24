@@ -1,0 +1,112 @@
+{
+  "namaLengkap": "Ahmad Budi Santoso",
+  "nik": "3201234567890123",
+  "tempatLahir": "Jakarta",
+  "tanggalLahir": "15 Januari 1990",
+  "jenisKelamin": "Laki-laki",
+  "kebangsaan": "WNI",
+  "alamatRumah": "Jl. Sudirman No. 123, Jakarta Pusat",
+  "kodePosRumah": "10110",
+  "teleponRumah": "08123456789",
+  "email": "ahmad.budi@example.com",
+  "kualifikasiPendidikan": "S1 - Teknik Informatika",
+  
+  "namaPerusahaan": "PT. Teknologi Indonesia",
+  "jabatan": "Senior Developer",
+  "alamatKantor": "Jl. Gatot Subroto No. 456, Jakarta Selatan",
+  "kodePosKantor": "12930",
+  "teleponKantor": "021-12345678",
+  "faxKantor": "021-87654321",
+  
+  "judulSkema": "SKEMA SERTIFIKASI OKUPASI JUNIOR WEB DEVELOPER",
+  "nomorSkema": "SKM/0123/00001/2/2025/23",
+  
+  "tujuanAsesmen": {
+    "sertifikasi": true,
+    "pkt": false,
+    "rpl": false,
+    "lainnya": false
+  },
+  
+  "unitKompetensi": [
+    {
+      "kodeUnit": "J.620100.001.02",
+      "judulUnit": "Menggunakan Bahasa Pemrograman",
+      "standarKompetensi": "SKKNI"
+    },
+    {
+      "kodeUnit": "J.620100.002.02",
+      "judulUnit": "Menerapkan Keamanan Aplikasi Web",
+      "standarKompetensi": "SKKNI"
+    },
+    {
+      "kodeUnit": "J.620100.003.02",
+      "judulUnit": "Mengintegrasikan Basis Data dengan Aplikasi Web",
+      "standarKompetensi": "SKKNI"
+    },
+    {
+      "kodeUnit": "J.620100.004.02",
+      "judulUnit": "Membuat Antarmuka Pengguna Web",
+      "standarKompetensi": "SKKNI"
+    }
+  ],
+  
+  "buktiPersyaratanDasar": [
+    {
+      "namaDokumen": "Fotocopy KTP/NIK/Paspor",
+      "memenuhi": true,
+      "tidakMemenuhi": false,
+      "tidakAda": false
+    },
+    {
+      "namaDokumen": "Pas Foto 4x6 cm (2 lembar)",
+      "memenuhi": true,
+      "tidakMemenuhi": false,
+      "tidakAda": false
+    },
+    {
+      "namaDokumen": "Fotocopy Ijazah Terakhir",
+      "memenuhi": true,
+      "tidakMemenuhi": false,
+      "tidakAda": false
+    }
+  ],
+  
+  "buktiAdministratif": [
+    {
+      "namaDokumen": "Surat Permohonan Sertifikasi",
+      "memenuhi": true,
+      "tidakMemenuhi": false,
+      "tidakAda": false
+    },
+    {
+      "namaDokumen": "Bukti Pembayaran",
+      "memenuhi": true,
+      "tidakMemenuhi": false,
+      "tidakAda": false
+    },
+    {
+      "namaDokumen": "CV/Portofolio",
+      "memenuhi": false,
+      "tidakMemenuhi": true,
+      "tidakAda": false
+    }
+  ],
+  
+  "rekomendasi": {
+    "diterima": true,
+    "catatan": "Semua persyaratan telah dipenuhi dengan baik"
+  },
+  
+  "pemohon": {
+    "nama": "Ahmad Budi Santoso",
+    "ttd": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+    "tanggal": "3 Mei 2026"
+  },
+  
+  "adminLSP": {
+    "nama": "Siti Rahma, S.Pd",
+    "ttd": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mNk+M9QDwADhgGAWjR9awAAAABJRU5ErkJggg==",
+    "tanggal": "5 Mei 2026"
+  }
+}

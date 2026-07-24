@@ -1,0 +1,60 @@
+'use client';
+
+import { useRequirementContext } from "@/context/Requirement";
+import { useTableQuery } from "@/hooks/useTableQuery";
+import { Space, Card } from "antd";
+import { useEffect, useMemo } from "react";
+import ListElement from "./ListElement";
+
+export default function PartTwo() {
+  const { requirement } = useRequirementContext();
+
+  const schemaID = requirement?.schema_id;
+
+  const dataUnitCompetence = useTableQuery(`core/competency_units`, { schema_id: schemaID, sort: 'competency_unit.sequence,competency_unit.row_id,competency_unit_code' }, {}, !!schemaID);
+
+  const listData = useMemo(() => {
+    if (dataUnitCompetence.data && dataUnitCompetence.data.status === "OK" && dataUnitCompetence.data.data) {
+      return dataUnitCompetence.data.data;
+    }
+
+    return [];
+  }, [dataUnitCompetence.data])
+
+  useEffect(() => {
+    console.log("listData:", listData);
+  }, [listData]);
+
+  return (
+    <Space orientation="vertical" size="large" className="w-full">
+      {listData.length === 0 && <div className="text-center">Tidak ada unit kompetensi</div>}
+      {listData.map((item: any, index: number) => (
+        <Card key={item.competency_unit_id}>
+          <table className="w-full border-collapse mb-3">
+            <tbody>
+              <tr>
+                <td rowSpan={2} className="border border-gray-300 px-3 py-2 text-center align-middle font-bold" style={{ width: '35%' }}>
+                  Unit Kompetensi {index + 1}
+                </td>
+                <td className="border border-gray-300 px-3 py-2" style={{ width: '15%' }}>Kode Unit</td>
+                <td className="border border-gray-300 px-3 py-2 text-center" style={{ width: '5%' }}>:</td>
+                <td className="border border-gray-300 px-3 py-2" style={{ width: '45%' }}>
+                  {item.competency_unit_code ?? "-"}
+                </td>
+              </tr>
+              <tr>
+                <td className="border border-gray-300 px-3 py-2" style={{ width: '15%' }}>Judul Unit</td>
+                <td className="border border-gray-300 px-3 py-2 text-center" style={{ width: '5%' }}>:</td>
+                <td className="border border-gray-300 px-3 py-2" style={{ width: '45%' }}>
+                  {item.competency_unit_name ?? "-"}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+
+          <ListElement unitCompetenceID={item.competency_unit_id} />
+        </Card>
+      ))}
+    </Space>
+  )
+}

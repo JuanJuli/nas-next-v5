@@ -1,0 +1,87 @@
+export interface Me {
+  row_id: number;
+  user_id: string;
+  jobs_code: string;
+  picture: string;
+  nik: string;
+  full_name: string;
+  contact: string;
+  address: string;
+  place_of_birth: string;
+  gender_code: string;
+  signature: string;
+  date_of_birth: string;
+  last_login: string;
+  activated_date: string;
+  village_id: string;
+  created_date: string;
+  modified_date: string;
+  expired_date: string;
+  created_by: string;
+  modified_by: string;
+  deleted_by: string;
+  credential: {
+    row_id: number;
+    username: string;
+    email: string;
+    created_date: string;
+    modified_date: string;
+    created_by: string;
+    modified_by: string;
+  };
+  region: {
+    village_id: string;
+    village_name: string;
+    village_longitude: number;
+    village_latitude: number;
+    subdistrict_id: string;
+    subdistrict_name: string;
+    subdistrict_longitude: number;
+    subdistrict_latitude: number;
+    city_id: string;
+    city_name: string;
+    city_longitude: number;
+    city_latitude: number;
+    province_id: string;
+    province_name: string;
+    province_longitude: number;
+    province_latitude: number;
+  };
+  lsp_name: string[];
+  applicant: {
+    applicant_id: string;
+    institution_id: string;
+    sub_institution_id: string;
+    position: string;
+    jobs_contact: string;
+    jobs_address: string;
+    jobs_zip: string;
+    jobs_email: string;
+    jobs_fax: string;
+    last_education: string;
+    nationality: string;
+    zip_code: string;
+    institution: string | null;
+    sub_institution: string | null;
+    applicant_ahemce: string;
+    nip: string;
+  };
+  asesor: any | null;
+  role: {
+    user_id: string;
+    lsp_id: string;
+    tuk_id: string;
+    role_code: string;
+    role_name: string;
+  };
+  lsp: {
+    lsp_id: string;
+    lsp_name: string;
+    lsp_type: string;
+    address: string;
+    logo: string;
+    lsp_code: string;
+    integration_lsp: string;
+  };
+  tuk: any | null;
+}
