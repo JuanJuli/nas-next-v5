@@ -6,8 +6,11 @@ import Descriptions, { DescriptionsProps } from "antd/es/descriptions";
 import { useEffect, useMemo } from "react";
 import { useEformApl2Store } from "@/store/eformApl2";
 import dayjs from "dayjs";
+import { useTranslations } from 'next-intl';
 
 export default function LastPart() {
+  const t = useTranslations('form');
+  const tc = useTranslations('common');
   const { requirement } = useRequirementContext();
   const { 
     lastPart, 
@@ -51,24 +54,22 @@ export default function LastPart() {
   }, [signatureApl, lastPart.pemohonTtd, setPemohonTtd]);
 
   const handleSignaturePemohon = () => {
-    // TODO: Implement signature modal/canvas
     if (signatureApl) {
       setPemohonTtd(signatureApl);
     }
   };
 
   const handleSignatureAsesor = () => {
-    // TODO: Implement signature modal/canvas for assessor
     console.log('Open signature modal for assessor');
   };
 
   const itemApplicant: DescriptionsProps['items'] = useMemo(() => ([
     {
-      label: 'Nama',
+      label: t('label-name'),
       children: lastPart.pemohonNama || currentName,
     },
     {
-      label: 'Tanda Tangan / Tanggal',
+      label: t('label-signature-date'),
       children: (
         <Space orientation="vertical" className="w-full">
           {!lastPart.pemohonTtd && (
@@ -76,7 +77,7 @@ export default function LastPart() {
               disabled={(!requirement || !requirement.current_role || requirement.current_role !== 'APL') && !signatureApl}
               onClick={handleSignaturePemohon}
             >
-              Tanda Tangan
+              {tc('btn-tanda-tangan')}
             </Button>
           )}
           {lastPart.pemohonTtd && (
@@ -94,22 +95,22 @@ export default function LastPart() {
 
   const itemAsesorUji: DescriptionsProps['items'] = useMemo(() => ([
     {
-      label: 'No. Reg',
+      label: t('label-reg-number'),
       children: lastPart.asesorNoReg ?? "",
     },
     {
-      label: 'Nama',
+      label: t('label-name'),
       children: lastPart.asesorNama ?? "",
     },
     {
-      label: 'Tanda Tangan / Tanggal',
+      label: t('label-signature-date'),
       children: (
         <Space orientation="vertical" className="w-full">
           <Button 
             disabled={!requirement || !requirement.current_role || requirement.current_role !== 'ACS'}
             onClick={handleSignatureAsesor}
           >
-            {lastPart.asesorTtd ? 'Ubah Tanda Tangan' : 'Tanda Tangan'}
+            {lastPart.asesorTtd ? t('label-change-signature') : tc('btn-tanda-tangan')}
           </Button>
           {lastPart.asesorTtd && (
             <img src={lastPart.asesorTtd} alt="Assessor Signature" style={{ maxWidth: '150px', maxHeight: '75px' }} />
@@ -127,22 +128,22 @@ export default function LastPart() {
 
   const itemLastPart: DescriptionsProps['items'] = [
     {
-      label: 'Rekomendasi Untuk Asesi:',
+      label: t('label-rekomendasi-asesi'),
       children: (
       <div>
         <Radio.Group 
           value={lastPart.rekomendasi}
           onChange={(e) => setRekomendasi(e.target.value)}
         >
-          <Radio value={true}>Asesmen Dapat Dilanjutkan</Radio>
-          <Radio value={false}>Tidak Dapat Dilanjutkan *)</Radio>
+          <Radio value={true}>{t('label-asesmen-dilanjutkan')}</Radio>
+          <Radio value={false}>{t('label-asesmen-tidak-dilanjutkan')}</Radio>
         </Radio.Group>
-        <p className="text-gray-500 text-sm mt-2">*Pilih yang sesuai</p>
+        <p className="text-gray-500 text-sm mt-2">{t('label-choose-appropriate')}</p>
       </div>
       ),
     },
     {
-      label: 'Asesi',
+      label: t('label-asesi'),
       children: <Descriptions items={itemApplicant} colon={false} column={1} className="w-full" styles={{ label: { width: '30%' } }} />,
     },
     {
@@ -150,7 +151,7 @@ export default function LastPart() {
         children: '',
     },
     {
-      label: 'Ditinjau Oleh Asesor',
+      label: t('label-ditinjau-asesor'),
       children: <Descriptions items={itemAsesorUji} colon={false} column={1} className="w-full" styles={{ label: { width: '30%' } }} />,
     }
   ]

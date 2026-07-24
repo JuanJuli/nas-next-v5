@@ -6,6 +6,8 @@ import { ChevronDown, ChevronRight } from 'lucide-react';
 import { convertAliasesToMenu } from '../ui/menuAlias';
 import { ListMenu } from '@/types/accessRole';
 import logo from '../../../public/logo/nas-small.png';
+import { useLocale } from 'next-intl';
+import { getMenuLabel } from '@/i18n/menuLabels';
 interface TailwindSidebarProps {
   collapsed: boolean;
   menuActive: string;
@@ -41,7 +43,8 @@ function MenuItem({
   onTrigger,
 }: MenuItemProps) {
   const [isHovered, setIsHovered] = useState(false);
-  
+  const locale = useLocale();
+
   const key = `${item.row_id}`;
   const isActive = menuActive === key;
   const hasChildren = item.children && item.children.length > 0;
@@ -123,7 +126,7 @@ function MenuItem({
                   onTrigger(item.link);
                 }}
               >
-                {item.name}
+                {getMenuLabel(item.name, locale)}
               </span>
             ) : (
               <Link
@@ -135,12 +138,12 @@ function MenuItem({
                 }}
                 style={{ color: getTextColor() }}
               >
-                {item.name}
+                {getMenuLabel(item.name, locale)}
               </Link>
             )
           ) : (
             <span className={textClass} style={{ color: getTextColor() }}>
-              {item.name}
+              {getMenuLabel(item.name, locale)}
             </span>
           )}
         </div>

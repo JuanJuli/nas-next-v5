@@ -3,6 +3,7 @@
 import { parseAPL02, SchemePreview } from "@/utils/parseApl02MasterData";
 import { InboxOutlined } from "@ant-design/icons";
 import { Modal, Spin, Upload } from "antd";
+import { useTranslations } from 'next-intl';
 import { useState } from "react";
 
 const { Dragger } = Upload;
@@ -35,6 +36,7 @@ function mapToFormSchema(data: SchemePreview) {
 
 export default function ModalImporSchema({ open, onClose, onImport }: { open: boolean, onClose: () => void, onImport?: (data: any) => void }) {
   const [loading, setLoading] = useState(false);
+  const tc = useTranslations('common');
   
   const handleUpload = async (file: File) => {
     setLoading(true);
@@ -50,9 +52,9 @@ export default function ModalImporSchema({ open, onClose, onImport }: { open: bo
   }
 
   return (
-    <Modal open={open} onCancel={onClose} title="Import Skema Sertifikasi" footer={null}>
+    <Modal open={open} onCancel={onClose} title={tc('btn-import-skema')} footer={null}>
       {/* Form Input File Dragger Antd */}
-      <Spin description="Loading" size="small" spinning={loading}>
+      <Spin description={tc('loading')} size="small" spinning={loading}>
         <Dragger
           name="file"
           multiple={false}
@@ -63,10 +65,9 @@ export default function ModalImporSchema({ open, onClose, onImport }: { open: bo
           <p className="ant-upload-drag-icon">
             <InboxOutlined />
           </p>
-          <p className="ant-upload-text">Click or drag file to this area to upload</p>
+          <p className="ant-upload-text">{tc('label-upload-click-drag')}</p>
           <p className="ant-upload-hint">
-            Support for a single or bulk upload. Strictly prohibited from uploading company data or
-            other banned files.
+            {tc('label-upload-click-drag')}
           </p>
         </Dragger>
       </Spin>

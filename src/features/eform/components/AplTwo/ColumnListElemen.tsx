@@ -5,6 +5,7 @@ import { UploadOutlined, DownOutlined, UpOutlined } from '@ant-design/icons';
 import { Button, Checkbox, type TableColumnsType } from 'antd';
 import { Element } from '@/types/schema';
 import { EformApl2State } from '@/store/eformApl2';
+import { useTranslations } from 'next-intl';
 
 interface ColumnListElementProps {
   handleAttachment: (requirementID: string) => void;
@@ -21,10 +22,12 @@ export default function columnListElement({
   partTwo,
   setRequirementAssessment
 }: ColumnListElementProps) {
+  const t = useTranslations('form');
+  const tc = useTranslations('common');
 
   const column: TableColumnsType<Requirement> = [
     {
-      title: 'Dapatkah Saya ?',
+      title: t('label-dapatkah-saya'),
       dataIndex: 'element',
       key: 'u-element_name',
       render: (value: Element, record: Requirement, index: number) => {
@@ -46,13 +49,13 @@ export default function columnListElement({
                   onClick={() => toggleElement(value.element_id)}
                   className="text-blue-500"
                 >
-                  {isExpanded ? 'Tutup' : 'Tampilkan'} KUK
+                  {isExpanded ? t('label-tutup-kuk') : t('label-tampilkan-kuk')} KUK
                 </Button>
               )}
             </div>
             {hasKuks && isExpanded && (
               <div className="ml-4 space-y-1 bg-gray-50 p-3 rounded">
-                <div className="text-sm font-medium text-gray-600">Kriteria Unjuk Kerja:</div>
+                <div className="text-sm font-medium text-gray-600">{t('label-kriteria-unjuk-kerja')}</div>
                 <ul className="list-disc list-inside space-y-1">
                   {value.kuks.map((kuk) => (
                     <li key={kuk.kuk_id} className="text-sm text-gray-700">
@@ -67,7 +70,7 @@ export default function columnListElement({
       }
     },
     {
-      title: 'K',
+      title: t('label-k'),
       align: 'center',
       dataIndex: 'requirement_id',
       key: 'u-k',
@@ -91,7 +94,7 @@ export default function columnListElement({
       },
     },
     {
-      title: 'BK',
+      title: t('label-bk'),
       align: 'center',
       dataIndex: 'requirement_id',
       key: 'u-bk',
@@ -115,12 +118,12 @@ export default function columnListElement({
       },
     },
     {
-      title: 'Bukti yang relavan',
+      title: t('label-bukti-relevan'),
       dataIndex: 'requirement_id',
       key: 'u-requirement_id',
       width: 200,
       render: (value: any) => {
-        if (value) return <Button icon={<UploadOutlined />} onClick={() => handleAttachment(value)}>Lampiran File</Button>;
+        if (value) return <Button icon={<UploadOutlined />} onClick={() => handleAttachment(value)}>{tc('btn-lampiran-file')}</Button>;
         return '-';
       },
     },

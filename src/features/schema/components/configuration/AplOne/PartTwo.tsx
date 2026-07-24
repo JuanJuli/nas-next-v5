@@ -4,49 +4,59 @@ import RegularTable from "@/components/table/RegularTable";
 import { useConfigurationEformContext } from "@/context/ConfigurationEform";
 import columnUnitCompetence from "@/features/eform/components/AplOne/ColumnUnitcompetence";
 import { Card, Checkbox, Descriptions, DescriptionsProps } from "antd";
+import { useTranslations } from 'next-intl';
 import { useMemo, useState } from "react";
 
 export default function PartTwo() {
   const { schema } = useConfigurationEformContext();
+  const t = useTranslations('form');
   const [currentPage, setCurrentPage] = useState(1);
 
   const itemSkemaData: DescriptionsProps['items'] = useMemo(() => ([
     {
-      label: 'Judul',
+      key: 'judul',
+      label: t('label-judul'),
       children: schema ? schema.schema_name : '-',
     },
     {
-      label: 'Nomor',
+      key: 'nomor',
+      label: t('label-nomor'),
       children: schema ? schema.schema_code : '-',
     }
-  ]), [schema]);
+  ]), [schema, t]);
 
   const itemPurpose: DescriptionsProps['items'] = [
     {
+      key: 'sertifikasi',
       label: <Checkbox disabled />,
-      children: 'Sertifikasi',
+      children: t('label-sertifikasi'),
     },
     {
+      key: 'pkt',
       label: <Checkbox disabled />,
-      children: 'Pengakuan Kompetensi Terkini (PKT)',
+      children: t('label-pkt'),
     },
     {
+      key: 'rpl',
       label: <Checkbox disabled />,
-      children: 'Rekognisi Pembelajaran Lampau (RPL)',
+      children: t('label-rpl'),
     },
     {
+      key: 'lainnya',
       label: <Checkbox disabled />,
-      children: 'Lainnya',
+      children: t('label-lainnya'),
     }
   ]
 
   const itemSkema: DescriptionsProps['items'] = [
     {
-      label: 'Skema Sertifikasi (KKNI/Okupasi/Klaster)',
+      key: 'skema',
+      label: t('label-skema-sertifikasi'),
       children: <Descriptions items={itemSkemaData} colon column={1} className="w-full" styles={{ label: { width: '30%' } }} />,
     },
     {
-      label: 'Tujuan Asesmen',
+      key: 'tujuan',
+      label: t('label-tujuan-asesmen'),
       children: <Descriptions items={itemPurpose} colon={false} column={1} className="w-full" styles={{ label: { width: '5%' } }} />,
     },
   ]
@@ -61,8 +71,8 @@ export default function PartTwo() {
 
   return (
     <Card>
-      <h1 className="text-[1.3em]! font-bold">Bagian 2: Data Sertifikasi</h1>
-      <p className="mb-4">Tuliskan Judul dan Nomor Skema Sertifikasi yang anda ajukan berikut Daftar Unit Kompetensi sesuai kemasan pada skema sertifikasi untuk mendapatkan pengakuan sesuai dengan latar belakang pendidikan, pelatihan serta pengalaman kerja yang anda miliki.</p>
+      <h1 className="text-[1.3em]! font-bold">{t('heading-bagian-2')}</h1>
+      <p className="mb-4">{t('desc-bagian-2')}</p>
 
       <Descriptions
         items={itemSkema}
@@ -79,7 +89,7 @@ export default function PartTwo() {
         }}
       />
 
-      <p>Daftar Unit Kompetensi sesuai kemasan</p>
+      <p>{t('label-daftar-unit')}</p>
       <RegularTable
         url="core/competency_units"
         queryParams={

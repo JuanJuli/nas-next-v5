@@ -1,3 +1,10 @@
 {
-    "terjadi-kesalahan": "Terjadi kesalahan, silakan coba lagi nanti."
+    "terjadi-kesalahan": "Terjadi kesalahan, silakan coba lagi nanti.",
+    "success-create": "Data berhasil dibuat",
+    "success-update": "Data berhasil diubah",
+    "success-delete": "Data berhasil dihapus",
+    "failed-create": "Gagal menyimpan data",
+    "failed-update": "Gagal memperbarui data",
+    "failed-delete": "Gagal menghapus data",
+    "failed-preview": "Gagal membuat preview PDF"
 }

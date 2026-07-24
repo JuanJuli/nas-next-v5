@@ -6,10 +6,15 @@ import { Card, Divider, Descriptions, Form, Input, DatePicker, Select } from "an
 import type { DescriptionsProps } from 'antd';
 import dayjs from "dayjs";
 import { useEffect, useMemo } from "react";
+import { useTranslations } from 'next-intl';
+import { useRequiredRule } from '@/i18n/validation';
 
 const { TextArea } = Input;
 
 export default function PartOne() {
+  const t = useTranslations('form');
+  const tc = useTranslations('common');
+  const req = useRequiredRule();
   const roleCode = useAuthStore((s) => s.roleCode);
   const { requirement } = useRequirementContext();
   const [form] = Form.useForm();
@@ -54,11 +59,11 @@ export default function PartOne() {
     return {
       namaLengkap: user?.full_name || '',
       noKTP: applicant.nip || '',
-      tempatLahir: user.place_of_birth || '', // Data ini tidak ada di interface, bisa ditambahkan jika diperlukan
-      tanggalLahir: user.date_of_birth ? dayjs(user.date_of_birth) : null, // Data ini tidak ada di interface, bisa ditambahkan jika diperlukan
-      jenisKelamin: user.gender_code || '', // Data ini tidak ada di interface, bisa ditambahkan jika diperlukan
+      tempatLahir: user.place_of_birth || '',
+      tanggalLahir: user.date_of_birth ? dayjs(user.date_of_birth) : null,
+      jenisKelamin: user.gender_code || '',
       kebangsaan: applicant.nationality || '',
-      alamat: user.address || '', // Data ini tidak ada di interface, bisa ditambahkan jika diperlukan
+      alamat: user.address || '',
       kodePos: applicant.zip_code || '',
       telpRumah: user?.contact || '',
       telpKantor: '',
@@ -91,22 +96,22 @@ export default function PartOne() {
       children: '',
     },
     {
-      label: 'Kode Pos',
+      label: t('postal-code'),
       children: `:  ${formData.kodePos}`,
     }
   ]
 
   const itemsContact: DescriptionsProps['items'] = [
     {
-      label: 'Rumah',
+      label: tc('label-rumah'),
       children: formData.telpRumah,
     },
     {
-      label: 'Kantor',
+      label: tc('label-kantor'),
       children: formData.telpKantor,
     },
     {
-      label: 'HP',
+      label: tc('label-hp'),
       children: formData.telpHP,
     },
     {
@@ -117,39 +122,39 @@ export default function PartOne() {
     
   const items: DescriptionsProps['items'] = [
     {
-      label: 'Nama Lengkap',
+      label: t('full-name'),
       span: 'filled',
       children: formData.namaLengkap,
     },
     {
       label: 'No. KTP/NIK/Paspor',
-      span: 'filled', // span = 2
+      span: 'filled',
       children: formData.noKTP,
     },
     {
-      label: 'Tempat/Tanggal Lahir',
-      span: 'filled', // span = 3
+      label: `${t('birth-place')}/${t('birth-date')}`,
+      span: 'filled',
       children: `${formData.tempatLahir}${formData.tanggalLahir ? ', ' + dayjs(formData.tanggalLahir).format('DD MMMM YYYY') : ''}`,
     },
     {
-      label: 'Jenis Kelamin',
-      span: 'filled', // span = 4
+      label: t('gender'),
+      span: 'filled',
       children: formData.jenisKelamin,
     },
     {
-      label: 'Kebangsaan',
-      span: 'filled', // span = 5
+      label: t('nationality'),
+      span: 'filled',
       children: formData.kebangsaan,
     },
     {
-      label: 'Alamat',
-      span: 'filled', // span = 6
-      children: <Descriptions colon={false} items={itemsAddress} column={1} className="w-full" styles={{ label: { width: '30%' } }} /> // nested descriptions
+      label: t('address'),
+      span: 'filled',
+      children: <Descriptions colon={false} items={itemsAddress} column={1} className="w-full" styles={{ label: { width: '30%' } }} />
     },
     {
       label: 'No. Telepon/Email',
-      span: 'filled', // span = 7
-      children: <Descriptions colon={true} items={itemsContact} column={2} className="w-full" styles={{ label: { width: '30%', display: 'flex', justifyContent: 'space-between' } }} /> // nested descriptions
+      span: 'filled',
+      children: <Descriptions colon={true} items={itemsContact} column={2} className="w-full" styles={{ label: { width: '30%', display: 'flex', justifyContent: 'space-between' } }} />
     }
   ];
 
@@ -160,18 +165,18 @@ export default function PartOne() {
       children: '',
     },
     {
-      label: 'Kode Pos',
+      label: t('postal-code'),
       children: `:  ${formData.kodePosKantor}`,
     }
   ]
 
   const itemContactJobs: DescriptionsProps['items'] = [
     {
-      label: 'Telp',
+      label: tc('label-telp'),
       children: formData.telpKantorPerusahaan,
     },
     {
-      label: 'Fax',
+      label: tc('label-fax'),
       children: formData.faxKantor,
     },
     {
@@ -182,29 +187,29 @@ export default function PartOne() {
 
   const itemsCurrentJobs: DescriptionsProps['items'] = [
     {
-      label: 'Nama Institusi/Perusahaan',
+      label: t('institution-name'),
       children: formData.namaInstitusi,
     },
     {
-      label: 'Jabatan',
+      label: t('position'),
       children: formData.jabatan,
     },
     {
-      label: 'Alamat Kantor',
-      children: <Descriptions colon={false} items={itemAddressJobs} column={1} className="w-full" styles={{ label: { width: '30%' } }} /> // nested descriptions
+      label: t('office-address'),
+      children: <Descriptions colon={false} items={itemAddressJobs} column={1} className="w-full" styles={{ label: { width: '30%' } }} />
     },
     {
       label: 'No. Telp/Fax/Email',
-      children: <Descriptions colon={false} items={itemContactJobs} column={2} className="w-full" styles={{ label: { width: '30%', display: 'flex', justifyContent: 'space-between' } }} /> // nested descriptions
+      children: <Descriptions colon={false} items={itemContactJobs} column={2} className="w-full" styles={{ label: { width: '30%', display: 'flex', justifyContent: 'space-between' } }} />
     }
   ]
 
   return (
     <Card>
-      <h1 className="text-[2em]! font-bold">Bagian 1: Rincian Data Pemohon Sertifikasi</h1>
-      <p>Pada bagian ini, cantumkan data pribadi, data pendidikan formal serta data pekerjaan anda pada saat ini.</p>
+      <h1 className="text-[2em]! font-bold">{tc('heading-bagian-1')}</h1>
+      <p>{tc('desc-bagian-1')}</p>
 
-      <Divider titlePlacement="left">a. Data Pribadi</Divider>
+      <Divider titlePlacement="left">{tc('sub-a-data-pribadi')}</Divider>
       
       {!readOnly ? (
         <Form
@@ -214,108 +219,108 @@ export default function PartOne() {
           className="w-full"
         >
           <Form.Item
-            label="Nama Lengkap"
+            label={t('full-name')}
             name="namaLengkap"
-            rules={[{ required: true, message: 'Nama lengkap harus diisi' }]}
+            rules={[req('full-name')]}
           >
-            <Input placeholder="Masukkan nama lengkap" />
+            <Input placeholder={t('placeholder-full-name')} />
           </Form.Item>
 
           <Form.Item
             label="No. KTP/NIK/Paspor"
             name="noKTP"
-            rules={[{ required: true, message: 'No. KTP/NIK/Paspor harus diisi' }]}
+            rules={[{ required: true, message: t('field-required', { field: 'No. KTP/NIK/Paspor' }) }]}
           >
             <Input placeholder="Masukkan No. KTP/NIK/Paspor" />
           </Form.Item>
 
           <div className="grid grid-cols-2 gap-4">
             <Form.Item
-              label="Tempat Lahir"
+              label={t('birth-place')}
               name="tempatLahir"
-              rules={[{ required: true, message: 'Tempat lahir harus diisi' }]}
+              rules={[req('birth-place')]}
             >
-              <Input placeholder="Masukkan tempat lahir" />
+              <Input placeholder={t('placeholder-birth-place')} />
             </Form.Item>
 
             <Form.Item
-              label="Tanggal Lahir"
+              label={t('birth-date')}
               name="tanggalLahir"
-              rules={[{ required: true, message: 'Tanggal lahir harus diisi' }]}
+              rules={[req('birth-date')]}
             >
-              <DatePicker className="w-full" format="DD-MM-YYYY" placeholder="Pilih tanggal lahir" />
+              <DatePicker className="w-full" format="DD-MM-YYYY" placeholder={t('placeholder-birth-date')} />
             </Form.Item>
           </div>
 
           <Form.Item
-            label="Jenis Kelamin"
+            label={t('gender')}
             name="jenisKelamin"
-            rules={[{ required: true, message: 'Jenis kelamin harus dipilih' }]}
+            rules={[req('gender')]}
           >
-            <Select placeholder="Pilih jenis kelamin" options={[
-              { label: 'Laki-laki', value: 'F' },
-              { label: 'Perempuan', value: 'M' }
+            <Select placeholder={t('placeholder-select-gender')} options={[
+              { label: t('label-male'), value: 'F' },
+              { label: t('label-female'), value: 'M' }
             ]} />
           </Form.Item>
 
           <Form.Item
-            label="Kebangsaan"
+            label={t('nationality')}
             name="kebangsaan"
-            rules={[{ required: true, message: 'Kebangsaan harus diisi' }]}
+            rules={[req('nationality')]}
           >
-            <Input placeholder="Masukkan kebangsaan" />
+            <Input placeholder={t('placeholder-nationality')} />
           </Form.Item>
 
           <Form.Item
-            label="Alamat"
+            label={t('address')}
             name="alamat"
-            rules={[{ required: true, message: 'Alamat harus diisi' }]}
+            rules={[req('address')]}
           >
-            <TextArea rows={3} placeholder="Masukkan alamat lengkap" />
+            <TextArea rows={3} placeholder={t('placeholder-address')} />
           </Form.Item>
 
           <Form.Item
-            label="Kode Pos"
+            label={t('postal-code')}
             name="kodePos"
-            rules={[{ required: true, message: 'Kode pos harus diisi' }]}
+            rules={[req('postal-code')]}
           >
-            <Input type="number" placeholder="Masukkan kode pos" />
+            <Input type="number" placeholder={t('placeholder-postal-code')} />
           </Form.Item>
 
           <div className="grid grid-cols-2 gap-4">
             <Form.Item
-              label="No. Telepon Rumah"
+              label={t('phone-home')}
               name="telpRumah"
             >
-              <Input placeholder="Masukkan no. telepon rumah" />
+              <Input placeholder={t('placeholder-phone')} />
             </Form.Item>
 
             <Form.Item
-              label="No. Telepon Kantor"
+              label={t('phone-office')}
               name="telpKantor"
             >
-              <Input placeholder="Masukkan no. telepon kantor" />
+              <Input placeholder={t('placeholder-phone')} />
             </Form.Item>
           </div>
 
           <div className="grid grid-cols-2 gap-4">
             <Form.Item
-              label="No. HP"
+              label={t('phone-mobile')}
               name="telpHP"
-              rules={[{ required: true, message: 'No. HP harus diisi' }]}
+              rules={[req('phone-mobile')]}
             >
-              <Input placeholder="Masukkan no. HP" />
+              <Input placeholder={t('placeholder-phone')} />
             </Form.Item>
 
             <Form.Item
-              label="Email"
+              label={t('email')}
               name="email"
               rules={[
-                { required: true, message: 'Email harus diisi' },
-                { type: 'email', message: 'Format email tidak valid' }
+                req('email'),
+                { type: 'email', message: t('email-invalid') }
               ]}
             >
-              <Input type="email" placeholder="Masukkan email" />
+              <Input type="email" placeholder={t('placeholder-email')} />
             </Form.Item>
           </div>
         </Form>
@@ -335,7 +340,7 @@ export default function PartOne() {
         />
       )}
 
-      <Divider titlePlacement="left">b. Data Pekerjaan Sekarang</Divider>
+      <Divider titlePlacement="left">{tc('sub-b-data-pekerjaan')}</Divider>
       
       {!readOnly ? (
         <Form
@@ -345,61 +350,61 @@ export default function PartOne() {
           className="w-full"
         >
           <Form.Item
-            label="Nama Institusi/Perusahaan"
+            label={t('institution-name')}
             name="namaInstitusi"
-            rules={[{ required: true, message: 'Nama institusi/perusahaan harus diisi' }]}
+            rules={[req('institution-name')]}
           >
-            <Input placeholder="Masukkan nama institusi/perusahaan" />
+            <Input placeholder={t('placeholder-institution')} />
           </Form.Item>
 
           <Form.Item
-            label="Jabatan"
+            label={t('position')}
             name="jabatan"
-            rules={[{ required: true, message: 'Jabatan harus diisi' }]}
+            rules={[req('position')]}
           >
-            <Input placeholder="Masukkan jabatan" />
+            <Input placeholder={t('placeholder-position')} />
           </Form.Item>
 
           <Form.Item
-            label="Alamat Kantor"
+            label={t('office-address')}
             name="alamatKantor"
-            rules={[{ required: true, message: 'Alamat kantor harus diisi' }]}
+            rules={[req('office-address')]}
           >
-            <TextArea rows={3} placeholder="Masukkan alamat kantor lengkap" />
+            <TextArea rows={3} placeholder={t('placeholder-office-address')} />
           </Form.Item>
 
           <Form.Item
-            label="Kode Pos Kantor"
+            label={t('office-postal-code')}
             name="kodePosKantor"
-            rules={[{ required: true, message: 'Kode pos kantor harus diisi' }]}
+            rules={[req('office-postal-code')]}
           >
-            <Input type="number" placeholder="Masukkan kode pos kantor" />
+            <Input type="number" placeholder={t('placeholder-office-postal-code')} />
           </Form.Item>
 
           <div className="grid grid-cols-2 gap-4">
             <Form.Item
-              label="No. Telepon Kantor"
+              label={t('office-phone')}
               name="telpKantorPerusahaan"
             >
-              <Input placeholder="Masukkan no. telepon kantor" />
+              <Input placeholder={t('placeholder-phone')} />
             </Form.Item>
 
             <Form.Item
-              label="Fax Kantor"
+              label={t('office-fax')}
               name="faxKantor"
             >
-              <Input placeholder="Masukkan fax kantor" />
+              <Input placeholder={t('placeholder-phone')} />
             </Form.Item>
           </div>
 
           <Form.Item
-            label="Email Kantor"
+            label={t('office-email')}
             name="emailKantor"
             rules={[
-              { type: 'email', message: 'Format email tidak valid' }
+              { type: 'email', message: t('email-invalid') }
             ]}
           >
-            <Input type="email" placeholder="Masukkan email kantor" />
+            <Input type="email" placeholder={t('placeholder-email')} />
           </Form.Item>
         </Form>
       ) : (

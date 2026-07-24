@@ -2,42 +2,42 @@ export const asesmentState = [
   {
     id: 1,
     value: 'draft',
-    label: 'Draft',
+    label: { id: 'Draft', en: 'Draft' },
   },
   {
     id: 2,
     value: 'pra_assessment',
-    label: 'Pra Asesmen',
+    label: { id: 'Pra Asesmen', en: 'Pre Assessment' },
   },
   {
     id: 3,
     value: 'assessment',
-    label: 'Asesmen',
+    label: { id: 'Asesmen', en: 'Assessment' },
   },
   {
     id: 4,
     value: 'assessment_finish',
-    label: 'Asesmen Selesai',
+    label: { id: 'Asesmen Selesai', en: 'Assessment Complete' },
   },
   {
     id: 5,
     value: 'pleno',
-    label: 'Rapat Komtek',
+    label: { id: 'Rapat Komtek', en: 'Pleno Meeting' },
   },
   {
     id: 6,
     value: 'pleno_finish',
-    label: 'Rapat Komtek Selesai',
+    label: { id: 'Rapat Komtek Selesai', en: 'Pleno Meeting Complete' },
   },
   {
     id: 7,
     value: 'print_certificate',
-    label: 'Penerbitan Sertifikat',
+    label: { id: 'Penerbitan Sertifikat', en: 'Certificate Issuance' },
   },
   {
     id: 8,
     value: 'completed',
-    label: 'Lengkap',
+    label: { id: 'Lengkap', en: 'Completed' },
   },
 ];
 
@@ -45,58 +45,54 @@ export const allAsesmentState = [
   {
     id: 1,
     value: 'draft',
-    label: 'Draft',
+    label: { id: 'Draft', en: 'Draft' },
   },
   {
     id: 2,
     value: 'pra_assessment',
-    label: 'Pra Asesmen',
+    label: { id: 'Pra Asesmen', en: 'Pre Assessment' },
   },
   {
     id: 3,
     value: 'assessment',
-    label: 'Asesmen',
+    label: { id: 'Asesmen', en: 'Assessment' },
   },
   {
     id: 4,
     value: 'assessment_finish',
-    label: 'Asesmen Selesai',
+    label: { id: 'Asesmen Selesai', en: 'Assessment Complete' },
   },
   {
     id: 5,
     value: 'pleno',
-    label: 'Rapat Komtek',
+    label: { id: 'Rapat Komtek', en: 'Pleno Meeting' },
   },
   {
     id: 6,
     value: 'pleno_finish',
-    label: 'Rapat Komtek Selesai',
+    label: { id: 'Rapat Komtek Selesai', en: 'Pleno Meeting Complete' },
   },
   {
     id: 7,
     value: 'print_certificate',
-    label: 'Penerbitan Sertifikat',
+    label: { id: 'Penerbitan Sertifikat', en: 'Certificate Issuance' },
   },
   {
     id: 8,
     value: 'completed',
-    label: 'Lengkap',
+    label: { id: 'Lengkap', en: 'Completed' },
   },
   {
     id: 9,
     value: 'archived',
-    label: 'Arsip',
+    label: { id: 'Arsip', en: 'Archived' },
   },
 ];
 
-export function convertAsesmenStateLabel(state: string) {
+export function convertAsesmenStateLabel(state: string, locale: string = 'id'): string {
   const lowerState = state.toLowerCase();
-  const asesmentStateFind = asesmentState.find(item => item.value === lowerState);
-  if (asesmentStateFind) {
-    return asesmentStateFind.label;
-  }
-
-  if (lowerState === 'archived') return 'Arsip';
-
+  const entry = asesmentState.find(item => item.value === lowerState);
+  if (entry) return entry.label[locale as keyof typeof entry.label] || entry.label.id;
+  if (lowerState === 'archived') return locale === 'en' ? 'Archived' : 'Arsip';
   return '-';
 }

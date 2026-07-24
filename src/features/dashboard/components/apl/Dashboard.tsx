@@ -6,12 +6,14 @@ import { HomeOutlined } from "@ant-design/icons";
 import { theme } from "antd";
 import columns from "./Column";
 import { useMemo } from "react";
+import { useTranslations } from 'next-intl';
 import { useRouter } from "next/dist/client/components/navigation";
 const { useToken } = theme;
   
 export default function DashboardApl() {
   const { token } = useToken();
   const router = useRouter();
+  const t = useTranslations('common');
 
 
   const handleLinkVirtual = (data: any) => {
@@ -46,18 +48,19 @@ export default function DashboardApl() {
       handleAppeal,
       handleDocumentAsesmen,
       handleSupDocumentApl,
+      t,
     }) 
-  }, [])
+  }, [t])
 
   return (
     <>
       <TitlePage
-        title="Dashboard"
+        title={t('dashboard')}
         icon={<HomeOutlined style={{ fontSize: '24px', color: token.colorPrimary }} />}
         actions={[
           {
             key: 'refresh',
-            label: 'Refresh',
+            label: t('btn-refresh'),
             type: 'primary',
             onClick: () => {
               // Implement refresh logic here

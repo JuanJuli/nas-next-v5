@@ -2,6 +2,7 @@
 
 import { useFormSchemaContext } from "@/context/FormSchema";
 import { Button, Collapse, CollapseProps, Descriptions, DescriptionsProps, Form, Switch, theme } from "antd";
+import { useTranslations } from 'next-intl';
 import { useMemo } from "react";
 
 interface AssessmentTool {
@@ -108,15 +109,17 @@ const defaultAssessmentTools: AssessmentCategory[] = [
 
 export default function FormAssessmentTools() {
   const { token } = theme.useToken();
+  const t = useTranslations('form');
+  const tc = useTranslations('common');
   const { schema, formAssessmentTools, formAssessmentToolsFinish, onBack } = useFormSchemaContext();
 
   const itemSchema: DescriptionsProps['items'] = useMemo(() => [
-    { label: "Kode Skema", children: schema?.schema_code },
-    { label: "Nama Skema", children: schema?.schema_name },
-    { label: "Lisensi Skema", children: schema?.schema_license },
-    { label: "Jenis Skema", children: schema?.schema_skkni },
-    { label: "Tahun Skema", children: schema?.schema_year },
-  ], [schema]);
+    { key: 'schema_code', label: t('scheme-code'), children: schema?.schema_code },
+    { key: 'schema_name', label: t('scheme-name'), children: schema?.schema_name },
+    { key: 'schema_license', label: t('scheme-license'), children: schema?.schema_license },
+    { key: 'schema_skkni', label: t('scheme-type'), children: schema?.schema_skkni },
+    { key: 'schema_year', label: t('scheme-year'), children: schema?.schema_year },
+  ], [schema, t]);
 
   const collapseItems: CollapseProps['items'] = useMemo(() => defaultAssessmentTools.map((category, catIndex) => ({
     key: String(catIndex),
@@ -129,8 +132,8 @@ export default function FormAssessmentTools() {
             <table className="w-full border-collapse">
               <thead>
                 <tr style={{ background: token.colorBgElevated }}>
-                  <th className="text-left p-2 text-sm font-medium" style={{ border: `1px solid ${token.colorBorderSecondary}` }}>Perangkat Asesmen</th>
-                  <th className="text-center p-2 text-sm font-medium w-24" style={{ border: `1px solid ${token.colorBorderSecondary}` }}>Asesi</th>
+                  <th className="text-left p-2 text-sm font-medium" style={{ border: `1px solid ${token.colorBorderSecondary}` }}>{t('heading-assessment-tool')}</th>
+                  <th className="text-center p-2 text-sm font-medium w-24" style={{ border: `1px solid ${token.colorBorderSecondary}` }}>{t('heading-asesi')}</th>
                 </tr>
               </thead>
               <tbody>
@@ -152,20 +155,20 @@ export default function FormAssessmentTools() {
             </table>
           </div>
         ))}
-        <p className="text-xs mt-2" style={{ color: token.colorTextTertiary }}>Centang untuk menampilkan perangkat pada asesi</p>
+        <p className="text-xs mt-2" style={{ color: token.colorTextTertiary }}>{t('hint-show-asesi')}</p>
       </>
     ),
-  })), [token]);
+  })), [token, t]);
 
   return (
     <>
       <div className="p-4 rounded-lg shadow-md" style={{ background: token.colorBgContainer }}>
-        <h2 className="text-xl font-semibold mb-4">Data Skema Sertifikasi</h2>
+        <h2 className="text-xl font-semibold mb-4">{tc('heading-data-skema')}</h2>
         <Descriptions column={2} layout="vertical" colon={false} items={itemSchema} />
       </div>
 
       <div className="mt-4 p-4 rounded-lg shadow-md" style={{ background: token.colorBgContainer }}>
-        <h2 className="text-xl font-semibold mb-4">Perangkat Asesmen & MUK</h2>
+        <h2 className="text-xl font-semibold mb-4">{t('heading-assessment-tools')}</h2>
         <Form form={formAssessmentTools} layout="vertical" onFinish={formAssessmentToolsFinish}>
           <Collapse
             defaultActiveKey={defaultAssessmentTools.map((_, i) => String(i))}
@@ -176,8 +179,8 @@ export default function FormAssessmentTools() {
       </div>
 
       <div className="fixed bottom-0 left-0 w-full p-4 border-t-[2px] flex justify-end gap-2" style={{ background: token.colorBgContainer, borderTopColor: token.colorBorderSecondary }}>
-        <Button onClick={onBack}>Kembali ke Kelompok Kerja</Button>
-        <Button type="primary" onClick={() => formAssessmentTools?.submit()}>Simpan</Button>
+        <Button onClick={onBack}>{tc('btn-kembali')}</Button>
+        <Button type="primary" onClick={() => formAssessmentTools?.submit()}>{tc('btn-simpan')}</Button>
       </div>
     </>
   );

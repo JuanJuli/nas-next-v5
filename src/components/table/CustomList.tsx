@@ -8,6 +8,7 @@ import { useState, useEffect, useRef } from "react"
 import { LeftOutlined, RightOutlined } from "@ant-design/icons"
 import { getOffset } from "@/helper/urlQuery"
 import Search from "antd/es/input/Search"
+import { useTranslations } from 'next-intl'
 
 interface CustomListProps<T = any> {
   url: string
@@ -32,10 +33,11 @@ export default function CustomList<T = any>({
   queryParams,
   gap,
   minItemWidth = 300,
-  emptyText = "Tidak ada data",
+  emptyText,
   id,
   className,
 }: CustomListProps<T>) {
+  const t = useTranslations('common')
   const { params, setParams } = useTableUrlState({ limit: 3 })
   const [searchValue, setSearchValue] = useState(params.search || "")
   const debouncedSearchValue = useDebounce(searchValue, 500)
@@ -98,7 +100,7 @@ export default function CustomList<T = any>({
     }
 
     if (!isLoading && items.length === 0) {
-      return <div className="text-center py-8 text-gray-500">{emptyText}</div>
+      return <div className="text-center py-8 text-gray-500">{emptyText || t('empty-data')}</div>
     }
 
     return items.map((item: T, index: number) => (
@@ -113,7 +115,7 @@ export default function CustomList<T = any>({
       {showSearch && (
         <Search
           value={searchValue}
-          placeholder="Search..."
+          placeholder={t('search-placeholder')}
           onChange={(e) => setSearchValue(e.target.value)}
           style={{ marginBottom: 16, width: 300 }}
         />
@@ -131,20 +133,20 @@ export default function CustomList<T = any>({
             pageSize={params.limit}
             total={data?.count || 0}
             showSizeChanger
-            showTotal={(total, range) => `${range[0]}-${range[1]} dari ${total} data`}
+            showTotal={(total, range) => t('pagination-of', { a: range[0], b: range[1], total })}
             onChange={handleChange}
             itemRender={(currentPage, type, originalElement) => {
               if (type === 'prev') {
                 return (
                   <Button className="mx-1" icon={<LeftOutlined />}>
-                    Sebelumnya
+                    {t('pagination-prev')}
                   </Button>
                 )
               }
               if (type === 'next') {
                 return (
                   <Button className="mx-1 ml-3" icon={<RightOutlined />}>
-                    Berikutnya
+                    {t('pagination-next')}
                   </Button>
                 )
               }

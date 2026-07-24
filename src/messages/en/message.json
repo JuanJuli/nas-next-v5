@@ -1,3 +1,10 @@
 {
-    "terjadi-kesalahan": "An error occurred, please try again later."
+    "terjadi-kesalahan": "An error occurred, please try again later.",
+    "success-create": "Data created successfully",
+    "success-update": "Data updated successfully",
+    "success-delete": "Data deleted successfully",
+    "failed-create": "Failed to save data",
+    "failed-update": "Failed to update data",
+    "failed-delete": "Failed to delete data",
+    "failed-preview": "Failed to generate PDF preview"
 }

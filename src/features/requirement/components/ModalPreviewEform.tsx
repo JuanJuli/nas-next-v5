@@ -6,6 +6,7 @@ import { useModalPreviewEformStore } from "@/store/modalPreviewEform";
 import { useEffect, useState } from "react";
 import { Document, Page } from 'react-pdf';
 import { pdfjs } from 'react-pdf';
+import { useTranslations } from 'next-intl';
 
 // Configure PDF.js worker
 if (typeof window !== 'undefined') {
@@ -13,12 +14,12 @@ if (typeof window !== 'undefined') {
 }
 
 export default function ModalPreviewEform() {
+  const t = useTranslations('common');
   const { isOpen, pdfUrl, isLoading, closeModal, reset, formName } = useModalPreviewEformStore();
   const [numPages, setNumPages] = useState<number>(0);
   const [pageNumber, setPageNumber] = useState<number>(1);
 
   useEffect(() => {
-    // Cleanup URL ketika modal ditutup
     return () => {
       if (pdfUrl) {
         URL.revokeObjectURL(pdfUrl);
@@ -50,7 +51,6 @@ export default function ModalPreviewEform() {
   const handleDownload = () => {
     if (!pdfUrl) return;
 
-    // Create temporary link element to trigger download
     const link = document.createElement('a');
     link.href = pdfUrl;
     link.download = `${formName || 'E-Form'}_${new Date().getTime()}.pdf`;
@@ -69,17 +69,17 @@ export default function ModalPreviewEform() {
               onClick={goToPrevPage}
               disabled={pageNumber <= 1}
             >
-              Previous
+              {t('previous')}
             </Button>
             <span className="text-sm text-gray-600">
-              Page {pageNumber} of {numPages}
+              {t('page-of', { n: pageNumber, total: numPages })}
             </span>
             <Button
               icon={<RightOutlined />}
               onClick={goToNextPage}
               disabled={pageNumber >= numPages}
             >
-              Next
+              {t('next')}
             </Button>
           </>
         )}
@@ -89,7 +89,7 @@ export default function ModalPreviewEform() {
           icon={<CloseOutlined />} 
           onClick={handleClose}
         >
-          Tutup
+          {t('btn-tutup')}
         </Button>
         <Button 
           type="primary" 
@@ -97,7 +97,7 @@ export default function ModalPreviewEform() {
           onClick={handleDownload}
           disabled={!pdfUrl || isLoading}
         >
-          Download PDF
+          {t('btn-download-pdf')}
         </Button>
       </div>
     </div>
@@ -105,7 +105,7 @@ export default function ModalPreviewEform() {
 
   return (
     <Modal
-      title={`Preview E-Form${formName ? ` - ${formName}` : ''}`}
+      title={`${t('title-preview-eform')}${formName ? ` - ${formName}` : ''}`}
       open={isOpen}
       onCancel={handleClose}
       footer={modalFooter}
@@ -120,7 +120,7 @@ export default function ModalPreviewEform() {
     >
       {isLoading ? (
         <div className="flex items-center justify-center h-full">
-          <Spin size="large" description="Generating PDF..." />
+          <Spin size="large" description={t('generating-pdf')} />
         </div>
       ) : pdfUrl ? (
         <div className="flex flex-col items-center justify-center h-full overflow-auto">
@@ -129,14 +129,14 @@ export default function ModalPreviewEform() {
             onLoadSuccess={onDocumentLoadSuccess}
             loading={
               <div className="flex items-center justify-center p-8">
-                <Spin size="large" description="Loading PDF..." />
+                <Spin size="large" description={t('loading-pdf')} />
               </div>
             }
             error={
               <div className="flex items-center justify-center p-8">
                 <div className="text-center">
-                  <p className="text-red-500 mb-2">Failed to load PDF</p>
-                  <p className="text-gray-500 text-sm">Please try again or download the file</p>
+                  <p className="text-red-500 mb-2">{t('failed-load-pdf')}</p>
+                  <p className="text-gray-500 text-sm">{t('failed-load-pdf-desc')}</p>
                 </div>
               </div>
             }
@@ -151,7 +151,7 @@ export default function ModalPreviewEform() {
         </div>
       ) : (
         <div className="flex items-center justify-center h-full">
-          <p className="text-gray-500">No PDF to display</p>
+          <p className="text-gray-500">{t('no-pdf-to-display')}</p>
         </div>
       )}
     </Modal>

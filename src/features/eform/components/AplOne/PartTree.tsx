@@ -9,8 +9,10 @@ import { useRequirementContext } from "@/context/Requirement";
 import { useAuthStore } from "@/store/auth";
 import { useModalAttachmentStore } from "@/store/modalAttachment";
 import { useEformApl1Store } from "@/store/eformApl1";
+import { useTranslations } from 'next-intl';
 
 export default function PartTree() {
+  const t = useTranslations('form');
   const [currentPage, setCurrentPage] = useState(1);
   const [currentPageBams, setCurrentPageBams] = useState(1);
   const { requirement } = useRequirementContext();
@@ -38,10 +40,10 @@ export default function PartTree() {
   
   return (
     <Card>
-      <h1 className="text-[2em]! font-bold">Bagian 3: Bukti Kelengkapan Pemohon</h1>
-      <p className="mb-4">Tuliskan Judul dan Nomor Skema Sertifikasi yang anda ajukan berikut Daftar Unit Kompetensi sesuai kemasan pada skema sertifikasi untuk mendapatkan pengakuan sesuai dengan latar belakang pendidikan, pelatihan serta pengalaman kerja yang anda miliki.</p>
+      <h1 className="text-[2em]! font-bold">{t('heading-bagian-3')}</h1>
+      <p className="mb-4">{t('desc-bagian-3')}</p>
     
-      <h4>3.1 Bukti Persyaratan Dasar Pemohon</h4>
+      <h4>{t('heading-3-1')}</h4>
       <RegularTable
         columns={columnBase}
         url="core/requirements"
@@ -53,7 +55,7 @@ export default function PartTree() {
           }
         }}
       />
-      <h4>3.2 Bukti Administratif</h4>
+      <h4>{t('heading-3-2')}</h4>
       <RegularTable
         columns={columnBams}
         url="core/requirements"

@@ -1,5 +1,6 @@
 import { UploadOutlined } from '@ant-design/icons';
 import { Button, Checkbox, type TableColumnsType } from 'antd';
+import { useTranslations } from 'next-intl';
 
 interface ColumnBamParams {
   currentPage: number;
@@ -14,23 +15,23 @@ export default function columnBam({
   requirementsStatus, 
   setRequirementStatus 
 }: ColumnBamParams) {
+  const tc = useTranslations('common');
   const handleCheckboxChange = (requirementId: string, status: 'meets' | 'not_meets' | 'not_exists') => {
     setRequirementStatus(requirementId, status);
   };
   const column: TableColumnsType<any> = [
     {
-      title: 'No.',
+      title: tc('label-no'),
       dataIndex: 'requirement_id',
       key: 'u-requirement_id',
       width: 80,
       render: (value: any, record: any, index: number) => {
-        // Menghitung nomor berdasarkan halaman saat ini dan indeks baris
         const rowNumber = (currentPage - 1) * 10 + index + 1;
         return rowNumber;
       }
     },
     {
-      title: 'Bukti Administratif',
+      title: tc('label-administratif'),
       dataIndex: 'requirement_name',
       key: 'u-requirement_name',
       render: (value: any) => {
@@ -39,19 +40,19 @@ export default function columnBam({
       },
     },
     {
-      title: 'File',
+      title: tc('label-file'),
       dataIndex: 'requirement_id',
       key: 'u-requirement_id',
       render: (value: any) => {
-        if (value) return <Button icon={<UploadOutlined />} onClick={() => handleAttachment(value)}>Lampiran File</Button>;
+        if (value) return <Button icon={<UploadOutlined />} onClick={() => handleAttachment(value)}>{tc('btn-lampiran-file')}</Button>;
         return '-';
       },
     },
     {
-      title: 'Ada',
+      title: tc('label-ada'),
       children: [
         {
-            title: 'Memenuhi Syarat',
+            title: tc('label-memenuhi-syarat'),
             dataIndex: 'requirement_id',
             width: 180,
             key: 'u-requirement_id_meets',
@@ -67,7 +68,7 @@ export default function columnBam({
             },
         },
         {
-            title: 'Tidak Memenuhi Syarat',
+            title: tc('label-tidak-memenuhi-syarat'),
             dataIndex: 'requirement_id',
             width: 210,
             key: 'u-requirement_id_not_meets',
@@ -85,7 +86,7 @@ export default function columnBam({
       ]
     },
     {
-      title: 'Tidak Ada',
+      title: tc('label-tidak-ada'),
       dataIndex: 'requirement_id',
       width: 120,
       key: 'u-requirement_id_not_exists',

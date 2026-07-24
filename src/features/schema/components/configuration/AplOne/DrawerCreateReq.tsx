@@ -1,10 +1,12 @@
 'use client';
 
+import { useRequiredRule } from "@/i18n/validation";
 import Tiptap from "@/components/tiptap";
 import { useConfigurationEformContext } from "@/context/ConfigurationEform";
 import { usePost, usePut } from "@/hooks/useMutate";
 import { notification } from "@/service/antdStatic";
 import { Button, Drawer, Form, InputNumber, Radio } from "antd";
+import { useTranslations } from 'next-intl';
 import { useEffect, useMemo } from "react";
 
 interface RequirementMasterData {
@@ -17,6 +19,10 @@ interface RequirementMasterData {
 export default function DrawerCreateReq({ open, close, data, type = "BAM" }: { open: boolean; close(): void; data?: RequirementMasterData, type?: string }) {
   const [form] = Form.useForm();
   const { schema } = useConfigurationEformContext()
+  const t = useTranslations('form');
+  const tc = useTranslations('common');
+  const tm = useTranslations('message');
+  const req = useRequiredRule();
   const fReqName = Form.useWatch('requirement_name', form);
 
   const isEdit = useMemo(() => {
@@ -32,15 +38,15 @@ export default function DrawerCreateReq({ open, close, data, type = "BAM" }: { o
     onSuccess: () => {
       form.resetFields()
       notification.success({
-        message: 'Data berhasil dibuat',
+        message: tm('success-create'),
         className: 'cnotif csuccess'
       })
       close()
     },
     onError: (error: unknown) => {
       notification.error({
-        message: 'Gagal menyimpan data',
-        description: (error as { message?: string })?.message || 'Terjadi kesalahan',
+        message: tm('failed-create'),
+        description: (error as { message?: string })?.message || tm('terjadi-kesalahan'),
       })
     },
   })
@@ -50,15 +56,15 @@ export default function DrawerCreateReq({ open, close, data, type = "BAM" }: { o
     onSuccess: () => {
       form.resetFields()
       notification.success({
-        message: 'Data berhasil diubah',
+        message: tm('success-update'),
         className: 'cnotif csuccess'
       })
       close()
     },
     onError: (error: unknown) => {
       notification.error({
-        message: 'Gagal memperbarui data',
-        description: (error as { message?: string })?.message || 'Terjadi kesalahan',
+        message: tm('failed-update'),
+        description: (error as { message?: string })?.message || tm('terjadi-kesalahan'),
       })
     },
   })
@@ -101,14 +107,14 @@ export default function DrawerCreateReq({ open, close, data, type = "BAM" }: { o
 
   return (
     <Drawer
-      title={`Tambah ${type === 'BAM' ? 'Bukti Administratif' : 'Persyaratan Dasar'}`}
+      title={tc('btn-tambah-data')}
       open={open}
       onClose={close}
       size={500}
       destroyOnHidden
       footer={
         <Button type="primary" onClick={form.submit} loading={isPending} disabled={isPending}>
-          Simpan
+          {tc('btn-simpan')}
         </Button>
       }
     >
@@ -119,18 +125,18 @@ export default function DrawerCreateReq({ open, close, data, type = "BAM" }: { o
           form={form}
           formItemProps={{
             required: true,
-            label: 'Nama Dokumen',
+            label: t('document-name'),
             name: 'requirement_name',
-            rules: [{ required: true, message: 'Nama Dokumen wajib diisi' }],
+            rules: [req('document-name')],
           }}
         />
-        <Form.Item label="Mandatory" name="is_required" initialValue={false}>
+        <Form.Item label={t('mandatory')} name="is_required" initialValue={false}>
           <Radio.Group>
-            <Radio value={true}>Ya</Radio>
-            <Radio value={false}>Tidak</Radio>
+            <Radio value={true}>{t('label-yes')}</Radio>
+            <Radio value={false}>{t('label-no')}</Radio>
           </Radio.Group>
         </Form.Item>
-        <Form.Item label="Urutan" name="sequence" initialValue={0}>
+        <Form.Item label={t('sequence')} name="sequence" initialValue={0}>
           <InputNumber min={0} className="w-full" />
         </Form.Item>
       </Form>

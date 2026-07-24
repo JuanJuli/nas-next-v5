@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import TitlePage from "@/components/title_page/TitlePage";
 import { FormSchemaContext } from "@/context/FormSchema";
 import FormAssessmentTools from "@/features/schema/components/FormAssessmentTools";
@@ -13,6 +14,7 @@ import { Form, Steps, theme } from "antd";
 import { useCallback, useMemo, useState } from "react";
 
 export default function Page() {
+  const t = useTranslations('common');
   const [currentStep, setCurrentStep] = useState(0);
   const [openImportSchema, setOpenImportSchema] = useState(false);
   const [form] = Form.useForm();
@@ -87,12 +89,12 @@ export default function Page() {
   return (
     <>
       <TitlePage
-        title="Form Skema Sertifikasi"
+        title={t('form-skema-sertifikasi')}
         handleBack={handleBack}
         actions={[
           {
             key: 'import',
-            label: 'Import Skema Sertifikasi',
+            label: t('btn-import-skema'),
             onClick: handleImportSchema,
             icon: <UploadOutlined />,
           }
@@ -107,9 +109,9 @@ export default function Page() {
             current={currentStep}
             onChange={handleStepChange}
             items={[
-              { title: 'Data Skema Sertifikasi', status: stepStatuses[0] },
-              { title: 'Data Kelompok Kerja', status: stepStatuses[1] },
-              { title: 'Perangkat Asesmen & MUK', status: stepStatuses[2] },
+              { title: t('data-skema-sertifikasi'), status: stepStatuses[0] },
+              { title: t('data-kelompok-kerja'), status: stepStatuses[1] },
+              { title: t('perangkat-asesmen-muk'), status: stepStatuses[2] },
             ]}
           />
         </div>

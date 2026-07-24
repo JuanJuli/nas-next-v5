@@ -12,6 +12,7 @@ export default function columns({
   handleAppeal,
   handleDocumentAsesmen,
   handleSupDocumentApl,
+  t,
 }: {
   handleLinkVirtual(data: any): void;
   handleReq(id: string): void;
@@ -19,30 +20,31 @@ export default function columns({
   handleAppeal(id: string, assessmentID: string): void;
   handleDocumentAsesmen(assessmentID: string, aaID: string): void;
   handleSupDocumentApl(id: string, activityState: string): void;
+  t: (key: string) => string;
 }) {
   const column: TableColumnsType<any> = [
     {
-      title: 'Asesmen',
+      title: t('asesmen'),
       dataIndex: 'title',
       key: 'u-title',
     },
     {
-      title: 'Skema Sertifikasi',
+      title: t('skema-sertifikasi'),
       dataIndex: 'schema_name',
       key: 'name-schema',
     },
     {
-      title: 'TUK',
+      title: t('tuk'),
       dataIndex: 'tuk_name',
       key: 'tuk-name',
     },
     {
-      title: 'Alamat',
+      title: t('alamat'),
       dataIndex: 'address',
       key: 'u-address',
     },
     {
-      title: 'Tanggal Asesmen',
+      title: t('tanggal-asesmen'),
       dataIndex: 'start_date',
       key: 'u-start-date',
       render: value => {
@@ -52,7 +54,7 @@ export default function columns({
       },
     },
     {
-      title: 'Link Virtual Meeting',
+      title: t('btn-link-virtual'),
       dataIndex: 'link_assessment',
       key: 'u-link-virtual',
       width: 200,
@@ -84,13 +86,13 @@ export default function columns({
 
         return (
           <Button onClick={() => handleLinkVirtual(dataLink)} icon={<LinkOutlined style={{ fontSize: '16px' }} />}>
-            Link Virtual Meeting
+            {t('btn-link-virtual')}
           </Button>
         );
       },
     },
     {
-      title: 'Asesor',
+      title: t('asesor'),
       dataIndex: 'assessment_applicant',
       key: 'u-assessor_name',
       render: (value: any, record: any) => {
@@ -101,21 +103,21 @@ export default function columns({
       },
     },
     {
-      title: 'Jenis Bukti',
+      title: t('jenis-bukti'),
       dataIndex: 'assessment_applicant',
       key: 'u-test_method',
       render: value => {
         if (!value) return '-';
 
         if (value.test_method) {
-          return value.test_method === 'portfolio' ? 'Tidak Langsung' : 'Langsung';
+          return value.test_method === 'portfolio' ? t('indirect') : t('direct');
         }
 
         return '-';
       },
     },
     {
-      title: 'Rekomendasi',
+      title: t('rekomendasi'),
       dataIndex: 'assessment_applicant',
       key: 'u-status_recomendation',
       render: (value: any) => {
@@ -133,7 +135,7 @@ export default function columns({
                 size="small"
                 icon={<ReadOutlined />}
               >
-                Lihat Catatan
+                {t('btn-lihat-catatan')}
               </Button>
             </Space>
           );
@@ -143,7 +145,7 @@ export default function columns({
       },
     },
     {
-      title: 'Status',
+      title: t('status'),
       dataIndex: 'assessment_applicant',
       key: 'u-status_graduation',
       render: (value: any) => {
@@ -160,7 +162,7 @@ export default function columns({
                 size="small"
                 icon={<ReadOutlined />}
               >
-                Lihat Catatan
+                {t('btn-lihat-catatan')}
               </Button>
             </Space>
           );
@@ -170,7 +172,7 @@ export default function columns({
       },
     },
     {
-      title: 'Status Asesmen',
+      title: t('status-asesmen'),
       dataIndex: 'last_activity_state',
       key: 'u-last-activity-state',
       width: '190px',
@@ -187,7 +189,7 @@ export default function columns({
                 size="small"
                 icon={<ReadOutlined />}
               >
-                Lihat Catatan
+                {t('btn-lihat-catatan')}
               </Button>
             )}
           </Space>
@@ -195,7 +197,7 @@ export default function columns({
       },
     },
     {
-      title: 'Aksi',
+      title: t('aksi'),
       dataIndex: 'assessment_applicant',
       key: 'action',
       width: '270px',
@@ -216,22 +218,22 @@ export default function columns({
 
         return (
           <Space>
-            <Tooltip placement="bottom" title="Surat Asesmen">
+            <Tooltip placement="bottom" title={t('title-surat-asesmen')}>
               <Button
                 type="primary"
                 onClick={() => handleDocumentAsesmen(record.assessment_id, value.assessment_applicant_id)}
                 icon={<FileTextOutlined style={{ fontSize: '16px' }} />}
               />
             </Tooltip>
-            <Tooltip placement="bottom" title="Berkas Asesi">
+            <Tooltip placement="bottom" title={t('title-berkas-asesi')}>
               <Button type="primary" onClick={() => handleReq(value.assessment_applicant_id)} icon={<FolderOutlined style={{ fontSize: '16px' }} />} />
             </Tooltip>
             {canAppeal && (
               <Button type="primary" onClick={() => handleAppeal(value.assessment_applicant_id, record.assessment_id)}>
-                Ajukan Banding
+                {t('btn-ajukan-banding')}
               </Button>
             )}
-            <Tooltip placement="bottom" title="Dokumen Pendukung">
+            <Tooltip placement="bottom" title={t('title-dokumen-pendukung')}>
               <Button
                 type="primary"
                 onClick={() => handleSupDocumentApl(value.assessment_applicant_id, record.last_activity_state)}

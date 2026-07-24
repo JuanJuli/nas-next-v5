@@ -5,8 +5,10 @@ import { useTableQuery } from "@/hooks/useTableQuery";
 import { Card, Space } from "antd";
 import { useRouter } from "@/i18n/navigation";
 import { useEffect, useMemo } from "react";
+import { useTranslations } from 'next-intl';
 
 export default function RequirementList() {
+  const t = useTranslations('common');
   const router = useRouter();
   const { schemaId, applicantId } = useRequirementListContext();
 
@@ -39,11 +41,10 @@ export default function RequirementList() {
   }
 
   return (
-    <Card title="Persyaratan"  style={{ width: '100%' }}>
+    <Card title={t('persyaratan')}  style={{ width: '100%' }}>
       <Space>
         {listRequirement.length === 0 && (
-          // show no data if list requirement is empty
-          <div className="text-center text-gray-500">Tidak ada persyaratan</div>
+          <div className="text-center text-gray-500">{t('empty-data')}</div>
         )}
         {listRequirement.map((requirement: any) => {
           return (

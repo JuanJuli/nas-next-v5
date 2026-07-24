@@ -17,8 +17,11 @@ import { htmlToPlainText } from "@/helper/stringHtml";
 import { message } from "@/service/antdStatic";
 import { authFetch } from "@/utils/authFetch";
 import QRCode from 'qrcode';
+import { useTranslations } from 'next-intl';
 
 export default function Apl2() {
+  const t = useTranslations('common');
+  const tm = useTranslations('message');
   const router = useRouter();
   const { requirement:requirementData } = useRequirementContext();
   const { partTwo, lastPart } = useEformApl2Store();
@@ -43,7 +46,7 @@ export default function Apl2() {
       schema_id: requirementData?.schema_id,
       requirement_category: "KOMPETENSI",
       applicant_id: requirementData?.applicant_id,
-      limit: 1000, // Ambil banyak data sekaligus untuk memudahkan mapping
+      limit: 1000,
     },
     {},
     !!requirementData?.schema_id && !!requirementData?.applicant_id
@@ -143,7 +146,7 @@ export default function Apl2() {
         ...bagian1,
         ...bagian2,
         ...bagian3,
-        template: "FR.APL.02 Template", // Nama template yang akan digunakan untuk generate PDF
+        template: "FR.APL.02 Template",
       };
 
       console.log('Preview Eform APL2 Payload:', payload);
@@ -169,7 +172,7 @@ export default function Apl2() {
       setIsLoading(false);
     } catch (error) {
       console.error('Error generating PDF:', error);
-      message.error('Gagal membuat preview PDF');
+      message.error(tm('failed-preview'));
       setIsLoading(false);
     }
   }
@@ -181,14 +184,14 @@ export default function Apl2() {
   const titleAction: TitleAction[] = [
     {
       key: 'preview',
-      label: 'Preview  Form',
+      label: t('btn-preview-form'),
       icon: <EyeOutlined />,
       onClick: previewEform,
     }
   ]
   return (
     <>
-      <TitlePage title={requirementData?.requirement_name ?? "Persyaratan"} handleBack={handleBack} actions={titleAction} />
+      <TitlePage title={requirementData?.requirement_name ?? t('persyaratan')} handleBack={handleBack} actions={titleAction} />
       <Space orientation="vertical" size="large" className="w-full p-6">
         <PartOne />
         <PartTwo />

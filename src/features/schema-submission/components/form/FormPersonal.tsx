@@ -2,18 +2,22 @@
 
 import { Divider, Form, Input, Select, DatePicker, Row, Col } from 'antd'
 import { useState } from 'react'
+import { useTranslations } from 'next-intl'
+import { useRequiredRule } from '@/i18n/validation'
 
 const { Option } = Select
 const { TextArea } = Input
 
 export default function FormPersonalRequirement() {
+  const t = useTranslations('form')
+  const tc = useTranslations('common')
+  const req = useRequiredRule()
   const [form] = Form.useForm()
   const [isPekerjaan, setIsPekerjaan] = useState(false)
 
   const handlePekerjaanChange = (value: string) => {
     setIsPekerjaan(value !== 'belum_bekerja')
     if (value === 'belum_bekerja') {
-      // Reset field pekerjaan jika memilih belum bekerja
       form.setFieldsValue({
         institusi: undefined,
         jabatan: undefined,
@@ -27,7 +31,6 @@ export default function FormPersonalRequirement() {
 
   const handleSubmit = (values: any) => {
     console.log('Form values:', values)
-    // Handle submit logic here
   }
 
   return (
@@ -38,29 +41,29 @@ export default function FormPersonalRequirement() {
         onFinish={handleSubmit}
         autoComplete="off"
       >
-        <Divider titlePlacement="left">Data Pribadi</Divider>
+        <Divider titlePlacement="left">{tc('heading-bagian-1')}</Divider>
         
         <Row gutter={16}>
           <Col xs={24} md={12}>
             <Form.Item
-              label="Nama Lengkap"
+              label={t('full-name')}
               name="nama"
-              rules={[{ required: true, message: 'Nama lengkap wajib diisi' }]}
+              rules={[req('full-name')]}
             >
-              <Input placeholder="Masukkan nama lengkap" />
+              <Input placeholder={t('placeholder-full-name')} />
             </Form.Item>
           </Col>
 
           <Col xs={24} md={12}>
             <Form.Item
-              label="NIK"
+              label={t('nik')}
               name="nik"
               rules={[
-                { required: true, message: 'NIK wajib diisi' },
-                { pattern: /^\d{16}$/, message: 'NIK harus 16 digit angka' }
+                { required: true, message: t('nik-required') },
+                { pattern: /^\d{16}$/, message: t('nik-digit') }
               ]}
             >
-              <Input placeholder="Masukkan NIK" maxLength={16} />
+              <Input placeholder={t('placeholder-nik')} maxLength={16} />
             </Form.Item>
           </Col>
         </Row>
@@ -68,13 +71,13 @@ export default function FormPersonalRequirement() {
         <Row gutter={16}>
           <Col xs={24} md={12}>
             <Form.Item
-              label="Tanggal Lahir"
+              label={t('birth-date')}
               name="tanggal_lahir"
-              rules={[{ required: true, message: 'Tanggal lahir wajib diisi' }]}
+              rules={[req('birth-date')]}
             >
               <DatePicker 
                 className="w-full" 
-                placeholder="Pilih tanggal lahir"
+                placeholder={t('placeholder-birth-date')}
                 format="DD/MM/YYYY"
               />
             </Form.Item>
@@ -82,13 +85,13 @@ export default function FormPersonalRequirement() {
 
           <Col xs={24} md={12}>
             <Form.Item
-              label="Jenis Kelamin"
+              label={t('gender')}
               name="jenis_kelamin"
-              rules={[{ required: true, message: 'Jenis kelamin wajib diisi' }]}
+              rules={[req('gender')]}
             >
-              <Select placeholder="Pilih jenis kelamin">
-                <Option value="laki-laki">Laki-laki</Option>
-                <Option value="perempuan">Perempuan</Option>
+              <Select placeholder={t('placeholder-select-gender')}>
+                <Option value="laki-laki">{t('label-male')}</Option>
+                <Option value="perempuan">{t('label-female')}</Option>
               </Select>
             </Form.Item>
           </Col>
@@ -97,27 +100,27 @@ export default function FormPersonalRequirement() {
         <Row gutter={16}>
           <Col xs={24} md={12}>
             <Form.Item
-              label="Kebangsaan"
+              label={t('nationality')}
               name="kebangsaan"
-              rules={[{ required: true, message: 'Kebangsaan wajib diisi' }]}
+              rules={[req('nationality')]}
             >
-              <Select placeholder="Pilih kebangsaan">
-                <Option value="WNI">WNI</Option>
-                <Option value="WNA">WNA</Option>
+              <Select placeholder={t('placeholder-select-nationality')}>
+                <Option value="WNI">{t('label-wni')}</Option>
+                <Option value="WNA">{t('label-wna')}</Option>
               </Select>
             </Form.Item>
           </Col>
 
           <Col xs={24} md={12}>
             <Form.Item
-              label="Kontak (No. HP)"
+              label={t('label-contact')}
               name="kontak"
               rules={[
-                { required: true, message: 'Kontak wajib diisi' },
-                { pattern: /^[0-9]{10,13}$/, message: 'Nomor HP harus 10-13 digit' }
+                { required: true, message: t('field-required', { field: t('label-contact') }) },
+                { pattern: /^[0-9]{10,13}$/, message: t('phone-digit') }
               ]}
             >
-              <Input placeholder="Masukkan nomor HP" />
+              <Input placeholder={t('placeholder-phone')} />
             </Form.Item>
           </Col>
         </Row>
@@ -125,12 +128,12 @@ export default function FormPersonalRequirement() {
         <Row gutter={16}>
           <Col xs={24} md={18}>
             <Form.Item
-              label="Alamat"
+              label={t('address')}
               name="alamat"
-              rules={[{ required: true, message: 'Alamat wajib diisi' }]}
+              rules={[req('address')]}
             >
               <TextArea 
-                placeholder="Masukkan alamat lengkap" 
+                placeholder={t('placeholder-address')} 
                 rows={3}
               />
             </Form.Item>
@@ -138,56 +141,56 @@ export default function FormPersonalRequirement() {
 
           <Col xs={24} md={6}>
             <Form.Item
-              label="Kode Pos"
+              label={t('postal-code')}
               name="kode_pos"
               rules={[
-                { required: true, message: 'Kode pos wajib diisi' },
-                { pattern: /^\d{5}$/, message: 'Kode pos harus 5 digit' }
+                { required: true, message: t('field-required', { field: t('postal-code') }) },
+                { pattern: /^\d{5}$/, message: t('postal-code-digit') }
               ]}
             >
-              <Input placeholder="Kode pos" maxLength={5} />
+              <Input placeholder={t('placeholder-postal-code')} maxLength={5} />
             </Form.Item>
           </Col>
         </Row>
 
-        <Divider titlePlacement="left">Detail Pendidikan</Divider>
+        <Divider titlePlacement="left">{t('label-education-detail')}</Divider>
         
         <Row gutter={16}>
           <Col xs={24} md={12}>
             <Form.Item
-              label="Pendidikan Terakhir"
+              label={t('label-last-education')}
               name="pendidikan"
-              rules={[{ required: true, message: 'Pendidikan terakhir wajib diisi' }]}
+              rules={[req('label-last-education')]}
             >
-              <Select placeholder="Pilih pendidikan terakhir">
-                <Option value="SMA/Sederajat">SMA/Sederajat</Option>
-                <Option value="D3">D3</Option>
-                <Option value="S1">S1</Option>
-                <Option value="S2">S2</Option>
-                <Option value="S3">S3</Option>
+              <Select placeholder={t('placeholder-select-education')}>
+                <Option value="SMA/Sederajat">{t('label-sma')}</Option>
+                <Option value="D3">{t('label-d3')}</Option>
+                <Option value="S1">{t('label-s1')}</Option>
+                <Option value="S2">{t('label-s2')}</Option>
+                <Option value="S3">{t('label-s3')}</Option>
               </Select>
             </Form.Item>
           </Col>
         </Row>
 
-        <Divider titlePlacement="left">Detail Pekerjaan</Divider>
+        <Divider titlePlacement="left">{t('label-employment-detail')}</Divider>
         
         <Row gutter={16}>
           <Col xs={24} md={12}>
             <Form.Item
-              label="Status Pekerjaan"
+              label={t('label-employment-status')}
               name="pekerjaan"
-              rules={[{ required: true, message: 'Status pekerjaan wajib diisi' }]}
+              rules={[req('label-employment-status')]}
             >
               <Select 
-                placeholder="Pilih status pekerjaan"
+                placeholder={t('placeholder-select-employment')}
                 onChange={handlePekerjaanChange}
               >
-                <Option value="belum_bekerja">Belum Bekerja</Option>
-                <Option value="pegawai_swasta">Pegawai Swasta</Option>
-                <Option value="pegawai_negeri">Pegawai Negeri</Option>
-                <Option value="wiraswasta">Wiraswasta</Option>
-                <Option value="lainnya">Lainnya</Option>
+                <Option value="belum_bekerja">{t('label-not-working')}</Option>
+                <Option value="pegawai_swasta">{t('label-private-employee')}</Option>
+                <Option value="pegawai_negeri">{t('label-civil-servant')}</Option>
+                <Option value="wiraswasta">{t('label-entrepreneur')}</Option>
+                <Option value="lainnya">{t('label-other')}</Option>
               </Select>
             </Form.Item>
           </Col>
@@ -198,21 +201,21 @@ export default function FormPersonalRequirement() {
             <Row gutter={16}>
               <Col xs={24} md={12}>
                 <Form.Item
-                  label="Nama Institusi"
+                  label={t('institution-name')}
                   name="institusi"
-                  rules={[{ required: true, message: 'Nama institusi wajib diisi' }]}
+                  rules={[req('institution-name')]}
                 >
-                  <Input placeholder="Masukkan nama institusi" />
+                  <Input placeholder={t('placeholder-institution')} />
                 </Form.Item>
               </Col>
 
               <Col xs={24} md={12}>
                 <Form.Item
-                  label="Jabatan"
+                  label={t('position')}
                   name="jabatan"
-                  rules={[{ required: true, message: 'Jabatan wajib diisi' }]}
+                  rules={[req('position')]}
                 >
-                  <Input placeholder="Masukkan jabatan" />
+                  <Input placeholder={t('placeholder-position')} />
                 </Form.Item>
               </Col>
             </Row>
@@ -220,11 +223,11 @@ export default function FormPersonalRequirement() {
             <Row gutter={16}>
               <Col xs={24} md={12}>
                 <Form.Item
-                  label="Email Pekerjaan"
+                  label={t('label-institution-email')}
                   name="email_pekerjaan"
                   rules={[
-                    { required: true, message: 'Email pekerjaan wajib diisi' },
-                    { type: 'email', message: 'Format email tidak valid' }
+                    { required: true, message: t('field-required', { field: t('label-institution-email') }) },
+                    { type: 'email', message: t('email-invalid') }
                   ]}
                 >
                   <Input placeholder="email@perusahaan.com" />
@@ -233,14 +236,14 @@ export default function FormPersonalRequirement() {
 
               <Col xs={24} md={12}>
                 <Form.Item
-                  label="Kontak Institusi"
+                  label={t('label-office-contact')}
                   name="kontak_institusi"
                   rules={[
-                    { required: true, message: 'Kontak institusi wajib diisi' },
-                    { pattern: /^[0-9]{10,13}$/, message: 'Nomor telepon harus 10-13 digit' }
+                    { required: true, message: t('field-required', { field: t('label-office-contact') }) },
+                    { pattern: /^[0-9]{10,13}$/, message: t('phone-digit') }
                   ]}
                 >
-                  <Input placeholder="Masukkan nomor telepon institusi" />
+                  <Input placeholder={t('placeholder-phone')} />
                 </Form.Item>
               </Col>
             </Row>
@@ -248,12 +251,12 @@ export default function FormPersonalRequirement() {
             <Row gutter={16}>
               <Col xs={24} md={18}>
                 <Form.Item
-                  label="Alamat Institusi"
+                  label={t('label-institution-address')}
                   name="alamat_institusi"
-                  rules={[{ required: true, message: 'Alamat institusi wajib diisi' }]}
+                  rules={[req('label-institution-address')]}
                 >
                   <TextArea 
-                    placeholder="Masukkan alamat institusi" 
+                    placeholder={t('placeholder-office-address')} 
                     rows={3}
                   />
                 </Form.Item>
@@ -261,30 +264,30 @@ export default function FormPersonalRequirement() {
 
               <Col xs={24} md={6}>
                 <Form.Item
-                  label="Kode Pos Institusi"
+                  label={t('label-institution-postal-code')}
                   name="kode_pos_pekerjaan"
                   rules={[
-                    { required: true, message: 'Kode pos wajib diisi' },
-                    { pattern: /^\d{5}$/, message: 'Kode pos harus 5 digit' }
+                    { required: true, message: t('field-required', { field: t('label-institution-postal-code') }) },
+                    { pattern: /^\d{5}$/, message: t('postal-code-digit') }
                   ]}
                 >
-                  <Input placeholder="Kode pos" maxLength={5} />
+                  <Input placeholder={t('placeholder-office-postal-code')} maxLength={5} />
                 </Form.Item>
               </Col>
             </Row>
           </>
         )}
 
-        <Divider titlePlacement="left">Lainnya</Divider>
+        <Divider titlePlacement="left">{t('label-lainnya')}</Divider>
         
         <Row gutter={16}>
           <Col xs={24} md={12}>
             <Form.Item
-              label="Tempat Uji Kompetensi (TUK)"
+              label={t('label-workplace')}
               name="tuk"
-              rules={[{ required: true, message: 'TUK wajib dipilih' }]}
+              rules={[req('label-workplace')]}
             >
-              <Select placeholder="Pilih TUK">
+              <Select placeholder={t('placeholder-select-tuk')}>
                 <Option value="tuk_1">TUK 1 - Jakarta Pusat</Option>
                 <Option value="tuk_2">TUK 2 - Bandung</Option>
                 <Option value="tuk_3">TUK 3 - Surabaya</Option>

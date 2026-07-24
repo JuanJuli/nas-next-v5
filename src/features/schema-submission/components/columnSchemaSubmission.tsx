@@ -4,6 +4,7 @@ import ActionButtonTable from '@/components/button/ActionButton';
 import { EditOutlined, ReadOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import BadgeJoinRequest from '@/components/badge/JoinRequest';
+import { useTranslations } from 'next-intl';
 
 export default function columnSchemaSubmission({
   handleDetail,
@@ -14,9 +15,10 @@ export default function columnSchemaSubmission({
   handleRevise(id: string): void;
   openNotes(log: any, type: string): void;
 }) {
+  const t = useTranslations('common');
   const column: TableColumnsType<any> = [
     {
-      title: 'Skema Sertifikasi',
+      title: t('skema-sertifikasi'),
       dataIndex: 'schema',
       key: 'schema',
       render: (value: any) => {
@@ -25,7 +27,7 @@ export default function columnSchemaSubmission({
       }, 
     },
     {
-      title: 'Tanggal Pengajuan',
+      title: t('label-tanggal-pengajuan'),
       dataIndex: 'created_date',
       key: 'created_date',
       render: (value: any) => {
@@ -34,7 +36,7 @@ export default function columnSchemaSubmission({
       },
     },
     {
-      title: 'Status',
+      title: t('status'),
       dataIndex: 'request_status',
       key: 'request_status',
       render: (value: any, record: any) => (
@@ -47,7 +49,7 @@ export default function columnSchemaSubmission({
               size="small"
               icon={<ReadOutlined />}
             >
-              Lihat Catatan
+              {t('btn-lihat-catatan')}
             </Button>
           )}
           {value === 'REJECTED' && record.join_request_logs && (
@@ -57,14 +59,14 @@ export default function columnSchemaSubmission({
               size="small"
               icon={<ReadOutlined />}
             >
-              Lihat Catatan
+              {t('btn-lihat-catatan')}
             </Button>
           )}
         </Space>
       ),
     },
     {
-      title: 'Aksi',
+      title: t('aksi'),
       dataIndex: 'join_request_id',
       key: 'join_request_id',
       width: '350px',
@@ -75,7 +77,7 @@ export default function columnSchemaSubmission({
           )}
           {(record.request_status === 'REVISE' || record.request_status === 'REVISION_REQUEST') && (
             <Button onClick={() => handleRevise(value)} type="primary" icon={<EditOutlined />}>
-              Ajukan Revisi
+              {t('btn-ajukan-revisi')}
             </Button>
           )}
         </Flex>

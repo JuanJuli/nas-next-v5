@@ -8,8 +8,10 @@ import { CloudUploadOutlined } from "@ant-design/icons";
 import { Flex, Modal, Space } from "antd";
 import Dragger from "antd/es/upload/Dragger";
 import { useEffect } from "react";
+import { useTranslations } from 'next-intl';
 
 export default function ModalAttachmentRequirement() {
+  const t = useTranslations('common');
   const { open, requirementID, setOpen, setRequirementID, setRequirementFiles, requirementFiles } = useModalAttachmentStore((state) => state)
 
   useEffect(() => {
@@ -65,8 +67,8 @@ export default function ModalAttachmentRequirement() {
   <Modal
     open={open}
     onCancel={() => setOpen(false)}
-    title="Lampiran File"
-    cancelText="Tutup"
+    title={t('btn-lampiran-file')}
+    cancelText={t('btn-tutup')}
     okButtonProps={{ className: 'hidden' }}
   >
     <Flex className="w-full mb-2">
@@ -74,8 +76,8 @@ export default function ModalAttachmentRequirement() {
         <p className="ant-upload-drag-icon mb-5">
           <CloudUploadOutlined />
         </p>
-        <p className="ant-upload-text mb-0 pb-0">Klik untuk Upload atau drag & drop</p>
-        <small className="mt-0 pt-0">jpg, jpeg, png (max 10mb)</small>
+        <p className="ant-upload-text mb-0 pb-0">{t('label-upload-click-drag')}</p>
+        <small className="mt-0 pt-0">{t('upload-hint')}</small>
       </Dragger>
     </Flex>
     <Space vertical className="w-full mt-3! mb-1!">

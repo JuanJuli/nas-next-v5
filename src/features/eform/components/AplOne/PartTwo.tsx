@@ -7,32 +7,33 @@ import { useMemo, useState } from "react";
 import columnUnitCompetence from "./ColumnUnitcompetence";
 import { useRequirementContext } from "@/context/Requirement";
 import { useEformApl1Store } from "@/store/eformApl1";
+import { useTranslations } from 'next-intl';
 
 export default function PartTwo() {
+  const t = useTranslations('form');
+  const tc = useTranslations('common');
   const [currentPage, setCurrentPage] = useState(1);
   const { requirement } = useRequirementContext();
   const { partTwo, setTujuanAsesmen } = useEformApl1Store();
 
   const itemSkemaData: DescriptionsProps['items'] = [
     {
-      label: 'Judul',
+      label: t('label-judul'),
       children: 'Teknisi Komputer',
     },
     {
-      label: 'Nomor',
+      label: t('label-nomor'),
       children: 'TK-002',
     }
   ]
 
   const handleTujuanAsesmenChange = (key: keyof typeof partTwo.tujuanAsesmen, checked: boolean) => {
     if (checked) {
-      // Uncheck all others, check only this one
       setTujuanAsesmen('sertifikasi', key === 'sertifikasi');
       setTujuanAsesmen('pkt', key === 'pkt');
       setTujuanAsesmen('rpl', key === 'rpl');
       setTujuanAsesmen('lainnya', key === 'lainnya');
     } else {
-      // Just uncheck this one
       setTujuanAsesmen(key, false);
     }
   }
@@ -40,29 +41,29 @@ export default function PartTwo() {
   const itemPurpose: DescriptionsProps['items'] = [
     {
       label: <Checkbox checked={partTwo.tujuanAsesmen.sertifikasi} onChange={(e) => handleTujuanAsesmenChange('sertifikasi', e.target.checked)} />,
-      children: 'Sertifikasi',
+      children: t('label-sertifikasi'),
     },
     {
       label: <Checkbox checked={partTwo.tujuanAsesmen.pkt} onChange={(e) => handleTujuanAsesmenChange('pkt', e.target.checked)} />,
-      children: 'Pengakuan Kompetensi Terkini (PKT)',
+      children: t('label-pkt'),
     },
     {
       label: <Checkbox checked={partTwo.tujuanAsesmen.rpl} onChange={(e) => handleTujuanAsesmenChange('rpl', e.target.checked)} />,
-      children: 'Rekognisi Pembelajaran Lampau (RPL)',
+      children: t('label-rpl'),
     },
     {
       label: <Checkbox checked={partTwo.tujuanAsesmen.lainnya} onChange={(e) => handleTujuanAsesmenChange('lainnya', e.target.checked)} />,
-      children: 'Lainnya',
+      children: t('label-lainnya'),
     }
   ]
 
   const itemSkema: DescriptionsProps['items'] = [
     {
-      label: 'Skema Sertifikasi (KKNI/Okupasi/Klaster)',
+      label: t('label-skema-sertifikasi'),
       children: <Descriptions items={itemSkemaData} colon column={1} className="w-full" styles={{ label: { width: '30%' } }} />,
     },
     {
-      label: 'Tujuan Asesmen',
+      label: t('label-tujuan-asesmen'),
       children: <Descriptions items={itemPurpose} colon={false} column={1} className="w-full" styles={{ label: { width: '5%' } }} />,
     },
   ]
@@ -77,15 +78,14 @@ export default function PartTwo() {
 
   return (
     <Card>
-      <h1 className="text-[2em]! font-bold">Bagian 2: Data Sertifikasi</h1>
-      <p className="mb-4">Tuliskan Judul dan Nomor Skema Sertifikasi yang anda ajukan berikut Daftar Unit Kompetensi sesuai kemasan pada skema sertifikasi untuk mendapatkan pengakuan sesuai dengan latar belakang pendidikan, pelatihan serta pengalaman kerja yang anda miliki.</p>
+      <h1 className="text-[2em]! font-bold">{t('heading-bagian-2')}</h1>
+      <p className="mb-4">{t('desc-bagian-2')}</p>
 
       <Descriptions
         items={itemSkema}
         colon={true}
         column={1} 
         className="w-full mt-4"
-        // make colon flex end and label width 30% and content width 70%
         styles={{
           label: { 
             width: '30%',
@@ -95,7 +95,7 @@ export default function PartTwo() {
         }}
       />
 
-      <p>Daftar Unit Kompetensi sesuai kemasan</p>
+      <p>{t('label-daftar-unit')}</p>
       <RegularTable
         url="core/competency_units"
         queryParams={

@@ -4,12 +4,10 @@ import {routing} from './routing';
 
 export default getRequestConfig(async ({requestLocale}) => {
   const requested = await requestLocale;
-  
+
   const locale = hasLocale(routing.locales, requested)
     ? requested
     : routing.defaultLocale;
-
-  
 
   const common = (
     await import(`../messages/${locale}/common.json`)
@@ -23,12 +21,17 @@ export default getRequestConfig(async ({requestLocale}) => {
     await import(`../messages/${locale}/message.json`)
   ).default;
 
+  const badge = (
+    await import(`../messages/${locale}/badge.json`)
+  ).default;
+
   return {
     locale: locale as string,
     messages: {
       common,
       form,
       message,
+      badge,
     }
   };
 });

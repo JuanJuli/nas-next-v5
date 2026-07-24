@@ -19,8 +19,11 @@ import { useRequirementContext } from "@/context/Requirement";
 import { useRouter } from "@/i18n/navigation";
 import { authFetch } from "@/utils/authFetch";
 import QRCode from 'qrcode';
+import { useTranslations } from 'next-intl';
 
 export default function Apl1() {
+  const t = useTranslations('common');
+  const tm = useTranslations('message');
   const router = useRouter();
   const { partTwo, partTree, lastPart } = useEformApl1Store();
   const { user } = useAuthStore();
@@ -226,7 +229,7 @@ export default function Apl1() {
       setIsLoading(false);
     } catch (error) {
       console.error('Error generating PDF:', error);
-      message.error('Gagal membuat preview PDF');
+      message.error(tm('failed-preview'));
       setIsLoading(false);
     }
   }
@@ -234,7 +237,7 @@ export default function Apl1() {
   const titleAction: TitleAction[] = [
     {
       key: 'preview',
-      label: 'Preview  Form',
+      label: t('btn-preview-form'),
       icon: <EyeOutlined />,
       onClick: previewEform,
     }
@@ -242,7 +245,7 @@ export default function Apl1() {
   
   return (
     <>
-      <TitlePage title={requirementData?.requirement_name ?? "Persyaratan"} handleBack={handleBack} actions={titleAction} />
+      <TitlePage title={requirementData?.requirement_name ?? t('persyaratan')} handleBack={handleBack} actions={titleAction} />
       <div className="p-6">
         <Space orientation="vertical" size="large" className="w-full">
           <PartOne />

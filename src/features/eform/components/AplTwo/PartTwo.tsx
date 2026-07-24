@@ -5,8 +5,11 @@ import { useTableQuery } from "@/hooks/useTableQuery";
 import { Space, Card } from "antd";
 import { useEffect, useMemo } from "react";
 import ListElement from "./ListElement";
+import { useTranslations } from 'next-intl';
 
 export default function PartTwo() {
+  const t = useTranslations('form');
+  const tc = useTranslations('common');
   const { requirement } = useRequirementContext();
 
   const schemaID = requirement?.schema_id;
@@ -27,23 +30,23 @@ export default function PartTwo() {
 
   return (
     <Space orientation="vertical" size="large" className="w-full">
-      {listData.length === 0 && <div className="text-center">Tidak ada unit kompetensi</div>}
+      {listData.length === 0 && <div className="text-center">{tc('empty-data')}</div>}
       {listData.map((item: any, index: number) => (
         <Card key={item.competency_unit_id}>
           <table className="w-full border-collapse mb-3">
             <tbody>
               <tr>
                 <td rowSpan={2} className="border border-gray-300 px-3 py-2 text-center align-middle font-bold" style={{ width: '35%' }}>
-                  Unit Kompetensi {index + 1}
+                  {t('label-unit-competency', { number: index + 1 })}
                 </td>
-                <td className="border border-gray-300 px-3 py-2" style={{ width: '15%' }}>Kode Unit</td>
+                <td className="border border-gray-300 px-3 py-2" style={{ width: '15%' }}>{t('unit-code')}</td>
                 <td className="border border-gray-300 px-3 py-2 text-center" style={{ width: '5%' }}>:</td>
                 <td className="border border-gray-300 px-3 py-2" style={{ width: '45%' }}>
                   {item.competency_unit_code ?? "-"}
                 </td>
               </tr>
               <tr>
-                <td className="border border-gray-300 px-3 py-2" style={{ width: '15%' }}>Judul Unit</td>
+                <td className="border border-gray-300 px-3 py-2" style={{ width: '15%' }}>{t('label-unit-title')}</td>
                 <td className="border border-gray-300 px-3 py-2 text-center" style={{ width: '5%' }}>:</td>
                 <td className="border border-gray-300 px-3 py-2" style={{ width: '45%' }}>
                   {item.competency_unit_name ?? "-"}

@@ -1,11 +1,15 @@
 'use client';
 
+import { useRequiredRule } from "@/i18n/validation";
 import { useFormSchemaContext } from "@/context/FormSchema";
 import { Form, Select } from "antd";
+import { useTranslations } from 'next-intl';
 import { useMemo } from "react";
 
 export default function SelectUcFormSchema({ number, parentNumber, restFields }: { number: number, parentNumber: number, restFields?: any }) {
   const { schema, formJobGroup } = useFormSchemaContext();
+  const t = useTranslations('form');
+  const req = useRequiredRule();
 
   const fUnitCompetency = Form.useWatch(['job_groups', parentNumber, 'unit_competencies'], formJobGroup);
 
@@ -33,10 +37,10 @@ export default function SelectUcFormSchema({ number, parentNumber, restFields }:
     <Form.Item
       {...restFields}
       name={[number, 'unit_competency_code']}
-      label="Nomor Unit Kompetensi"
-      rules={[{ required: true, message: 'Nomor Unit Kompetensi is required' }]}
+      label={t('unit-competency-code')}
+      rules={[req('unit-competency-code')]}
     >
-      <Select allowClear options={optionnUnitCompetency} placeholder="Select Unit Kompetensi" />
+      <Select allowClear options={optionnUnitCompetency} placeholder={t('placeholder-select-unit')} />
     </Form.Item>
   )
 }

@@ -1,0 +1,11 @@
+{
+    "applicant-not-competent": "Belum Kompeten",
+    "applicant-competent": "Kompeten",
+    "applicant-reset": "Reset",
+    "join-rejected": "Ditolak",
+    "join-revised": "Direvisi",
+    "join-waiting-approval": "Menunggu Persetujuan",
+    "join-revised-assessor": "Direvisi Asesor",
+    "join-revision-submitted": "Pengajuan Revisi",
+    "join-approved": "Disetujui Admin"
+}

@@ -7,6 +7,7 @@ import { useState, useEffect, useRef } from "react"
 import { LeftOutlined, RightOutlined } from "@ant-design/icons"
 import { getOffset } from "@/helper/urlQuery"
 import Search from "antd/es/input/Search"
+import { useTranslations } from 'next-intl'
 
 export default function RegularTable({
   url,
@@ -22,6 +23,7 @@ export default function RegularTable({
   onChangeParams,
   actionBtn,
 }: any) {
+  const t = useTranslations('common')
   const [params, setParams] = useState({
     limit: 10,
     offset: 0,
@@ -76,7 +78,7 @@ export default function RegularTable({
       {search && (
         <Search
           value={searchValue}
-          placeholder="Search..."
+          placeholder={t('search-placeholder')}
           onChange={(e) => setSearchValue(e.target.value)}
           style={{ marginBottom: 16, width: 300 }}
         />
@@ -103,12 +105,12 @@ export default function RegularTable({
           pageSize: params.limit,
           total: data?.count || 0,
           showSizeChanger: true,
-          showTotal: (total: number, range: [number, number]) => `${range[0]}-${range[1]} dari ${total} data`,
+          showTotal: (total: number, range: [number, number]) => t('pagination-of', { a: range[0], b: range[1], total }),
           itemRender: (currentPage, type, originalElement) => {
             if (type === 'prev') {
               return (
                 <Button className="mx-1" icon={<LeftOutlined />}>
-                  Sebelumnya
+                  {t('pagination-prev')}
                 </Button>
               );
             }
@@ -119,7 +121,7 @@ export default function RegularTable({
                   className="mx-1 ml-3"
                   icon={<RightOutlined />}
                 >
-                  Berikutnya
+                  {t('pagination-next')}
                 </Button>
               );
             }

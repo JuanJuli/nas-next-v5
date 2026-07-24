@@ -7,6 +7,7 @@ import { useAuthStore } from '@/store/auth';
 import { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb';
 import { useRouter, Link } from '@/i18n/navigation';
 import { useEffect, useMemo } from 'react';
+import { useTranslations } from 'next-intl';
 
 export default function Submission({
   readOnly = false,
@@ -21,6 +22,7 @@ export default function Submission({
   schema_id?: string;
   detailJoinReq?: any;
 }) {
+  const t = useTranslations('common');
   const router = useRouter();
   const user = useAuthStore((s) => s.user);
   const roleCode = useAuthStore((s) => s.roleCode);
@@ -44,23 +46,23 @@ export default function Submission({
   const defaultBreadcrumb: BreadcrumbItemType[] = useMemo(() => {
     const breadcrumb = [
       {
-        title: <Link href="/scheme-submission">Pengajuan Skema Sertifikasi</Link>,
+        title: <Link href="/scheme-submission">{t('breadcrumb-pengajuan-skema')}</Link>,
       },
       {
-        title: <div className="text-color-default">Daftar Skema Sertifikasi</div>,
+        title: <div className="text-color-default">{t('breadcrumb-daftar-skema')}</div>,
       },
       {
-        title: <div className="text-color-default">Pengajuan Skema Sertifikasi</div>,
+        title: <div className="text-color-default">{t('breadcrumb-pengajuan-skema-sertifikasi')}</div>,
       },
     ];
     return breadcrumb;
-  }, []);
+  }, [t]);
 
 
   return (
     <>
       <TitlePage
-        title="Pengajuan Skema"
+        title={t('pengajuan-skema')}
         handleBack={handleBack}
         breadCrumb={defaultBreadcrumb}
       />

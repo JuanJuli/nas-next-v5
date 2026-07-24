@@ -1,5 +1,6 @@
 'use client';
 
+import { useTranslations } from 'next-intl';
 import CustomList from '@/components/table/CustomList';
 import TitlePage from '@/components/title_page/TitlePage'
 import renderSchemaItem from '@/features/schema/components/renderSchemaItem';
@@ -9,6 +10,8 @@ import { PlusOutlined } from '@ant-design/icons';
 import { useMemo } from 'react';
 
 export default function Page() {
+  const t = useTranslations('common');
+  const tf = useTranslations('form');
   const icon = useMenuIconByPath('/schema')
   const router = useRouter();
   const handleEdit = (id: string) => {
@@ -16,8 +19,8 @@ export default function Page() {
   }
 
   const renderItem = useMemo(() => {
-    return renderSchemaItem({ handleEdit })
-  }, []);
+    return renderSchemaItem({ handleEdit, tf, tc: t })
+  }, [t, tf]);
 
   const handleAdd = () => {
     router.push('/schema/form');
@@ -26,12 +29,12 @@ export default function Page() {
   return (
     <>
       <TitlePage
-        title="Skema Sertifikasi"
+        title={t('skema-sertifikasi')}
         icon={icon}
         actions={[
           {
             key: 'add',
-            label: 'Tambah Skema',
+            label: t('btn-tambah-skema'),
             type: 'primary',
             icon: <PlusOutlined />,
             onClick: () => handleAdd()

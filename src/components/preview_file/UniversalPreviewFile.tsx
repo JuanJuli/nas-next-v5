@@ -4,6 +4,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Modal, Button, Image } from 'antd';
 import { EyeOutlined, DeleteOutlined, FileOutlined, FilePdfOutlined, FileImageOutlined, FileWordOutlined, FileExcelOutlined, FilePptOutlined } from '@ant-design/icons';
 import dynamic from 'next/dynamic';
+import { useTranslations } from 'next-intl';
 
 // Dynamically import react-pdf components with no SSR
 const Document = dynamic(
@@ -38,6 +39,7 @@ const UniversalPreviewFile: React.FC<UniversalPreviewFileProps> = ({
   onDelete,
   view,
 }) => {
+  const t = useTranslations('common');
   const [previewVisible, setPreviewVisible] = useState(false);
   const [numPages, setNumPages] = useState<number>(0);
   const [pageNumber, setPageNumber] = useState<number>(1);
@@ -160,7 +162,7 @@ const UniversalPreviewFile: React.FC<UniversalPreviewFileProps> = ({
       
       case 'pdf':
         if (!isMounted) {
-          return <div className="text-center p-4">Loading PDF...</div>;
+          return <div className="text-center p-4">{t('loading-pdf')}</div>;
         }
         return (
           <div className="flex flex-col items-center">
@@ -169,24 +171,24 @@ const UniversalPreviewFile: React.FC<UniversalPreviewFileProps> = ({
                 onClick={() => setPageNumber(prev => Math.max(prev - 1, 1))}
                 disabled={pageNumber <= 1}
               >
-                Previous
+                {t('previous')}
               </Button>
               <span>
-                Page {pageNumber} of {numPages}
+                {t('page-of', { n: pageNumber, total: numPages })}
               </span>
               <Button
                 onClick={() => setPageNumber(prev => Math.min(prev + 1, numPages))}
                 disabled={pageNumber >= numPages}
               >
-                Next
+                {t('next')}
               </Button>
             </div>
             <div className="overflow-auto max-h-[60vh]">
               <Document
                 file={url}
                 onLoadSuccess={onDocumentLoadSuccess}
-                loading={<div className="text-center p-4">Loading PDF...</div>}
-                error={<div className="text-center p-4 text-red-500">Failed to load PDF</div>}
+                loading={<div className="text-center p-4">{t('loading-pdf')}</div>}
+                error={<div className="text-center p-4 text-red-500">{t('failed-load-pdf')}</div>}
               >
                 <Page pageNumber={pageNumber} />
               </Document>
@@ -208,9 +210,9 @@ const UniversalPreviewFile: React.FC<UniversalPreviewFileProps> = ({
       default:
         return (
           <div className="text-center p-8">
-            <p>Preview not available for this file type.</p>
+            <p>{t('preview-not-available')}</p>
             <a href={url} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-              Download File
+              {t('download-file')}
             </a>
           </div>
         );
@@ -241,7 +243,7 @@ const UniversalPreviewFile: React.FC<UniversalPreviewFileProps> = ({
               icon={<EyeOutlined />}
               onClick={handlePreview}
               className="hover:text-blue-500 hover:bg-blue-50"
-              title="Preview"
+              title={t('btn-preview')}
             />
             
             {onDelete && (
@@ -251,7 +253,7 @@ const UniversalPreviewFile: React.FC<UniversalPreviewFileProps> = ({
                 onClick={onDelete}
                 className="hover:text-red-500 hover:bg-red-50"
                 danger
-                title="Delete"
+                title={t('btn-delete')}
               />
             )}
           </div>

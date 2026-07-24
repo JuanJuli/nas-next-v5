@@ -1,38 +1,42 @@
 'use client';
 
+import { useRequiredRule } from "@/i18n/validation";
 import { useFormSchemaContext } from "@/context/FormSchema";
 import { DeleteOutlined, PlusOutlined } from "@ant-design/icons";
 import { Button, Card, Collapse, Col, Form, Input, Row, Select, CollapseProps, theme } from "antd";
+import { useTranslations } from 'next-intl';
 import React, { useMemo } from "react";
 
 function UnitCompetencyContent({ name }: { name: number; }) {
+  const t = useTranslations('form');
+  const req = useRequiredRule();
   console.log('cek name', name)
   return (
     <>
       <Row gutter={16} align="middle">
         <Col span={12}>
-          <Form.Item label="Kode Unit" name={[name, 'competency_unit_code']} rules={[{ required: true, message: 'Mohon masukkan kode unit kompetensi' }]}>
-            <Input placeholder="Masukkan kode unit kompetensi" />
+          <Form.Item label={t('unit-code')} name={[name, 'competency_unit_code']} rules={[req('unit-code')]}>
+            <Input placeholder={t('placeholder-unit-code')} />
           </Form.Item>
         </Col>
         <Col span={12}>
-          <Form.Item label="Nama Unit" name={[name, 'competency_unit_name']} rules={[{ required: true, message: 'Mohon masukkan nama unit kompetensi' }]}>
-            <Input placeholder="Masukkan nama unit kompetensi" />
+          <Form.Item label={t('unit-name')} name={[name, 'competency_unit_name']} rules={[req('unit-name')]}>
+            <Input placeholder={t('placeholder-unit-name')} />
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item label="Urutan" name={[name, 'sequence']} rules={[{ required: true, message: 'Mohon masukkan urutan unit kompetensi' }]}>
-            <Input placeholder="Masukkan urutan unit kompetensi" type="number" />
+          <Form.Item label={t('unit-sequence')} name={[name, 'sequence']} rules={[req('unit-sequence')]}>
+            <Input placeholder={t('placeholder-unit-sequence')} type="number" />
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item label="SKKNI / SKKK" name={[name, 'skk']} rules={[{ required: true, message: 'Mohon masukkan SKKNI / SKKK unit kompetensi' }]}>
-            <Input placeholder="Masukkan SKKNI / SKKK unit kompetensi" />
+          <Form.Item label={t('unit-skkni')} name={[name, 'skk']} rules={[req('unit-skkni')]}>
+            <Input placeholder={t('placeholder-unit-skkni')} />
           </Form.Item>
         </Col>
         <Col span={8}>
-          <Form.Item label="Tahun SKKNI / SKKK" name={[name, 'skk_year']} rules={[{ required: true, message: 'Mohon masukkan tahun SKKNI / SKKK unit kompetensi' }]}>
-            <Input placeholder="Masukkan tahun SKKNI / SKKK unit kompetensi" type="number" />
+          <Form.Item label={t('unit-skkni-year')} name={[name, 'skk_year']} rules={[req('unit-skkni-year')]}>
+            <Input placeholder={t('placeholder-unit-skkni-year')} type="number" />
           </Form.Item>
         </Col>
       </Row>
@@ -42,18 +46,18 @@ function UnitCompetencyContent({ name }: { name: number; }) {
             {aspectFields.map(({ key: aspectKey, name: aspectName, ...restAspectField }) => (
               <Row gutter={16} align="middle" key={aspectKey}>
                 <Col span={20}>
-                  <Form.Item {...restAspectField} label="Aspek Kritis" name={[aspectName, 'aspect']} rules={[{ required: true, message: 'Mohon masukkan aspek kritis' }]}>
-                    <Input placeholder="Masukkan aspek kritis" />
+                  <Form.Item {...restAspectField} label={t('critical-aspect')} name={[aspectName, 'aspect']} rules={[req('critical-aspect')]}>
+                    <Input placeholder={t('placeholder-critical-aspect')} />
                   </Form.Item>
                 </Col>
                 <Col span={4} className="flex justify-end">
-                  <Button danger onClick={() => removeAspect(aspectName)}>Remove</Button>
+                  <Button danger onClick={() => removeAspect(aspectName)}>{t('btn-remove')}</Button>
                 </Col>
               </Row>
             ))}
             <Form.Item className="ml-4">
               <Button type="dashed" onClick={() => addAspect()} className="w-full" icon={<PlusOutlined />}>
-                Add Aspek Kritis
+                {t('btn-add-aspect')}
               </Button>
             </Form.Item>
           </div>
@@ -66,17 +70,17 @@ function UnitCompetencyContent({ name }: { name: number; }) {
               <React.Fragment key={elementKey}>
                 <Row gutter={16} align="middle">
                   <Col span={10}>
-                    <Form.Item {...restElementField} label="Nomor Elemen" name={[elementName, 'element_code']} rules={[{ required: true, message: 'Mohon masukkan kode elemen kompetensi' }]}>
-                      <Input placeholder="Masukkan kode elemen kompetensi" />
+                    <Form.Item {...restElementField} label={t('element-code')} name={[elementName, 'element_code']} rules={[req('element-code')]}>
+                      <Input placeholder={t('placeholder-element-code')} />
                     </Form.Item>
                   </Col>
                   <Col span={10}>
-                    <Form.Item {...restElementField} label="Nama Elemen" name={[elementName, 'element_name']} rules={[{ required: true, message: 'Mohon masukkan nama elemen kompetensi' }]}>
-                      <Input placeholder="Masukkan nama elemen kompetensi" />
+                    <Form.Item {...restElementField} label={t('element-name')} name={[elementName, 'element_name']} rules={[req('element-name')]}>
+                      <Input placeholder={t('placeholder-element-name')} />
                     </Form.Item>
                   </Col>
                   <Col span={4} className="flex justify-end">
-                    <Button danger onClick={() => removeElement(elementName)}>Remove</Button>
+                    <Button danger onClick={() => removeElement(elementName)}>{t('btn-remove')}</Button>
                   </Col>
                 </Row>
                 <Form.List name={[elementName, 'kuks']}>
@@ -85,23 +89,23 @@ function UnitCompetencyContent({ name }: { name: number; }) {
                       {kukFields.map(({ key: kukKey, name: kukName, ...restKukField }) => (
                         <Row gutter={16} align="middle" key={kukKey}>
                           <Col span={10}>
-                            <Form.Item {...restKukField} label="Nomor KUK" name={[kukName, 'kuk_code']} rules={[{ required: true, message: 'Mohon masukkan kode KUK' }]}>
-                              <Input placeholder="Masukkan kode KUK" />
+                            <Form.Item {...restKukField} label={t('kuk-code')} name={[kukName, 'kuk_code']} rules={[req('kuk-code')]}>
+                              <Input placeholder={t('placeholder-kuk-code')} />
                             </Form.Item>
                           </Col>
                           <Col span={10}>
-                            <Form.Item {...restKukField} label="KUK" name={[kukName, 'kuk_name']} rules={[{ required: true, message: 'Mohon masukkan KUK' }]}>
-                              <Input placeholder="Masukkan KUK" />
+                            <Form.Item {...restKukField} label={t('kuk-name')} name={[kukName, 'kuk_name']} rules={[req('kuk-name')]}>
+                              <Input placeholder={t('placeholder-kuk-name')} />
                             </Form.Item>
                           </Col>
                           <Col span={4} className="flex justify-end">
-                            <Button danger onClick={() => removeKuk(kukName)}>Remove</Button>
+                            <Button danger onClick={() => removeKuk(kukName)}>{t('btn-remove')}</Button>
                           </Col>
                         </Row>
                       ))}
                       <Form.Item className="ml-4">
                         <Button type="dashed" onClick={() => addKuk()} className="w-full" icon={<PlusOutlined />}>
-                          Add KUK
+                          {t('btn-add-kuk')}
                         </Button>
                       </Form.Item>
                     </div>
@@ -111,7 +115,7 @@ function UnitCompetencyContent({ name }: { name: number; }) {
             ))}
             <Form.Item className="ml-4">
               <Button type="dashed" onClick={() => addElement()} className="w-full" icon={<PlusOutlined />}>
-                Add Elemen Kompetensi
+                {t('btn-add-element')}
               </Button>
             </Form.Item>
           </div>
@@ -132,6 +136,9 @@ function HeaderLabel({ name, onRemove }: { name: string; onRemove: () => void })
 
 export default function FormSchema() {
   const { token } = theme.useToken();
+  const t = useTranslations('form');
+  const tc = useTranslations('common');
+  const req = useRequiredRule();
   const { formSchema, formSchemaFinish, onBack, schema } = useFormSchemaContext();
   const fValue = Form.useWatch([], formSchema);
 
@@ -155,21 +162,21 @@ export default function FormSchema() {
       <div>
         <Form onFinish={handleFinish} form={formSchema} layout="vertical" scrollToFirstError={{ block: 'center' }}>
           <Card>
-            <h2 className="font-bold text-xl mb-2">Detail Skema</h2>
+            <h2 className="font-bold text-xl mb-2">{t('heading-detail-scheme')}</h2>
             <Row gutter={16}>
               <Col span={12}>
-                <Form.Item label="Kode Skema Sertifikasi" name="schema_code" rules={[{ required: true, message: 'Mohon masukkan kode skema sertifikasi' }]}>
-                  <Input className="w-full p-2 border rounded" placeholder="Masukkan kode skema sertifikasi" />
+                <Form.Item label={t('scheme-code')} name="schema_code" rules={[req('scheme-code')]}>
+                  <Input className="w-full p-2 border rounded" placeholder={t('placeholder-scheme-code')} />
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item label="Nama Skema Sertifikasi" name="schema_name" rules={[{ required: true, message: 'Mohon masukkan nama skema sertifikasi' }]}>
-                  <Input className="w-full p-2 border rounded" placeholder="Masukkan nama skema sertifikasi" />
+                <Form.Item label={t('scheme-name')} name="schema_name" rules={[req('scheme-name')]}>
+                  <Input className="w-full p-2 border rounded" placeholder={t('placeholder-scheme-name')} />
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item label="Lisensi Skema Sertifikasi" name="schema_license" rules={[{ required: true, message: 'Mohon masukkan lisensi skema sertifikasi' }]}>
-                  <Select placeholder="Pilih lisensi skema sertifikasi" className="w-full" options={[
+                <Form.Item label={t('scheme-license')} name="schema_license" rules={[req('scheme-license')]}>
+                  <Select placeholder={t('placeholder-scheme-license')} className="w-full" options={[
                     { label: 'Standard', value: 'standard' },
                     { label: 'SJJ', value: 'sjj' },
                     { label: 'Paperless', value: 'paperless' },
@@ -177,20 +184,20 @@ export default function FormSchema() {
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item label="Jenis Skema Sertifikasi" name="schema_skkni" rules={[{ required: true, message: 'Mohon masukkan jenis skema sertifikasi' }]}>
-                  <Input className="w-full p-2 border rounded" placeholder="Masukkan jenis skema sertifikasi" />
+                <Form.Item label={t('scheme-type')} name="schema_skkni" rules={[req('scheme-type')]}>
+                  <Input className="w-full p-2 border rounded" placeholder={t('placeholder-scheme-type')} />
                 </Form.Item>
               </Col>
               <Col span={12}>
-                  <Form.Item label="Tahun Skema Sertifikasi" name="schema_year" rules={[{ required: true, message: 'Mohon masukkan tahun skema sertifikasi' }]}>
-                    <Input className="w-full p-2 border rounded" placeholder="Masukkan tahun skema sertifikasi" type="number" />
+                  <Form.Item label={t('scheme-year')} name="schema_year" rules={[req('scheme-year')]}>
+                    <Input className="w-full p-2 border rounded" placeholder={t('placeholder-scheme-year')} type="number" />
                   </Form.Item>
               </Col>
             </Row>
           </Card>
 
           <Card className="mt-4!">
-            <h2 className="font-bold text-xl mb-2">Unit Kompetensi</h2>
+            <h2 className="font-bold text-xl mb-2">{t('heading-unit-competency')}</h2>
             <Form.List name="competency_unit">
               {(fields, { add, remove }) => {
                 const items: CollapseProps['items'] = fields.map(({ key, name }) => ({
@@ -209,7 +216,7 @@ export default function FormSchema() {
                     />
                     <Form.Item className="mt-2">
                       <Button type="dashed" onClick={() => add()} className="w-full mt-2" icon={<PlusOutlined />}>
-                        Add Unit Kompetensi
+                        {t('btn-add-unit')}
                       </Button>
                     </Form.Item>
                   </>
@@ -221,9 +228,9 @@ export default function FormSchema() {
       </div>
 
       <div className="fixed bottom-0 left-0 w-full p-4 border-t-[2px] flex justify-end gap-2" style={{ background: token.colorBgContainer, borderTopColor: token.colorBorderSecondary }}>
-        <Button onClick={onBack}>Kembali ke Daftar Skema</Button>
+        <Button onClick={onBack}>{tc('btn-kembali')}</Button>
         <Button type="primary" onClick={() => formSchema?.submit()}>
-          {isRevisit ? 'Simpan' : 'Simpan & Lanjutkan'}
+          {isRevisit ? tc('btn-simpan') : tc('btn-lanjutkan')}
         </Button>
       </div>
     </>

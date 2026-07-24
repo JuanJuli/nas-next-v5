@@ -1,4 +1,5 @@
 import { Button, Flex, type TableColumnsType } from 'antd';
+import { useTranslations } from 'next-intl';
 
 export default function columnsSubmissionListSchema({
   handleSubmission,
@@ -7,19 +8,21 @@ export default function columnsSubmissionListSchema({
   handleSubmission(id: string): void;
   loading?: boolean;
 }) {
+  const t = useTranslations('common');
+  const tf = useTranslations('form');
   const column: TableColumnsType<any> = [
     {
-      title: 'Skema Sertifikasi',
+      title: t('skema-sertifikasi'),
       dataIndex: 'schema_name',
       key: 'schema_name',
     },
     {
-      title: 'Kode Skema',
+      title: tf('label-kode-skema'),
       dataIndex: 'schema_code',
       key: 'schema_code',
     },
     {
-      title: 'Ajukan',
+      title: t('btn-ajukan'),
       dataIndex: 'schema_id',
       key: 'schema_id',
       width: '350px',
@@ -29,9 +32,9 @@ export default function columnsSubmissionListSchema({
             loading={loading}
             className="w-[100px] btn-w-icon"
             onClick={() => handleSubmission(value)}
-            title="Ajukan"
+            title={t('btn-ajukan')}
           >
-            Ajukan
+            {t('btn-ajukan')}
           </Button>
         </Flex>
       ),

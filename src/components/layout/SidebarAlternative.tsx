@@ -11,6 +11,8 @@ import { ListMenu } from '@/types/accessRole';
 import TailwindSidebar from './TailwindSidebar';
 import AntdSidebar from './AntdSidebar';
 import { usePathname, Link } from '@/i18n/navigation';
+import { useLocale } from 'next-intl';
+import { getMenuLabel } from '@/i18n/menuLabels';
 
 const { useToken } = theme;
 
@@ -26,6 +28,7 @@ export default function SidebarAlternative({
   const pathname = usePathname();
   const { token } = useToken();
   const accessRole = useAccessRole();
+  const locale = useLocale();
 
   const [menuActive, setMenuActive] = useState<string>('');
   const [openSubmenus, setOpenSubmenus] = useState<Set<string>>(new Set());
@@ -61,11 +64,11 @@ export default function SidebarAlternative({
     const resultMenu: MenuItem[] = [];
 
     items.forEach(item => {
-      let label: React.ReactNode = item.name;
+      let label: React.ReactNode = getMenuLabel(item.name, locale);
       if (!item.children && ((item.action_menu && item.action_menu === 'redirect') || !item.action_menu)) {
         label = (
           <Link prefetch href={item.link} onClick={() => handleChangeMenu(`${item.row_id}`)}>
-            {item.name}
+            {getMenuLabel(item.name, locale)}
           </Link>
         );
       } else if (!item.children && item.action_menu && item.action_menu === 'trigger') {
@@ -74,7 +77,7 @@ export default function SidebarAlternative({
             handleChangeMenu(`${item.row_id}`);
             handleTrigger(item.link);
           }}>
-            {item.name}
+            {getMenuLabel(item.name, locale)}
           </div>
         );
       }
@@ -91,11 +94,11 @@ export default function SidebarAlternative({
     
     if (accessRole.list_menu.length > 0) {
       const menuItems = accessRole.list_menu.map(item => {
-        let label: React.ReactNode = item.name;
+        let label: React.ReactNode = getMenuLabel(item.name, locale);
         if ((!item.children || item.children.length === 0) && (!item.action_menu || (item.action_menu && item.action_menu === 'redirect'))) {
           label = (
             <Link prefetch href={item.link} onClick={() => handleChangeMenu(`${item.row_id}`)}>
-              {item.name}
+              {getMenuLabel(item.name, locale)}
             </Link>
           );
         } else if ((!item.children || item.children.length === 0) && item.action_menu && item.action_menu === 'trigger') {
@@ -104,7 +107,7 @@ export default function SidebarAlternative({
               handleChangeMenu(`${item.row_id}`);
               handleTrigger(item.link);
             }}>
-              {item.name}
+              {getMenuLabel(item.name, locale)}
             </div>
           );
         }

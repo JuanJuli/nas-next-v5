@@ -3,6 +3,7 @@
 import { DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
 import { Button } from 'antd';
 import React from 'react';
+import { useTranslations } from 'next-intl';
 
 interface IPropsActionBtnTable {
   id: string;
@@ -15,6 +16,7 @@ interface IPropsActionBtnTable {
 }
 
 const ActionButtonTable = (props: IPropsActionBtnTable) => {
+  const t = useTranslations('common');
   const { onEdit, onDelete, onDetail, id, disableDelete = false, customDetail, simple = false } = props;
   return (
     <>
@@ -23,9 +25,9 @@ const ActionButtonTable = (props: IPropsActionBtnTable) => {
           className={`${simple ? '' : 'w-[100px]'} btn-w-icon`}
           onClick={() => onEdit(id)}
           icon={<EditOutlined className="min-w-[15px]" />}
-          title="Ubah"
+          title={t('btn-edit')}
         >
-          {simple ? '' : 'Ubah'}
+          {simple ? '' : t('btn-edit')}
         </Button>
       )}
       {onDetail && (
@@ -36,10 +38,10 @@ const ActionButtonTable = (props: IPropsActionBtnTable) => {
             <Button
               className={`${simple ? '' : 'w-[105px]'} btn-w-icon`}
               onClick={() => onDetail(id)}
-              title="Detail"
+              title={t('btn-detail')}
               icon={<EyeOutlined className="min-w-[15px]" />}
             >
-              {simple ? '' : 'Detail'}
+              {simple ? '' : t('btn-detail')}
             </Button>
           )}
         </>
@@ -48,11 +50,11 @@ const ActionButtonTable = (props: IPropsActionBtnTable) => {
         <Button
           className={`${simple ? '' : 'w-[110px]'} btn-w-icon`}
           onClick={() => onDelete(id)}
-          title="Hapus"
+          title={t('btn-delete')}
           danger
           icon={<DeleteOutlined className="min-w-[15px]" />}
         >
-          {simple ? '' : 'Hapus'}
+          {simple ? '' : t('btn-delete')}
         </Button>
       )}
     </>

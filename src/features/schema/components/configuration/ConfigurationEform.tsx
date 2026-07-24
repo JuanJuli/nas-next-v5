@@ -4,12 +4,14 @@ import TitlePage from "@/components/title_page/TitlePage";
 import { useMenuIconByPath } from "@/hooks/useMenuIcon";
 import { Schema } from "@/types/schema";
 import { BreadcrumbItemType } from "antd/es/breadcrumb/Breadcrumb";
+import { useTranslations } from 'next-intl';
 import { useEffect, useMemo } from "react";
 import AplOne from "./AplOne";
 import { ConfigurationEformContext } from "@/context/ConfigurationEform";
 
 export default function ConfigurationEform({ params, schemaData }: { params: string[], schemaData?: Schema }) {
   const icon = useMenuIconByPath('/schema')
+  const t = useTranslations('form');
 
   useEffect(() => {
     console.log('schema data', schemaData)
@@ -39,23 +41,23 @@ export default function ConfigurationEform({ params, schemaData }: { params: str
     return [
       {
         key: 'master-schema',
-        title: "Master Data Skema"
+        title: t('breadcrumb-master-schema')
       },
       {
         key: 'form-schema',
-        title: "Form Skema"
+        title: t('breadcrumb-form-schema')
       },
       {
         key: 'configuration',
-        title: "Konfigurasi Form"
+        title: t('breadcrumb-configuration')
       }
     ]
-  }, [])
+  }, [t])
   
   return (
     <>
       <TitlePage
-        title={`Konfigurasi Form - ${formCode}`}
+        title={t('heading-config-form', { formCode })}
         icon={icon}
         breadCrumb={breadCrumb}
       />

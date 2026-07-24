@@ -6,15 +6,18 @@ export default function columnsReq({
   handleDelete,
   handleDetail,
   currentPage,
+  t,
 }: {
   currentPage: number;
   handleEdit?(id: string, data: any): void;
   handleDelete?(id: string): void;
   handleDetail?(id: string): void;
+  t?: (key: string) => string;
 }) {
+  const c = t || ((key: string) => key);
   const columnsDasar: TableColumnsType<any> = [
     {
-      title: 'No.',
+      title: c('column-no'),
       dataIndex: 'requirement_id',
       key: 'u-requirement_id',
       width: 80,
@@ -25,7 +28,7 @@ export default function columnsReq({
       }
     },
     {
-      title: 'Nama Dokumen',
+      title: c('column-document-name'),
       dataIndex: 'requirement_name',
       key: 'requirement_name',
       render(value: string) {
@@ -37,7 +40,7 @@ export default function columnsReq({
       },
     },
     {
-      title: 'Aksi',
+      title: c('column-aksi'),
       dataIndex: 'requirement_master_id',
       key: 'requirement_master_id',
       width: '350px',

@@ -1,5 +1,8 @@
+import { useTranslations } from 'next-intl';
+
 export default function Dashboard() {
+  const t = useTranslations('common');
   return (
-    <div>Dashboard</div>
+    <div>{t('dashboard')}</div>
   )
 }

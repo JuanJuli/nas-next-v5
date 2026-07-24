@@ -2,8 +2,10 @@
 
 import { useRequirementContext } from "@/context/Requirement";
 import { Card } from 'antd';
+import { useTranslations } from 'next-intl';
 
 export default function PartOne() {
+  const t = useTranslations('form');
   const { requirement } = useRequirementContext();
 
   return (
@@ -12,16 +14,16 @@ export default function PartOne() {
         <tbody>
           <tr>
             <td rowSpan={2} className="border border-gray-300 px-3 py-2 text-center align-middle" style={{ width: '35%' }}>
-              Skema Sertifikasi (KKNI/Okupasi/Klaster)
+              {t('label-skema-sertifikasi')}
             </td>
-            <td className="border border-gray-300 px-3 py-2" style={{ width: '15%' }}>Judul</td>
+            <td className="border border-gray-300 px-3 py-2" style={{ width: '15%' }}>{t('label-judul')}</td>
             <td className="border border-gray-300 px-3 py-2 text-center" style={{ width: '5%' }}>:</td>
             <td className="border border-gray-300 px-3 py-2" style={{ width: '45%' }}>
               {requirement?.schema?.schema_name ?? "-"}
             </td>
           </tr>
           <tr>
-            <td className="border border-gray-300 px-3 py-2" style={{ width: '15%' }}>Nomor</td>
+            <td className="border border-gray-300 px-3 py-2" style={{ width: '15%' }}>{t('label-nomor')}</td>
             <td className="border border-gray-300 px-3 py-2 text-center" style={{ width: '5%' }}>:</td>
             <td className="border border-gray-300 px-3 py-2" style={{ width: '45%' }}>
               {requirement?.schema?.schema_number ?? "-"}
@@ -34,17 +36,16 @@ export default function PartOne() {
         <tbody>
           <tr>
             <td className="border border-gray-300 px-3 py-2 align-middle font-bold" style={{ width: '35%' }}>
-              Panduan Asesmen Mandiri
+              {t('label-panduan-asesmen-mandiri')}
             </td>
           </tr>
           <tr>
             <td className="border border-gray-300 px-3 py-2" style={{ width: '15%' }}>
-              <strong>Instruksi:</strong>
-              {/* List with bullet list */}
+              <strong>{t('label-instruksi')}</strong>
               <ul className="list-disc list-inside mt-2">
-                <li>Baca setiap pertanyaan di kolom sebelah kiri.</li>
-                <li>Beri tanda centang (√) pada kotak jika Anda yakin dapat melakukan tugas yang dijelaskan.</li>
-                <li>Isi kolom di sebelah kanan dengan menuliskan bukti yang relevan anda miliki untuk menunjukkan bahwa anda melakukan pekerjaan .</li>
+                <li>{t('label-instruksi-1')}</li>
+                <li>{t('label-instruksi-2')}</li>
+                <li>{t('label-instruksi-3')}</li>
               </ul>
             </td>
           </tr>

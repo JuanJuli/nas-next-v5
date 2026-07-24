@@ -9,28 +9,29 @@ import RegularTable from '@/components/table/RegularTable';
 import Link from 'next/link';
 import { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb';
 import { htmlToPlainText } from '@/helper/stringHtml';
+import { useTranslations } from 'next-intl';
 
 export default function FileList({ requirementData }: { requirementData?: Requirement }) {
+  const t = useTranslations('common');
   const column = useMemo(() => columnFileList(), []);
   const defaultBreadcrumb: BreadcrumbItemType[] = useMemo(() => {
     const breadcrumb = [
       {
-        title: <Link href="/dashboard">Beranda</Link>,
+        title: <Link href="/dashboard">{t('beranda')}</Link>,
       },
       {
-        // make sure title 1 line, not changing line because value <p> and if requirement name too long, it will be truncated with ellipsis
-        title: <div className="text-color-default">Requirement {htmlToPlainText(requirementData?.requirement_name ?? '')}</div>,
+        title: <div className="text-color-default">{t('requirement')} {htmlToPlainText(requirementData?.requirement_name ?? '')}</div>,
       },
       {
-        title: <div className="text-color-default">File List</div>,
+        title: <div className="text-color-default">{t('file-list')}</div>,
       },
     ];
     return breadcrumb;
-  }, [requirementData]);
+  }, [requirementData, t]);
   
   return (
     <>
-      <TitlePage breadCrumb={defaultBreadcrumb} icon={<FileOutlined size={18} />} title={<div dangerouslySetInnerHTML={{ __html: requirementData?.requirement_name ?? 'Daftar File' }} />}  />
+      <TitlePage breadCrumb={defaultBreadcrumb} icon={<FileOutlined size={18} />} title={<div dangerouslySetInnerHTML={{ __html: requirementData?.requirement_name ?? t('daftar-file') }} />}  />
       <div className="p-6">
         <RegularTable
           columns={column}

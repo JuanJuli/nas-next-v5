@@ -9,6 +9,8 @@ interface RenderSchemaItemProps {
   handleDetail?(id: string): void;
   generateForm?(id: string): void;
   handleRequirement?(id: string): void;
+  tf?: (key: string) => string;
+  tc?: (key: string) => string;
 }
 
 export default function renderSchemaItem({
@@ -17,7 +19,11 @@ export default function renderSchemaItem({
   handleDetail,
   generateForm,
   handleRequirement,
+  tf,
+  tc,
 }: RenderSchemaItemProps) {
+  const f = tf || ((key: string) => key);
+  const c = tc || ((key: string) => key);
   return (item: any) => (
     <Card
       hoverable
@@ -26,7 +32,7 @@ export default function renderSchemaItem({
         ...(generateForm
           ? [
               <Button key="generate" type="link" onClick={() => generateForm(item.schema_id)}>
-                Daftar Form
+                {c('btn-daftar-form')}
               </Button>,
             ]
           : []),
@@ -35,14 +41,14 @@ export default function renderSchemaItem({
       <Flex vertical gap={8}>
         <div>
           <Typography.Text type="secondary" style={{ fontSize: 12 }}>
-            Kode Skema Sertifikasi
+            {f('scheme-code')}
           </Typography.Text>
           <br />
           <Typography.Text strong>{item.schema_code}</Typography.Text>
         </div>
         <div>
           <Typography.Text type="secondary" style={{ fontSize: 12 }}>
-            Nama Skema Sertifikasi
+            {f('scheme-name')}
           </Typography.Text>
           <br />
           <Typography.Text>{item.schema_name}</Typography.Text>
@@ -55,7 +61,7 @@ export default function renderSchemaItem({
             onDetail={handleDetail}
           />
           {handleRequirement && (
-            <Button onClick={() => handleRequirement(item.schema_id)}>MUK</Button>
+            <Button onClick={() => handleRequirement(item.schema_id)}>{c('btn-muk')}</Button>
           )}
         </Flex>
       </Flex>

@@ -1,0 +1,11 @@
+{
+    "applicant-not-competent": "Not Competent",
+    "applicant-competent": "Competent",
+    "applicant-reset": "Reset",
+    "join-rejected": "Rejected",
+    "join-revised": "Revised",
+    "join-waiting-approval": "Waiting for Approval",
+    "join-revised-assessor": "Revised by Assessor",
+    "join-revision-submitted": "Revision Submitted",
+    "join-approved": "Approved by Admin"
+}
