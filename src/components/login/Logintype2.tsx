@@ -9,6 +9,7 @@ import { LspLoginResponse } from '@/types/login';
 import SelectLspRole from './SelectLspRole';
 import logoNas from '../../../public/logo/nas-small.png';
 import thumbnail from '../../../public/logo/org-proyek.png';
+import { useTranslations } from 'next-intl';
 
 const { useToken } = theme;
 
@@ -39,6 +40,8 @@ export default function Logintype2({
   const { token: themeToken } = useToken();
   const router = useRouter();
   const isMobile = useIsMobile();
+
+  const t = useTranslations('common');
 
   // Show LSP selection UI if listLsp has items
   if (listLsp.length > 0) {
@@ -247,10 +250,10 @@ export default function Logintype2({
           {/* Slogan - Center */}
           <div style={{ textAlign: 'left', flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
             <h2 style={{ fontSize: '24px', fontWeight: 700, marginBottom: '24px', margin: 0 }}>
-              Pencapaian Luar Biasa Dimulai dengan Satu Langkah
+              {t('header-slogan-login-dua')}
             </h2>
             <p style={{ fontSize: '12px', lineHeight: '1.8', margin: 0, letterSpacing: '0.5px' }}>
-              Capai Tujuan Karier Anda Dengan Sertifikasi Yang Diakui Industri. Silahkan Masuk Atau Daftar Sekarang Untuk Menggenggam Masa Depan Yang Lebih Cerah.
+              {t('slogan-login-dua')}
             </p>
           </div>
 

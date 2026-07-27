@@ -10,6 +10,7 @@ import SelectLspRole from './SelectLspRole';
 import thumbnailOne from '../../../public/thumbnail/kantoran1.jpg';
 import thumbnailTwo from '../../../public/thumbnail/kantoran2.webp';
 import logo from '../../../public/logo/nas-small.png';
+import { useTranslations } from 'next-intl';
 
 const { useToken } = theme;
 
@@ -40,6 +41,8 @@ export default function LoginType3({
   const { token: themeToken } = useToken();
   const router = useRouter();
   const isMobile = useIsMobile();
+
+  const t = useTranslations('common');
 
   // Show LSP selection UI if listLsp has items
   if (listLsp.length > 0) {
@@ -284,10 +287,10 @@ export default function LoginType3({
                 }}
               >
                 <h2 style={{ fontSize: '28px', fontWeight: 700, marginBottom: '12px', margin: 0 }}>
-                  Sertifikasi Profesional
+                  {t('header-slogan-login-tiga')}
                 </h2>
                 <p style={{ fontSize: '16px', lineHeight: '1.6', margin: 0 }}>
-                  Dapatkan sertifikasi yang diakui industri untuk meningkatkan karier Anda
+                  {t('slogan-login-tiga')}
                 </p>
               </div>
             </div>

@@ -128,7 +128,7 @@ export default function LoginType1({
             {t('welcome')}
           </h2>
           <p style={{ fontSize: '16px', textAlign: 'center', lineHeight: '1.6', position: 'relative', zIndex: 1 }}>
-            Aplikasi Sertifikasi Online terpercaya untuk meningkatkan kompetensi Anda
+            {t('slogan-login-satu')}
           </p>
         </div>
         )}
