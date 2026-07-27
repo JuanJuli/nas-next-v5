@@ -62,7 +62,7 @@ export function proxy(request: NextRequest) {
     let redirectPath = "";
     const currentPath = pathname + request.nextUrl.search;
     // check current path is not login page
-    if (currentPath !== "/" && !currentPath.startsWith("/login")) {
+    if (currentPath !== "/" && !currentPath.startsWith("/login") && (currentPath !== "/en" && currentPath !== "/id")) {
       redirectPath = `?redirect=${encodeURIComponent(currentPath)}`;
     }
     const localeMatch = pathname.match(/^\/(en|id)/);
