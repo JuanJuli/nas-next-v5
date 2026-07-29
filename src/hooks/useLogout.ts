@@ -1,8 +1,10 @@
-import { destroySession } from "@/utils/session";
+import { useSession } from "@/utils/session";
 
 export function useLogout() {
+  const { destroy } = useSession();
+
   const handleLogout = async () => {
-    await destroySession(true);
+    await destroy(true);
   };
 
   return { logout: handleLogout };

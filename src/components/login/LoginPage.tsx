@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import { useRouter } from '@/i18n/navigation';
+import { stripLocale } from '@/utils/session';
 import LoginType1 from '@/components/login/LoginType1';
 import LoginType2 from '@/components/login/Logintype2';
 import LoginType3 from '@/components/login/LoginType3';
@@ -18,7 +19,7 @@ interface iPayloadGenerateToken {
   institution_id?: string;
 }
 
-export default function LoginPage({ loginType = 1 }: { loginType?: number }) {
+export default function LoginPage({ loginType = 3 }: { loginType?: number }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get('redirect') || '/dashboard';
@@ -37,7 +38,7 @@ export default function LoginPage({ loginType = 1 }: { loginType?: number }) {
       }
     };
     return currLoginType;
-  }, [searchParams || loginType])
+  }, [searchParams, loginType])
 
   const handleGenerateToken = async (payload: iPayloadGenerateToken,  token:string) => {
     setLoading(true);
@@ -61,7 +62,7 @@ export default function LoginPage({ loginType = 1 }: { loginType?: number }) {
       setErrorMessage(''); // Clear any previous error messages
       setLoading(false); // Stop loading before redirecting
 
-      router.replace(redirectTo);
+      router.replace(stripLocale(redirectTo));
     } catch (error) {
       setErrorMessage('An error occurred while generating token. Please try again.');
     } finally {
