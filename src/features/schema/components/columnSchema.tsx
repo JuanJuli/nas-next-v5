@@ -1,5 +1,6 @@
+import { ColumnDef } from '@tanstack/react-table';
 import ActionButtonTable from '@/components/button/ActionButton';
-import { Button, Flex, type TableColumnsType } from 'antd';
+import { Button } from '@/components/ui/button';
 
 export default function columnSchema({
   handleEdit,
@@ -17,41 +18,46 @@ export default function columnSchema({
   handleRequirement?(id: string): void;
   tf: (key: string) => string;
   tc: (key: string) => string;
-}) {
-  const column: TableColumnsType<any> = [
+}): ColumnDef<any>[] {
+  return [
     {
-      title: tf('scheme-code'),
-      dataIndex: 'schema_code',
-      key: 'schema_code',
+      id: 'schema_code',
+      header: tf('scheme-code'),
+      accessorKey: 'schema_code',
+      meta:{
+        className: "max-w-[350px] whitespace-normal"
+      }
     },
     {
-      title: tf('scheme-name'),
-      dataIndex: 'schema_name',
-      key: 'schema_name',
+      id: 'schema_name',
+      header: tf('scheme-name'),
+      accessorKey: 'schema_name',
+      meta:{
+        className: "max-w-[350px] whitespace-normal"
+      }
     },
     {
-      title: tc('column-generate'),
-      dataIndex: 'schema_id',
-      key: 'u-generate',
-      width: '160px',
-      render: value => {
+      id: 'u-generate',
+      header: tc('column-generate'),
+      accessorKey: 'schema_id',
+      cell: ({ row }) => {
         if (!generateForm) return '-';
-        return <Button onClick={() => generateForm(value)}>{tc('btn-daftar-form')}</Button>;
+        return <Button variant="outline" size="sm" onClick={() => generateForm(row.getValue('schema_id'))}>{tc('btn-daftar-form')}</Button>;
       },
     },
     {
-      title: tc('column-aksi'),
-      dataIndex: 'schema_id',
-      key: 'schema_id',
-      width: '450px',
-      render: value => (
-        <Flex gap={10}>
-          <ActionButtonTable id={value} onEdit={handleEdit} onDelete={handleDelete} onDetail={handleDetail} />
-          {handleRequirement && <Button onClick={() => handleRequirement(value)}>{tc('btn-muk')}</Button>}
-        </Flex>
-      ),
+      id: 'schema_id',
+      header: tc('column-aksi'),
+      accessorKey: 'schema_id',
+      cell: ({ row }) => {
+        const value = row.getValue('schema_id') as string;
+        return (
+          <div className="flex gap-2.5">
+            <ActionButtonTable id={value} onEdit={handleEdit} onDelete={handleDelete} onDetail={handleDetail} />
+            {handleRequirement && <Button variant="outline" size="sm" onClick={() => handleRequirement(value)}>{tc('btn-muk')}</Button>}
+          </div>
+        );
+      },
     },
   ];
-
-  return column;
 }

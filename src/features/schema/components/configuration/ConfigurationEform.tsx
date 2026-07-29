@@ -1,9 +1,8 @@
 'use client';
 
-import TitlePage from "@/components/title_page/TitlePage";
+import TitlePage, { BreadcrumbItem } from "@/components/title_page/TitlePage";
 import { useMenuIconByPath } from "@/hooks/useMenuIcon";
 import { Schema } from "@/types/schema";
-import { BreadcrumbItemType } from "antd/es/breadcrumb/Breadcrumb";
 import { useTranslations } from 'next-intl';
 import { useEffect, useMemo } from "react";
 import AplOne from "./AplOne";
@@ -37,7 +36,7 @@ export default function ConfigurationEform({ params, schemaData }: { params: str
     console.log('schemaId', schemaId)
   }, [schemaId])
 
-  const breadCrumb: BreadcrumbItemType[] = useMemo(() => {
+  const breadCrumb: BreadcrumbItem[] = useMemo(() => {
     return [
       {
         key: 'master-schema',

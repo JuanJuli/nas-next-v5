@@ -1,6 +1,7 @@
 {
     "nik-required": "NIK wajib diisi.",
     "field-required": "Mohon masukkan {field}",
+    "validation-required": "Field ini wajib diisi",
     "email-invalid": "Format email tidak valid",
     "nik-digit": "NIK harus 16 digit angka",
     "phone-digit": "Nomor HP harus 10-13 digit",

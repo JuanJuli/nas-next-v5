@@ -1,5 +1,4 @@
 import { cookies } from 'next/headers'
-import { Layout } from 'antd';
 import { getAccessRole } from '@/service/accessRole';
 import { AccessRoleProvider } from '@/components/provider/AccessRoleProvider';
 import { AccessRoleAll } from '@/types/accessRole';
@@ -11,7 +10,6 @@ export default async function DashboardLayout({
 }: {
   children: React.ReactNode;
 }) {
-
   const cookieStore = await cookies()
   const roleCode = cookieStore.get('role_code') ?? null;
 
@@ -22,9 +20,9 @@ export default async function DashboardLayout({
       accessRole = accessRoleRes.data;
     }
   }
-  
+
   return (
-    <Layout style={{ minHeight: '100vh' }}>
+    <div>
       <AccessRoleProvider value={accessRole}>
         <ProtectedRouteGuard>
           <RoleGuard roleCode={roleCode?.value}>
@@ -32,6 +30,6 @@ export default async function DashboardLayout({
           </RoleGuard>
         </ProtectedRouteGuard>
       </AccessRoleProvider>
-    </Layout>
+    </div>
   );
 }

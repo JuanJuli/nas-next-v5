@@ -1,28 +1,30 @@
 'use client';
 
-import { useRequiredRule } from "@/i18n/validation";
 import { useFormSchemaContext } from "@/context/FormSchema";
-import { Form, Select } from "antd";
 import { useTranslations } from 'next-intl';
 import { useMemo } from "react";
+import { useFormContext, useWatch } from "react-hook-form";
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 export default function SelectUcFormSchema({ number, parentNumber, restFields }: { number: number, parentNumber: number, restFields?: any }) {
-  const { schema, formJobGroup } = useFormSchemaContext();
+  const { schema } = useFormSchemaContext();
   const t = useTranslations('form');
-  const req = useRequiredRule();
+  const form = useFormContext();
 
-  const fUnitCompetency = Form.useWatch(['job_groups', parentNumber, 'unit_competencies'], formJobGroup);
+  const fUnitCompetency = useWatch({
+    control: form.control,
+    name: `job_groups.${parentNumber}.unit_competencies`,
+  });
 
   const optionnUnitCompetency = useMemo(() =>{
-    if (!schema || !schema.competency_unit || !formJobGroup) return [];
+    if (!schema || !schema.competency_unit || !form) return [];
 
-    const currentListSelectedUc = formJobGroup.getFieldValue([`job_groups`, parentNumber, "unit_competencies"]);
+    const currentListSelectedUc = form.getValues(`job_groups.${parentNumber}.unit_competencies`);
     const currentSelectedUc = currentListSelectedUc?.[number]?.unit_competency_code;
 
     const currentCompetencyUnit = schema.competency_unit;
 
-    // filter currentCompetencyUnit by excluding the ones that already selected in the form except the current selected uc
-    // uc.unit_competency_code is nullable, so we need to check if it's not null before comparing
     const selectedUcCodes = currentListSelectedUc?.map((uc: any) => uc?.unit_competency_code).filter((code: string | undefined): code is string => !!code && code !== currentSelectedUc) || [];
 
     return currentCompetencyUnit
@@ -31,16 +33,30 @@ export default function SelectUcFormSchema({ number, parentNumber, restFields }:
         label: `${cu.competency_unit_code} - ${cu.competency_unit_name}`,
         value: cu.competency_unit_code
       }));
-  }, [schema, fUnitCompetency])
+  }, [schema, fUnitCompetency, number, parentNumber, form])
 
   return (
-    <Form.Item
-      {...restFields}
-      name={[number, 'unit_competency_code']}
-      label={t('unit-competency-code')}
-      rules={[req('unit-competency-code')]}
-    >
-      <Select allowClear options={optionnUnitCompetency} placeholder={t('placeholder-select-unit')} />
-    </Form.Item>
+    <FormField
+      control={form.control}
+      name={`job_groups.${parentNumber}.unit_competencies.${number}.unit_competency_code`}
+      render={({ field }) => (
+        <FormItem>
+          <FormLabel>{t('unit-competency-code')}</FormLabel>
+          <Select value={field.value} onValueChange={field.onChange}>
+            <FormControl>
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder={t('placeholder-select-unit')} />
+              </SelectTrigger>
+            </FormControl>
+            <SelectContent alignItemWithTrigger={false}>
+              {optionnUnitCompetency.map((opt) => (
+                <SelectItem key={opt.value} value={opt.value}>{opt.label}</SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <FormMessage />
+        </FormItem>
+      )}
+    />
   )
 }

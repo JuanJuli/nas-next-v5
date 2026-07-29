@@ -1,4 +1,5 @@
-import { Button, Flex, type TableColumnsType } from 'antd';
+import { ColumnDef } from '@tanstack/react-table';
+import { Button } from '@/components/ui/button';
 import { useTranslations } from 'next-intl';
 
 export default function columnsSubmissionListSchema({
@@ -7,39 +8,36 @@ export default function columnsSubmissionListSchema({
 }: {
   handleSubmission(id: string): void;
   loading?: boolean;
-}) {
+}): ColumnDef<any>[] {
   const t = useTranslations('common');
   const tf = useTranslations('form');
-  const column: TableColumnsType<any> = [
+  return [
     {
-      title: t('skema-sertifikasi'),
-      dataIndex: 'schema_name',
-      key: 'schema_name',
+      id: 'schema_name',
+      header: t('skema-sertifikasi'),
+      accessorKey: 'schema_name',
     },
     {
-      title: tf('label-kode-skema'),
-      dataIndex: 'schema_code',
-      key: 'schema_code',
+      id: 'schema_code',
+      header: tf('label-kode-skema'),
+      accessorKey: 'schema_code',
     },
     {
-      title: t('btn-ajukan'),
-      dataIndex: 'schema_id',
-      key: 'schema_id',
-      width: '350px',
-      render: value => (
-        <Flex gap={10} className="pr-[10px]">
+      id: 'schema_id',
+      header: t('btn-ajukan'),
+      accessorKey: 'schema_id',
+      cell: ({ row }) => (
+        <div className="flex gap-2.5 pr-[10px]">
           <Button
-            loading={loading}
-            className="w-[100px] btn-w-icon"
-            onClick={() => handleSubmission(value)}
+            disabled={loading}
+            className="w-[100px]"
+            onClick={() => handleSubmission(row.getValue('schema_id'))}
             title={t('btn-ajukan')}
           >
             {t('btn-ajukan')}
           </Button>
-        </Flex>
+        </div>
       ),
     },
   ];
-
-  return column;
 }

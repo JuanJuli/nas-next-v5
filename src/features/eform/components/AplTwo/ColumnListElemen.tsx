@@ -1,8 +1,8 @@
-'use client';
-
+import { ColumnDef } from '@tanstack/react-table';
 import { Requirement } from '@/types/requirement';
-import { UploadOutlined, DownOutlined, UpOutlined } from '@ant-design/icons';
-import { Button, Checkbox, type TableColumnsType } from 'antd';
+import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Upload, ChevronDown, ChevronUp } from 'lucide-react';
 import { Element } from '@/types/schema';
 import { EformApl2State } from '@/store/eformApl2';
 import { useTranslations } from 'next-intl';
@@ -15,26 +15,27 @@ interface ColumnListElementProps {
   setRequirementAssessment: (requirementId: string, assessment: 'k' | 'bk' | null) => void;
 }
 
-export default function columnListElement({ 
+export default function columnListElement({
   handleAttachment,
   expandedElements,
   toggleElement,
   partTwo,
   setRequirementAssessment
-}: ColumnListElementProps) {
+}: ColumnListElementProps): ColumnDef<Requirement>[] {
   const t = useTranslations('form');
   const tc = useTranslations('common');
 
-  const column: TableColumnsType<Requirement> = [
+  return [
     {
-      title: t('label-dapatkah-saya'),
-      dataIndex: 'element',
-      key: 'u-element_name',
-      render: (value: Element, record: Requirement, index: number) => {
+      id: 'element_name',
+      header: t('label-dapatkah-saya'),
+      cell: ({ row }) => {
+        const value = row.original.element;
+        const index = row.index;
         if (!value || !value.element_name) return '-';
         const isExpanded = expandedElements.has(value.element_id);
         const hasKuks = value.kuks && value.kuks.length > 0;
-        
+
         return (
           <div className="space-y-2">
             <div className="flex items-center gap-2">
@@ -43,12 +44,12 @@ export default function columnListElement({
               </span>
               {hasKuks && (
                 <Button
-                  type="text"
-                  size="small"
-                  icon={isExpanded ? <UpOutlined /> : <DownOutlined />}
+                  variant="ghost"
+                  size="sm"
                   onClick={() => toggleElement(value.element_id)}
                   className="text-blue-500"
                 >
+                  {isExpanded ? <ChevronUp /> : <ChevronDown />}
                   {isExpanded ? t('label-tutup-kuk') : t('label-tampilkan-kuk')} KUK
                 </Button>
               )}
@@ -70,23 +71,17 @@ export default function columnListElement({
       }
     },
     {
-      title: t('label-k'),
-      align: 'center',
-      dataIndex: 'requirement_id',
-      key: 'u-k',
-      width: 100,
-      render: (requirementId: string) => {
+      id: 'k',
+      header: t('label-k'),
+      cell: ({ row }) => {
+        const requirementId = row.original.requirement_id;
         const isChecked = partTwo.requirementsAssessment[requirementId] === 'k';
         return (
           <div className="flex items-center justify-center">
-            <Checkbox 
+            <Checkbox
               checked={isChecked}
-              onChange={(e) => {
-                if (e.target.checked) {
-                  setRequirementAssessment(requirementId, 'k');
-                } else {
-                  setRequirementAssessment(requirementId, null);
-                }
+              onCheckedChange={(checked) => {
+                setRequirementAssessment(requirementId, checked ? 'k' : null);
               }}
             />
           </div>
@@ -94,23 +89,17 @@ export default function columnListElement({
       },
     },
     {
-      title: t('label-bk'),
-      align: 'center',
-      dataIndex: 'requirement_id',
-      key: 'u-bk',
-      width: 100,
-      render: (requirementId: string) => {
+      id: 'bk',
+      header: t('label-bk'),
+      cell: ({ row }) => {
+        const requirementId = row.original.requirement_id;
         const isChecked = partTwo.requirementsAssessment[requirementId] === 'bk';
         return (
           <div className="flex items-center justify-center">
-            <Checkbox 
+            <Checkbox
               checked={isChecked}
-              onChange={(e) => {
-                if (e.target.checked) {
-                  setRequirementAssessment(requirementId, 'bk');
-                } else {
-                  setRequirementAssessment(requirementId, null);
-                }
+              onCheckedChange={(checked) => {
+                setRequirementAssessment(requirementId, checked ? 'bk' : null);
               }}
             />
           </div>
@@ -118,16 +107,13 @@ export default function columnListElement({
       },
     },
     {
-      title: t('label-bukti-relevan'),
-      dataIndex: 'requirement_id',
-      key: 'u-requirement_id',
-      width: 200,
-      render: (value: any) => {
-        if (value) return <Button icon={<UploadOutlined />} onClick={() => handleAttachment(value)}>{tc('btn-lampiran-file')}</Button>;
+      id: 'bukti_relevan',
+      header: t('label-bukti-relevan'),
+      cell: ({ row }) => {
+        const value = row.original.requirement_id;
+        if (value) return <Button variant="outline" size="sm" onClick={() => handleAttachment(value)}><Upload />{tc('btn-lampiran-file')}</Button>;
         return '-';
       },
     },
   ];
-
-  return column;
 }

@@ -1,13 +1,27 @@
 'use client';
 
-import { useRequiredRule } from "@/i18n/validation";
 import Tiptap from "@/components/tiptap";
 import { useConfigurationEformContext } from "@/context/ConfigurationEform";
 import { usePost, usePut } from "@/hooks/useMutate";
-import { notification } from "@/service/antdStatic";
-import { Button, Drawer, Form, InputNumber, Radio } from "antd";
+import { toast } from "sonner";
+import { Button, InputNumber } from "antd";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 import { useTranslations } from 'next-intl';
 import { useEffect, useMemo } from "react";
+import { useForm, useController, FormProvider } from "react-hook-form";
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
+import { Sheet, SheetContent, SheetHeader, SheetTitle, SheetFooter } from "@/components/ui/sheet";
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from "@/components/ui/form";
+
+const formSchema = z.object({
+  requirement_name: z.string().min(1, 'Nama dokumen harus diisi'),
+  is_required: z.boolean(),
+  sequence: z.number().min(0),
+})
+
+type FormValues = z.infer<typeof formSchema>
 
 interface RequirementMasterData {
   requirement_master_id?: string
@@ -17,35 +31,38 @@ interface RequirementMasterData {
 }
 
 export default function DrawerCreateReq({ open, close, data, type = "BAM" }: { open: boolean; close(): void; data?: RequirementMasterData, type?: string }) {
-  const [form] = Form.useForm();
   const { schema } = useConfigurationEformContext()
   const t = useTranslations('form');
   const tc = useTranslations('common');
   const tm = useTranslations('message');
-  const req = useRequiredRule();
-  const fReqName = Form.useWatch('requirement_name', form);
+
+  const form = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      requirement_name: '',
+      is_required: false,
+      sequence: 0,
+    },
+  })
+
+  const { field: tiptapField } = useController({
+    control: form.control,
+    name: 'requirement_name',
+  })
 
   const isEdit = useMemo(() => {
     return !!data?.requirement_master_id
   }, [data])
 
-  useEffect(() => {
-    console.log('cek fReqName:', fReqName)
-  }, [fReqName])
-
   const createMutation = usePost('core/requirement_masters', {
     invalidateQueries: ['table', 'core/requirement_masters/regular'],
     onSuccess: () => {
-      form.resetFields()
-      notification.success({
-        message: tm('success-create'),
-        className: 'cnotif csuccess'
-      })
+      form.reset()
+      toast.success(tm('success-create'))
       close()
     },
     onError: (error: unknown) => {
-      notification.error({
-        message: tm('failed-create'),
+      toast.error(tm('failed-create'), {
         description: (error as { message?: string })?.message || tm('terjadi-kesalahan'),
       })
     },
@@ -54,16 +71,12 @@ export default function DrawerCreateReq({ open, close, data, type = "BAM" }: { o
   const updateMutation = usePut('core/requirement_masters', {
     invalidateQueries: ['table', 'core/requirement_masters/regular'],
     onSuccess: () => {
-      form.resetFields()
-      notification.success({
-        message: tm('success-update'),
-        className: 'cnotif csuccess'
-      })
+      form.reset()
+      toast.success(tm('success-update'))
       close()
     },
     onError: (error: unknown) => {
-      notification.error({
-        message: tm('failed-update'),
+      toast.error(tm('failed-update'), {
         description: (error as { message?: string })?.message || tm('terjadi-kesalahan'),
       })
     },
@@ -73,7 +86,7 @@ export default function DrawerCreateReq({ open, close, data, type = "BAM" }: { o
     return createMutation.isPending || updateMutation.isPending
   }, [createMutation.isPending, updateMutation.isPending])
 
-  const handleFinish = async (values: any) => {
+  const handleFinish = (values: FormValues) => {
     const payload = {
       ...values,
       requirement_category: type,
@@ -95,51 +108,96 @@ export default function DrawerCreateReq({ open, close, data, type = "BAM" }: { o
 
   useEffect(() => {
     if (open && data) {
-      form.setFieldsValue(data)
+      form.reset({
+        requirement_name: data.requirement_name || '',
+        is_required: data.is_required || false,
+        sequence: data.sequence || 0,
+      })
     }
-  }, [open, data])
+  }, [open, data, form])
 
   useEffect(() => {
     if (!open) {
-      form.resetFields()
+      form.reset({
+        requirement_name: '',
+        is_required: false,
+        sequence: 0,
+      })
     }
-  }, [open])
+  }, [open, form])
 
   return (
-    <Drawer
-      title={tc('btn-tambah-data')}
-      open={open}
-      onClose={close}
-      size={500}
-      destroyOnHidden
-      footer={
-        <Button type="primary" onClick={form.submit} loading={isPending} disabled={isPending}>
-          {tc('btn-simpan')}
-        </Button>
-      }
-    >
-      <Form form={form} layout="vertical" onFinish={handleFinish}>
-        <Tiptap
-          id="req-name"
-          fValue={fReqName}
-          form={form}
-          formItemProps={{
-            required: true,
-            label: t('document-name'),
-            name: 'requirement_name',
-            rules: [req('document-name')],
-          }}
-        />
-        <Form.Item label={t('mandatory')} name="is_required" initialValue={false}>
-          <Radio.Group>
-            <Radio value={true}>{t('label-yes')}</Radio>
-            <Radio value={false}>{t('label-no')}</Radio>
-          </Radio.Group>
-        </Form.Item>
-        <Form.Item label={t('sequence')} name="sequence" initialValue={0}>
-          <InputNumber min={0} className="w-full" />
-        </Form.Item>
-      </Form>
-    </Drawer>
+    <Sheet open={open} onOpenChange={(isOpen) => { if (!isOpen) close() }}>
+      <SheetContent side="right" className="sm:max-w-[500px]">
+        <SheetHeader>
+          <SheetTitle>{tc('btn-tambah-data')}</SheetTitle>
+        </SheetHeader>
+
+        <form onSubmit={form.handleSubmit(handleFinish)} className="space-y-4 p-4">
+          <FormProvider {...form}>
+          <FormItem>
+            <FormLabel>{t('document-name')}</FormLabel>
+            <FormControl>
+              <Tiptap
+                id="req-name"
+                fValue={tiptapField.value}
+                onValueChange={tiptapField.onChange}
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+
+          <FormField
+            control={form.control}
+            name="is_required"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t('mandatory')}</FormLabel>
+                <FormControl>
+                  <RadioGroup
+                    value={String(field.value)}
+                    onValueChange={(val) => field.onChange(val === 'true')}
+                  >
+                    <div className="flex items-center gap-2">
+                      <RadioGroupItem value="true" id="is_required_yes" />
+                      <Label htmlFor="is_required_yes">{t('label-yes')}</Label>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <RadioGroupItem value="false" id="is_required_no" />
+                      <Label htmlFor="is_required_no">{t('label-no')}</Label>
+                    </div>
+                  </RadioGroup>
+                </FormControl>
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="sequence"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>{t('sequence')}</FormLabel>
+                <FormControl>
+                  <InputNumber
+                    min={0}
+                    className="w-full"
+                    value={field.value}
+                    onChange={(val) => field.onChange(val ?? 0)}
+                  />
+                </FormControl>
+              </FormItem>
+            )}
+          />
+        </FormProvider>
+        </form>
+
+        <SheetFooter>
+          <Button type="primary" onClick={form.handleSubmit(handleFinish)} loading={isPending} disabled={isPending}>
+            {tc('btn-simpan')}
+          </Button>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
   )
 }

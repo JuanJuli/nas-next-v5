@@ -1,15 +1,15 @@
 'use client';
 
 import {
-  BoldOutlined,
-  FileImageOutlined,
-  ItalicOutlined,
-  LinkOutlined,
-  MinusOutlined,
-  OrderedListOutlined,
-  StrikethroughOutlined,
-  UnorderedListOutlined,
-} from '@ant-design/icons';
+  Bold,
+  Image,
+  Italic,
+  Link,
+  Minus,
+  ListOrdered,
+  Strikethrough,
+  List,
+} from 'lucide-react';
 import { Button, Space } from 'antd';
 import { useCallback } from 'react';
 
@@ -70,25 +70,25 @@ export default function MenuBarTiptap({ editor, isImage }: { editor: any; isImag
         <Button
           onClick={() => editor.chain().focus().toggleBold().run()}
           type={editor.isActive('bold') ? 'primary' : 'default'}
-          icon={<BoldOutlined />}
+          icon={<Bold />}
         />
         <Button
           onClick={() => editor.chain().focus().toggleItalic().run()}
           type={editor.isActive('italic') ? 'primary' : 'default'}
-          icon={<ItalicOutlined />}
+          icon={<Italic />}
           disabled={!editor.can().chain().focus().toggleItalic().run()}
         />
         <Button
           onClick={() => editor.chain().focus().toggleBulletList().run()}
-          icon={<UnorderedListOutlined />}
+          icon={<List />}
           type={editor.isActive('bulletList') ? 'primary' : 'default'}
         />
         <Button
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          icon={<OrderedListOutlined />}
+          icon={<ListOrdered />}
           type={editor.isActive('orderedList') ? 'primary' : 'default'}
         />
-        <Button onClick={() => editor.chain().focus().setHorizontalRule().run()} icon={<MinusOutlined />} />
+        <Button onClick={() => editor.chain().focus().setHorizontalRule().run()} icon={<Minus />} />
         <Button
           onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
           type={editor.isActive('heading', { level: 1 }) ? 'primary' : 'default'}
@@ -110,18 +110,18 @@ export default function MenuBarTiptap({ editor, isImage }: { editor: any; isImag
         <Button
           onClick={() => editor.chain().focus().toggleStrike().run()}
           type={editor.isActive('strike') ? 'primary' : 'default'}
-          icon={<StrikethroughOutlined />}
+          icon={<Strikethrough />}
           disabled={!editor.can().chain().focus().toggleStrike().run()}
         />
         <Button
           type={editor.isActive('link') ? 'primary' : 'default'}
           onClick={setLink}
           className={editor.isActive('link') ? 'is-active' : ''}
-          icon={<LinkOutlined />}
+          icon={<Link />}
         />
         {isImage && (
           <Button
-            icon={<FileImageOutlined />}
+            icon={<Image />}
             onClick={addImage}
             disabled={!editor.can().chain().focus().setImage().run()}
           />

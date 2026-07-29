@@ -1,9 +1,7 @@
 'use client';
 
-import { ConfigProvider } from "antd";
-import { createTenantTheme } from "@/theme";
 import { useThemeStore } from "@/store/theme";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 export default function ThemeProvider({
   primaryColor,
@@ -50,9 +48,10 @@ export default function ThemeProvider({
     }
   }, [mode]);
 
-  return (
-    <ConfigProvider theme={createTenantTheme(primaryColor, mode)}>
-      {children}
-    </ConfigProvider>
-  );
+  useEffect(() => {
+    const html = document.documentElement;
+    html.style.setProperty("--primary", primaryColor);
+  }, [primaryColor]);
+
+  return <>{children}</>;
 }

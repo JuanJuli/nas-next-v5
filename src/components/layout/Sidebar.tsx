@@ -1,7 +1,6 @@
 'use client';
 
 import { Layout, Menu } from 'antd';
-import { theme } from 'antd';
 import type { MenuProps } from 'antd';
 import { useAccessRole } from '../provider/AccessRoleProvider';
 import { useMemo, useState, useEffect } from 'react';
@@ -12,7 +11,6 @@ import { ListMenu } from '@/types/accessRole';
 import { usePathname, Link } from '@/i18n/navigation';
 
 const { Sider } = Layout;
-const { useToken } = theme;
 
 interface SidebarProps {
   collapsed: boolean;
@@ -20,7 +18,6 @@ interface SidebarProps {
 
 export default function Sidebar({ collapsed }: SidebarProps) {
   const pathname = usePathname();
-  const { token } = useToken();
   const accessRole = useAccessRole(); 
 
   const [menuActive, setMenuActive] = useState<string>('');
@@ -176,7 +173,7 @@ export default function Sidebar({ collapsed }: SidebarProps) {
       collapsible
       width={300}
       style={{
-        background: token.colorPrimary,
+        background: 'var(--primary)',
         boxShadow: '2px 0 8px 0 rgba(0, 0, 0, 0.15)',
       }}
       trigger={null}

@@ -1,11 +1,12 @@
 'use client';
 
-import { Card, Typography, Alert, Button, theme, Avatar, Space } from 'antd';
+import { Card, Typography, Button, Avatar, Space } from 'antd';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
+import { AlertCircle } from 'lucide-react';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { LspLoginResponse } from '@/types/login';
-import { UserOutlined } from '@ant-design/icons';
+import { User } from 'lucide-react';
 
-const { useToken } = theme;
 const { Title, Text } = Typography;
 
 interface iPayloadGenerateToken {
@@ -38,7 +39,6 @@ export default function SelectLspRole({
   showLogo = false,
   logoElement,
 }: SelectLspRoleProps) {
-  const { token: themeToken } = useToken();
   const isMobile = useIsMobile();
 
   const handleSelectLspRole = (lsp: LspLoginResponse, roleIndex: number) => {
@@ -60,7 +60,7 @@ export default function SelectLspRole({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: themeToken.colorBgContainer,
+        backgroundColor: 'var(--background)',
         padding: '16px',
         ...containerStyle,
       }}
@@ -79,7 +79,7 @@ export default function SelectLspRole({
         )}
 
         <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <Title level={2} style={{ color: themeToken.colorPrimary }}>
+          <Title level={2} style={{ color: 'var(--primary)' }}>
             Pilih LSP dan Role
           </Title>
           <Text type="secondary">
@@ -88,14 +88,11 @@ export default function SelectLspRole({
         </div>
 
         {errorMessage && (
-          <Alert
-            title="Error"
-            description={errorMessage}
-            type="error"
-            showIcon
-            closable
-            style={{ marginBottom: '16px' }}
-          />
+          <Alert variant="destructive" className="mb-4">
+            <AlertCircle className="h-4 w-4" />
+            <AlertTitle>Error</AlertTitle>
+            <AlertDescription>{errorMessage}</AlertDescription>
+          </Alert>
         )}
 
         <div style={{ display: 'grid', gap: '16px' }}>
@@ -107,7 +104,7 @@ export default function SelectLspRole({
                 borderRadius: '8px',
               }}
             >
-              <Title level={4} style={{ marginTop: 0, color: themeToken.colorPrimary }}>
+              <Title level={4} style={{ marginTop: 0, color: 'var(--primary)' }}>
                 {lsp.lsp_name}
               </Title>
               <div style={{ display: 'grid', gap: '8px', marginTop: '16px' }}>
@@ -125,10 +122,10 @@ export default function SelectLspRole({
                     }}
                   >
                     <div className='flex items-center w-full'>
-                      <Avatar size={64} icon={<UserOutlined />} />
+                      <Avatar size={64} icon={<User />} />
                       <Space vertical className='ml-[25px]'>
                         <div style={{ fontWeight: 600 }}>{roleName}</div>
-                        <div style={{ fontSize: '12px', color: themeToken.colorTextSecondary, marginTop: '4px' }}>
+                        <div style={{ fontSize: '12px', color: 'var(--muted-foreground)', marginTop: '4px' }}>
                           {lsp.lsp_name}
                         </div>
                       </Space>

@@ -117,5 +117,8 @@
     "header-slogan-login-dua": "Extraordinary Achievements Begin with One Step",
     "slogan-login-dua": "Achieve your career goals with industry-recognized certification. Log in or register now to secure a brighter future.",
     "header-slogan-login-tiga": "Grab Your Chance",
-    "slogan-login-tiga": "Join thousands of professionals who have improved their competencies"
+    "slogan-login-tiga": "Join thousands of professionals who have improved their competencies",
+    "username": "Username",
+    "password": "Password",
+    "below-welcome": "Enter the information below to log in."
 }

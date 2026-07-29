@@ -1,8 +1,11 @@
 "use client";
 
 import { useRequirementContext } from "@/context/Requirement";
-import { Button, Card, DatePicker, Radio, Space, Input } from "antd";
-import Descriptions, { DescriptionsProps } from "antd/es/descriptions";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import { DatePicker } from "@/components/ui/date-picker";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { Label } from "@/components/ui/label";
 import { useEffect, useMemo } from "react";
 import { useEformApl2Store } from "@/store/eformApl2";
 import dayjs from "dayjs";
@@ -12,11 +15,11 @@ export default function LastPart() {
   const t = useTranslations('form');
   const tc = useTranslations('common');
   const { requirement } = useRequirementContext();
-  const { 
-    lastPart, 
-    setRekomendasi, 
-    setPemohonNama, 
-    setPemohonTtd, 
+  const {
+    lastPart,
+    setRekomendasi,
+    setPemohonNama,
+    setPemohonTtd,
     setPemohonTanggal,
     setAsesorNoReg,
     setAsesorNama,
@@ -39,14 +42,12 @@ export default function LastPart() {
     return "Pemohon";
   }, [requirement]);
 
-  // Set default nama pemohon dari requirement data
   useEffect(() => {
     if (currentName && !lastPart.pemohonNama) {
       setPemohonNama(currentName);
     }
   }, [currentName, lastPart.pemohonNama, setPemohonNama]);
 
-  // Set default signature pemohon dari requirement data
   useEffect(() => {
     if (signatureApl && lastPart.pemohonTtd) {
       setPemohonTtd(signatureApl);
@@ -63,103 +64,83 @@ export default function LastPart() {
     console.log('Open signature modal for assessor');
   };
 
-  const itemApplicant: DescriptionsProps['items'] = useMemo(() => ([
-    {
-      label: t('label-name'),
-      children: lastPart.pemohonNama || currentName,
-    },
-    {
-      label: t('label-signature-date'),
-      children: (
-        <Space orientation="vertical" className="w-full">
-          {!lastPart.pemohonTtd && (
-            <Button 
-              disabled={(!requirement || !requirement.current_role || requirement.current_role !== 'APL') && !signatureApl}
-              onClick={handleSignaturePemohon}
-            >
-              {tc('btn-tanda-tangan')}
-            </Button>
-          )}
-          {lastPart.pemohonTtd && (
-            <img src={lastPart.pemohonTtd} alt="Signature" style={{ maxWidth: '150px', maxHeight: '75px' }} />
-          )}
-          <DatePicker 
-            className="w-full"
-            value={lastPart.pemohonTanggal ? dayjs(lastPart.pemohonTanggal) : null}
-            onChange={(date) => setPemohonTanggal(date ? date.toISOString() : null)}
-          />
-        </Space>
-      ),
-    },
-  ]), [currentName, requirement, signatureApl, lastPart.pemohonNama, lastPart.pemohonTtd, lastPart.pemohonTanggal, setPemohonTanggal]);
-
-  const itemAsesorUji: DescriptionsProps['items'] = useMemo(() => ([
-    {
-      label: t('label-reg-number'),
-      children: lastPart.asesorNoReg ?? "",
-    },
-    {
-      label: t('label-name'),
-      children: lastPart.asesorNama ?? "",
-    },
-    {
-      label: t('label-signature-date'),
-      children: (
-        <Space orientation="vertical" className="w-full">
-          <Button 
-            disabled={!requirement || !requirement.current_role || requirement.current_role !== 'ACS'}
-            onClick={handleSignatureAsesor}
-          >
-            {lastPart.asesorTtd ? t('label-change-signature') : tc('btn-tanda-tangan')}
-          </Button>
-          {lastPart.asesorTtd && (
-            <img src={lastPart.asesorTtd} alt="Assessor Signature" style={{ maxWidth: '150px', maxHeight: '75px' }} />
-          )}
-          <DatePicker 
-            className="w-full"
-            disabled={!requirement || !requirement.current_role || requirement.current_role !== 'ACS'}
-            value={lastPart.asesorTanggal ? dayjs(lastPart.asesorTanggal) : null}
-            onChange={(date) => setAsesorTanggal(date ? date.toISOString() : null)}
-          />
-        </Space>
-      ),
-    },
-  ]), [requirement, lastPart.asesorNoReg, lastPart.asesorNama, lastPart.asesorTtd, lastPart.asesorTanggal, setAsesorNoReg, setAsesorNama, setAsesorTanggal]);
-
-  const itemLastPart: DescriptionsProps['items'] = [
-    {
-      label: t('label-rekomendasi-asesi'),
-      children: (
-      <div>
-        <Radio.Group 
-          value={lastPart.rekomendasi}
-          onChange={(e) => setRekomendasi(e.target.value)}
-        >
-          <Radio value={true}>{t('label-asesmen-dilanjutkan')}</Radio>
-          <Radio value={false}>{t('label-asesmen-tidak-dilanjutkan')}</Radio>
-        </Radio.Group>
-        <p className="text-gray-500 text-sm mt-2">{t('label-choose-appropriate')}</p>
-      </div>
-      ),
-    },
-    {
-      label: t('label-asesi'),
-      children: <Descriptions items={itemApplicant} colon={false} column={1} className="w-full" styles={{ label: { width: '30%' } }} />,
-    },
-    {
-        label: '',
-        children: '',
-    },
-    {
-      label: t('label-ditinjau-asesor'),
-      children: <Descriptions items={itemAsesorUji} colon={false} column={1} className="w-full" styles={{ label: { width: '30%' } }} />,
-    }
-  ]
-
-
   return (
     <Card>
-      <Descriptions layout="vertical" items={itemLastPart} colon={false} column={2} className="w-full" styles={{ label: { width: '30%' } }} />
+      <CardContent className="p-6">
+        <div className="grid grid-cols-2 gap-6">
+          <div className="space-y-6">
+            <div>
+              <p className="font-medium mb-2">{t('label-rekomendasi-asesi')}</p>
+              <RadioGroup
+                value={String(lastPart.rekomendasi)}
+                onValueChange={(value) => setRekomendasi(value === 'true' ? true : value === 'false' ? false : null)}
+              >
+                <div className="flex items-center gap-2">
+                  <RadioGroupItem value="true" id="apl2-rekomendasi-ya" />
+                  <Label htmlFor="apl2-rekomendasi-ya">{t('label-asesmen-dilanjutkan')}</Label>
+                </div>
+                <div className="flex items-center gap-2">
+                  <RadioGroupItem value="false" id="apl2-rekomendasi-tidak" />
+                  <Label htmlFor="apl2-rekomendasi-tidak">{t('label-asesmen-tidak-dilanjutkan')}</Label>
+                </div>
+              </RadioGroup>
+              <p className="text-sm text-muted-foreground mt-2">{t('label-choose-appropriate')}</p>
+            </div>
+          </div>
+
+          <div className="space-y-6">
+            <div>
+              <p className="font-medium mb-2">{t('label-asesi')}</p>
+              <div className="ml-4 space-y-3">
+                <p><span className="text-muted-foreground">{t('label-name')}:</span> {lastPart.pemohonNama || currentName}</p>
+                <div className="flex flex-col gap-2">
+                  {!lastPart.pemohonTtd && (
+                    <Button
+                      variant="outline"
+                      disabled={(!requirement || !requirement.current_role || requirement.current_role !== 'APL') && !signatureApl}
+                      onClick={handleSignaturePemohon}
+                    >
+                      {tc('btn-tanda-tangan')}
+                    </Button>
+                  )}
+                  {lastPart.pemohonTtd && (
+                    <img src={lastPart.pemohonTtd} alt="Signature" className="max-w-[150px] max-h-[75px]" />
+                  )}
+                  <DatePicker
+                    value={lastPart.pemohonTanggal ? dayjs(lastPart.pemohonTanggal).toDate() : null}
+                    onChange={(date) => setPemohonTanggal(date ? date.toISOString() : null)}
+                  />
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <p className="font-medium mb-2">{t('label-ditinjau-asesor')}</p>
+              <div className="ml-4 space-y-3">
+                <p><span className="text-muted-foreground">{t('label-reg-number')}:</span> {lastPart.asesorNoReg ?? ""}</p>
+                <p><span className="text-muted-foreground">{t('label-name')}:</span> {lastPart.asesorNama ?? ""}</p>
+                <div className="flex flex-col gap-2">
+                  <Button
+                    variant="outline"
+                    disabled={!requirement || !requirement.current_role || requirement.current_role !== 'ACS'}
+                    onClick={handleSignatureAsesor}
+                  >
+                    {lastPart.asesorTtd ? t('label-change-signature') : tc('btn-tanda-tangan')}
+                  </Button>
+                  {lastPart.asesorTtd && (
+                    <img src={lastPart.asesorTtd} alt="Assessor Signature" className="max-w-[150px] max-h-[75px]" />
+                  )}
+                  <DatePicker
+                    disabled={!requirement || !requirement.current_role || requirement.current_role !== 'ACS'}
+                    value={lastPart.asesorTanggal ? dayjs(lastPart.asesorTanggal).toDate() : null}
+                    onChange={(date) => setAsesorTanggal(date ? date.toISOString() : null)}
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </CardContent>
     </Card>
   );
 }

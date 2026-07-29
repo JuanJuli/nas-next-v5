@@ -1,7 +1,7 @@
 'use client';
 
 import { Button, Space } from 'antd';
-import { GlobalOutlined, MoonOutlined, SunOutlined } from '@ant-design/icons';
+import { Globe, Moon, Sun } from 'lucide-react';
 import { useLocale } from 'next-intl';
 import { usePathname, useRouter } from '@/i18n/navigation';
 import { useSearchParams } from 'next/navigation';
@@ -29,13 +29,13 @@ export default function ThemeLangButtons() {
       <Button
         type="text"
         size="small"
-        icon={isDark ? <MoonOutlined /> : <SunOutlined />}
+        icon={isDark ? <Moon /> : <Sun />}
         onClick={toggleTheme}
       />
       <Button
         type="text"
         size="small"
-        icon={<GlobalOutlined />}
+        icon={<Globe />}
         onClick={handleLangToggle}
       >
         {locale === 'id' ? 'ID' : 'ENG'}

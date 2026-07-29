@@ -5,7 +5,7 @@ import { useTableUrlState } from "@/hooks/useTableUrlState"
 import { useDebounce } from "@/hooks/useDebounce"
 import { Pagination, Skeleton, Button } from "antd"
 import { useState, useEffect, useRef } from "react"
-import { LeftOutlined, RightOutlined } from "@ant-design/icons"
+import { ChevronLeft, ChevronRight } from "lucide-react"
 import { getOffset } from "@/helper/urlQuery"
 import Search from "antd/es/input/Search"
 import { useTranslations } from 'next-intl'
@@ -138,14 +138,14 @@ export default function CustomList<T = any>({
             itemRender={(currentPage, type, originalElement) => {
               if (type === 'prev') {
                 return (
-                  <Button className="mx-1" icon={<LeftOutlined />}>
+                  <Button className="mx-1" icon={<ChevronLeft />}>
                     {t('pagination-prev')}
                   </Button>
                 )
               }
               if (type === 'next') {
                 return (
-                  <Button className="mx-1 ml-3" icon={<RightOutlined />}>
+                  <Button className="mx-1 ml-3" icon={<ChevronRight />}>
                     {t('pagination-next')}
                   </Button>
                 )

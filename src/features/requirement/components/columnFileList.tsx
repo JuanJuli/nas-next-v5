@@ -1,32 +1,30 @@
-'use client'
-
+import { ColumnDef } from '@tanstack/react-table';
 import UniversalPreviewFile from '@/components/preview_file/UniversalPreviewFile';
-import { EyeOutlined } from '@ant-design/icons';
-import { Button, type TableColumnsType } from 'antd';
+import { Eye } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { useTranslations } from 'next-intl';
 
-export default function columnFileList() {
+export default function columnFileList(): ColumnDef<any>[] {
   const t = useTranslations('common');
-  const column: TableColumnsType<any> = [
+  return [
     {
-      title: t('nama-file'),
-      dataIndex: 'filename',
-      key: 'u-filename',
-      render: (value: any) => {
+      id: 'u-filename',
+      header: t('nama-file'),
+      accessorKey: 'filename',
+      cell: ({ row }) => {
+        const value = row.getValue('filename');
         return value ? value : '-';
-      }
+      },
     },
     {
-      title: t('preview'),
-      dataIndex: 'form_value',
-      key: 'u-form_value',
-       width: 150,
-      render: (value: any, record: any) => {
-        if (value) return <UniversalPreviewFile key={record.key} url={value} view={<Button icon={<EyeOutlined />} />} />;
+      id: 'u-form_value',
+      header: t('preview'),
+      accessorKey: 'form_value',
+      cell: ({ row }) => {
+        const value = row.getValue('form_value');
+        if (value) return <UniversalPreviewFile url={value as string} view={<Button variant="outline" size="icon"><Eye /></Button>} />;
         return '-';
       },
     },
   ];
-
-  return column;
 }

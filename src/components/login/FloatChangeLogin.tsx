@@ -1,7 +1,7 @@
 'use client';
 
 import { useRouter, usePathname } from '@/i18n/navigation';
-import { SettingOutlined } from '@ant-design/icons';
+import { Settings } from 'lucide-react';
 import { FloatButton } from 'antd';
 import { useSearchParams } from 'next/navigation';
 import { useMemo } from 'react';
@@ -32,7 +32,7 @@ export default function FloatChangeLogin() {
 
   return (
     <>
-    <FloatButton.Group shape="circle" style={{ insetInlineEnd: 24 }} trigger="hover" type="primary" icon={<SettingOutlined />}>
+    <FloatButton.Group shape="circle" style={{ insetInlineEnd: 24 }} trigger="hover" type="primary" icon={<Settings />}>
       {fixLoginType !== 1 && (
         <FloatButton shape="circle" style={{ display: fixLoginType === 1 ? 'none' : undefined }} onClick={() => handleClick(1)} content="1" />
       )}

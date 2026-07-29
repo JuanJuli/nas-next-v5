@@ -21,8 +21,9 @@ export default function Tiptap({
   formItemProps,
   uploadImage = false,
   withoutHeader = false,
+  onValueChange,
 }: {
-  form: FormInstance;
+  form?: FormInstance;
   id?: string | number;
   fValue?: any;
   placeholder?: string;
@@ -32,6 +33,7 @@ export default function Tiptap({
   formItemProps?: React.ComponentProps<typeof FormItem>;
   uploadImage?: boolean;
   withoutHeader?: boolean;
+  onValueChange?: (value: string) => void;
 }) {
   const [touched, setTouched] = useState(false);
 
@@ -51,14 +53,18 @@ export default function Tiptap({
         },
       },
       onUpdate({ editor }) {
-        if (editor.getHTML() !== fValue && !touched) {
+        const html = editor.getHTML();
+        if (html !== fValue && !touched) {
           setTouched(true);
         }
-        if (nameList) {
-          form.setFieldValue(nameList, editor.getHTML());
+        if (onValueChange) {
+          onValueChange(html);
         }
-        if (formItemProps && formItemProps.name) {
-          form.setFieldValue(formItemProps.name, editor.getHTML());
+        if (nameList && form) {
+          form.setFieldValue(nameList, html);
+        }
+        if (formItemProps && formItemProps.name && form) {
+          form.setFieldValue(formItemProps.name, html);
         }
       },
     },

@@ -4,9 +4,8 @@ import UniversalPreviewFile from "@/components/preview_file/UniversalPreviewFile
 import { usePost } from "@/hooks/useMutate";
 import { useTableQuery } from "@/hooks/useTableQuery";
 import { useModalAttachmentStore } from "@/store/modalAttachment";
-import { CloudUploadOutlined } from "@ant-design/icons";
-import { Flex, Modal, Space } from "antd";
-import Dragger from "antd/es/upload/Dragger";
+import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { FileUpload } from "@/components/ui/file-upload";
 import { useEffect } from "react";
 import { useTranslations } from 'next-intl';
 
@@ -49,47 +48,45 @@ export default function ModalAttachmentRequirement() {
     }
   }, [dataRequirement.data]);
 
-  const handleUpload = async (options: any) => {
-    const { file } = options;
-    if (file) {
+  const handleFileDrop = async (files: File[]) => {
+    for (const file of files) {
       const formData = new FormData();
       formData.append('files', file);
 
-      await addDocument.mutateAsync(formData).then(() => {
-        dataRequirement.refetch();
-      }).catch((err) => {
-        console.error("Error uploading file:", err);
-      });
+      try {
+        await addDocument.mutateAsync(formData)
+        dataRequirement.refetch()
+      } catch (err) {
+        console.error("Error uploading file:", err)
+      }
     }
   }
 
   return (
-  <Modal
-    open={open}
-    onCancel={() => setOpen(false)}
-    title={t('btn-lampiran-file')}
-    cancelText={t('btn-tutup')}
-    okButtonProps={{ className: 'hidden' }}
-  >
-    <Flex className="w-full mb-2">
-      <Dragger className="w-full" customRequest={handleUpload} showUploadList={false} accept=".jpeg,.jpg,.png">
-        <p className="ant-upload-drag-icon mb-5">
-          <CloudUploadOutlined />
-        </p>
-        <p className="ant-upload-text mb-0 pb-0">{t('label-upload-click-drag')}</p>
-        <small className="mt-0 pt-0">{t('upload-hint')}</small>
-      </Dragger>
-    </Flex>
-    <Space vertical className="w-full mt-3! mb-1!">
-      {/* Preview File */}
-      {requirementFiles.map((file) => (
-        <UniversalPreviewFile
-          key={file.row_id}
-          url={file.form_value}
-          fileName={file.filename}
-        />
-      ))}
-    </Space>
-  </Modal>
+    <Dialog open={open} onOpenChange={(isOpen) => { if (!isOpen) setOpen(false) }}>
+      <DialogContent>
+        <DialogTitle>{t('btn-lampiran-file')}</DialogTitle>
+        <div className="w-full mb-2">
+          <FileUpload
+            onDrop={handleFileDrop}
+            accept={{ 'image/jpeg': ['.jpeg', '.jpg'], 'image/png': ['.png'] }}
+          >
+            <div className="flex flex-col items-center gap-2">
+              <p className="ant-upload-text mb-0 pb-0">{t('label-upload-click-drag')}</p>
+              <small className="mt-0 pt-0 text-muted-foreground">{t('upload-hint')}</small>
+            </div>
+          </FileUpload>
+        </div>
+        <div className="flex flex-col w-full gap-2">
+          {requirementFiles.map((file) => (
+            <UniversalPreviewFile
+              key={file.row_id}
+              url={file.form_value}
+              fileName={file.filename}
+            />
+          ))}
+        </div>
+      </DialogContent>
+    </Dialog>
   )
 }

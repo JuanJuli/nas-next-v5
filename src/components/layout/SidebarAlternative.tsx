@@ -1,51 +1,27 @@
 'use client';
 
-import type { MenuProps } from 'antd';
-import { theme } from 'antd';
 import { useAccessRole } from '../provider/AccessRoleProvider';
 import { useMemo, useState, useEffect } from 'react';
-import { getItem } from '@/utils/menuItems';
-import { convertAliasesToMenu } from '../ui/menuAlias';
-import { MenuItem } from '@/types/menuItem';
-import { ListMenu } from '@/types/accessRole';
 import TailwindSidebar from './TailwindSidebar';
-import AntdSidebar from './AntdSidebar';
-import { usePathname, Link } from '@/i18n/navigation';
-import { useLocale } from 'next-intl';
-import { getMenuLabel } from '@/i18n/menuLabels';
-
-const { useToken } = theme;
+import { ListMenu } from '@/types/accessRole';
+import { usePathname } from '@/i18n/navigation';
 
 interface SidebarAlternativeProps {
   collapsed: boolean;
   variant?: 'antd' | 'tailwind';
 }
 
-export default function SidebarAlternative({ 
-  collapsed, 
-  variant = 'tailwind' 
+export default function SidebarAlternative({
+  collapsed,
 }: SidebarAlternativeProps) {
   const pathname = usePathname();
-  const { token } = useToken();
   const accessRole = useAccessRole();
-  const locale = useLocale();
 
   const [menuActive, setMenuActive] = useState<string>('');
   const [openSubmenus, setOpenSubmenus] = useState<Set<string>>(new Set());
 
-  const handleTrigger = (trigger: string) => {
-    if (trigger === 'report-assessment') {
-      // setOpenReport(true);
-    }
-  };
-
   const handleChangeMenu = (key: string) => {
-    console.log('Menu item clicked:', key);
     setMenuActive(key);
-  };
-
-  const handleAntdMenuClick: MenuProps['onClick'] = (e) => {
-    handleChangeMenu(e.key);
   };
 
   const toggleSubmenu = (key: string) => {
@@ -58,88 +34,22 @@ export default function SidebarAlternative({
     setOpenSubmenus(newOpenSubmenus);
   };
 
-  const handleRenderChildren = (items: ListMenu[]): MenuItem[] | undefined => {
-    if (items.length === 0) return undefined;
-
-    const resultMenu: MenuItem[] = [];
-
-    items.forEach(item => {
-      let label: React.ReactNode = getMenuLabel(item.name, locale);
-      if (!item.children && ((item.action_menu && item.action_menu === 'redirect') || !item.action_menu)) {
-        label = (
-          <Link prefetch href={item.link} onClick={() => handleChangeMenu(`${item.row_id}`)}>
-            {getMenuLabel(item.name, locale)}
-          </Link>
-        );
-      } else if (!item.children && item.action_menu && item.action_menu === 'trigger') {
-        label = (
-          <div onClick={() => {
-            handleChangeMenu(`${item.row_id}`);
-            handleTrigger(item.link);
-          }}>
-            {getMenuLabel(item.name, locale)}
-          </div>
-        );
-      }
-      resultMenu.push(
-        getItem(label, item.row_id, item.name, convertAliasesToMenu(item.icon), handleRenderChildren(item.children ?? []))
-      );
-    });
-
-    return resultMenu;
+  const handleTrigger = (trigger: string) => {
+    if (trigger === 'report-assessment') {
+    }
   };
 
-  const menuItems = useMemo((): MenuProps['items'] => {
-    if (!accessRole) return [];
-    
-    if (accessRole.list_menu.length > 0) {
-      const menuItems = accessRole.list_menu.map(item => {
-        let label: React.ReactNode = getMenuLabel(item.name, locale);
-        if ((!item.children || item.children.length === 0) && (!item.action_menu || (item.action_menu && item.action_menu === 'redirect'))) {
-          label = (
-            <Link prefetch href={item.link} onClick={() => handleChangeMenu(`${item.row_id}`)}>
-              {getMenuLabel(item.name, locale)}
-            </Link>
-          );
-        } else if ((!item.children || item.children.length === 0) && item.action_menu && item.action_menu === 'trigger') {
-          label = (
-            <div onClick={() => {
-              handleChangeMenu(`${item.row_id}`);
-              handleTrigger(item.link);
-            }}>
-              {getMenuLabel(item.name, locale)}
-            </div>
-          );
-        }
-        return getItem(
-          label,
-          item.row_id,
-          item.name,
-          convertAliasesToMenu(item.icon),
-          handleRenderChildren(item.children ?? [])
-        );
-      });
-
-      return menuItems;
-    }
-
-    return [];
-  }, [accessRole]);
-
-  // Sync menuActive with pathname and auto-expand parent submenus
   useEffect(() => {
     if (!accessRole?.list_menu || accessRole.list_menu.length === 0) return;
 
-    // Find menu by pathname using longest match algorithm
     const findMenuByPath = (items: ListMenu[], path: string, parentKey?: string): { key: string | null; parentKeys: string[]; matchLength: number } => {
-      let bestMatch: { key: string | null; parentKeys: string[]; matchLength: number } = { 
-        key: null, 
-        parentKeys: [], 
-        matchLength: 0 
+      let bestMatch: { key: string | null; parentKeys: string[]; matchLength: number } = {
+        key: null,
+        parentKeys: [],
+        matchLength: 0
       };
 
       for (const item of items) {
-        // Check current item
         if (item.link && path.startsWith(item.link)) {
           const matchLength = item.link.length;
           if (matchLength > bestMatch.matchLength) {
@@ -150,8 +60,7 @@ export default function SidebarAlternative({
             };
           }
         }
-        
-        // Check children recursively
+
         if (item.children && item.children.length > 0) {
           const childMatch = findMenuByPath(item.children, path, `${item.row_id}`);
           if (childMatch.key && childMatch.matchLength > bestMatch.matchLength) {
@@ -170,35 +79,25 @@ export default function SidebarAlternative({
     const result = findMenuByPath(accessRole.list_menu, pathname);
     if (result.key) {
       setMenuActive(result.key);
-      
-      // Auto-expand parent submenus
+
       if (result.parentKeys.length > 0) {
         setOpenSubmenus(new Set(result.parentKeys));
       }
     } else if (!menuActive && accessRole.list_menu.length > 0) {
-      // Set first menu as default if no match found and no active menu
       setMenuActive(`${accessRole.list_menu[0].row_id}`);
     }
   }, [pathname, accessRole]);
 
-  return variant === 'tailwind' ? (
+  return (
     <TailwindSidebar
       collapsed={collapsed}
       menuActive={menuActive}
       openSubmenus={openSubmenus}
       listMenu={accessRole?.list_menu || []}
-      colorPrimary={token.colorPrimary}
+      colorPrimary={'var(--primary)'}
       onMenuChange={handleChangeMenu}
       onToggleSubmenu={toggleSubmenu}
       onTrigger={handleTrigger}
-    />
-  ) : (
-    <AntdSidebar
-      collapsed={collapsed}
-      menuActive={menuActive}
-      menuItems={menuItems}
-      colorPrimary={token.colorPrimary}
-      onMenuClick={handleAntdMenuClick}
     />
   );
 }

@@ -1,7 +1,7 @@
 'use client';
 
-import RegularTable from "@/components/table/RegularTable";
-import { useAuthStore } from "@/store/auth";
+import { DataTable } from "@/components/ui/data-table";
+import { useTableQuery } from "@/hooks/useTableQuery";
 import columnListElement from "./ColumnListElemen";
 import { useMemo, useState } from "react";
 import { useModalAttachmentStore } from "@/store/modalAttachment";
@@ -25,9 +25,26 @@ export default function ListElement({ unitCompetenceID }: { unitCompetenceID: st
       return newSet;
     });
   };
-    
+
+  const { data: reqData, isLoading } = useTableQuery(
+    "core/requirements",
+    {
+      unit_competence_id: unitCompetenceID,
+      requirement_category: "KOMPETENSI",
+      applicant_id: requirement?.applicant_id ?? "",
+      schema_id: requirement?.schema_id ?? ""
+    },
+    {},
+    !!unitCompetenceID
+  );
+
+  const listData = useMemo(() => {
+    if (reqData && reqData.status === "OK" && reqData.data) return reqData.data;
+    return [];
+  }, [reqData]);
+
   const column = useMemo(() => {
-    return columnListElement({ 
+    return columnListElement({
       handleAttachment: setRequirementID,
       expandedElements,
       toggleElement,
@@ -37,12 +54,10 @@ export default function ListElement({ unitCompetenceID }: { unitCompetenceID: st
   }, [expandedElements, setRequirementID, partTwo, setRequirementAssessment]);
 
   return (
-    <RegularTable
-      id={`list-element-${unitCompetenceID}`}
+    <DataTable
       columns={column}
-      url="core/requirements"
-      queryParams={{ unit_competence_id: unitCompetenceID, requirement_category: "KOMPETENSI", applicant_id: requirement?.applicant_id ?? "", schema_id: requirement?.schema_id ?? "" }}
-      rowKey="requirement_id"
+      data={listData}
+      loading={isLoading}
     />
   )
 }

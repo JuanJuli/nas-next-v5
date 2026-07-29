@@ -1,26 +1,34 @@
 'use client';
 
-import { Form, Input, Button, theme, Divider } from 'antd';
-import { MailOutlined } from '@ant-design/icons';
+import { useState } from 'react';
+import { Mail, ArrowLeft, CheckCircle2 } from 'lucide-react';
 import { useRouter } from '@/i18n/navigation';
 import Image from 'next/image';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import logoNas from '../../../../../public/logo/nas-small.png';
 import thumbnail from '../../../../../public/logo/org-proyek.png';
-
-const { useToken } = theme;
+import { useForm, FormProvider } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { forgotPasswordSchema, type ForgotPasswordFormValues } from '@/lib/schemas/forgot-password';
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
 
 export default function ForgotPasswordPage() {
-  const { token: themeToken } = useToken();
   const router = useRouter();
   const isMobile = useIsMobile();
+  const [success, setSuccess] = useState(false);
 
-  const handleSubmit = (values: { email: string }) => {
+  const form = useForm<ForgotPasswordFormValues>({
+    resolver: zodResolver(forgotPasswordSchema),
+  });
+
+  const handleSubmit = (values: ForgotPasswordFormValues) => {
     console.log('Forgot password submitted:', values);
+    setSuccess(true);
   };
 
   const handleBack = () => {
-    console.log('Back button clicked');
     router.back();
   };
 
@@ -31,7 +39,7 @@ export default function ForgotPasswordPage() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: themeToken.colorBgContainer,
+        backgroundColor: 'var(--background)',
         padding: '16px',
       }}
     >
@@ -46,11 +54,10 @@ export default function ForgotPasswordPage() {
           overflow: 'hidden',
         }}
       >
-        {/* Left Section - Form */}
         <div
           style={{
             width: isMobile ? '100%' : '50%',
-            backgroundColor: themeToken.colorBgContainer,
+            backgroundColor: 'var(--background)',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -59,7 +66,6 @@ export default function ForgotPasswordPage() {
             position: 'relative',
           }}
         >
-          {/* Logo - Top Left */}
           <div
             style={{
               position: 'absolute',
@@ -83,72 +89,74 @@ export default function ForgotPasswordPage() {
           </div>
 
           <div style={{ width: '100%' }}>
-            <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-              <h1 style={{ fontSize: '24px', fontWeight: 700, margin: 0, color: themeToken.colorPrimary }}>
-                Forgot Password
-              </h1>
-              <p style={{ margin: '8px 0 0', color: themeToken.colorTextSecondary, fontSize: '14px' }}>
-                Enter your email to receive reset instructions
-              </p>
-            </div>
-
-            <Form
-              layout="vertical"
-              onFinish={handleSubmit}
-            >
-              <Form.Item
-                name="email"
-                label="Email"
-                rules={[
-                  { required: true, message: 'Please input your email!' },
-                  { type: 'email', message: 'Please enter a valid email!' },
-                ]}
-              >
-                <Input
-                  prefix={<MailOutlined />}
-                  placeholder="Enter your email"
-                  size="large"
-                />
-              </Form.Item>
-
-              <Divider />
-
-              <Form.Item>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  block
-                  size="large"
-                  style={{ backgroundColor: themeToken.colorPrimary }}
-                >
-                  Submit
+            {success ? (
+              <div className="flex flex-col items-center text-center py-8">
+                <CheckCircle2 className="size-16 text-green-500 mb-4" />
+                <h1 className="text-2xl font-bold mb-2" style={{ color: 'var(--primary)' }}>
+                  Check Your Email
+                </h1>
+                <p className="text-sm text-muted-foreground mb-6">
+                  We have sent password reset instructions to your email.
+                </p>
+                <Button variant="outline" onClick={handleBack}>
+                  <ArrowLeft className="size-4 mr-2" />
+                  Back to Login
                 </Button>
-              </Form.Item>
+              </div>
+            ) : (
+              <>
+                <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+                  <h1 style={{ fontSize: '24px', fontWeight: 700, margin: 0, color: 'var(--primary)' }}>
+                    Forgot Password
+                  </h1>
+                  <p style={{ margin: '8px 0 0', color: 'var(--muted-foreground)', fontSize: '14px' }}>
+                    Enter your email to receive reset instructions
+                  </p>
+                </div>
 
-              <Form.Item>
-                <Button
-                  type="default"
-                  block
-                  size="large"
-                  onClick={handleBack}
-                  style={{
-                    color: themeToken.colorPrimary,
-                    borderColor: themeToken.colorPrimary,
-                  }}
-                >
-                  Back
-                </Button>
-              </Form.Item>
-            </Form>
+                <FormProvider {...form}><form onSubmit={form.handleSubmit(handleSubmit)} className="space-y-4">
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email</FormLabel>
+                        <FormControl>
+                          <div className="relative">
+                            <Mail className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                            <Input placeholder="Enter your email" className="pl-9 h-10" {...field} />
+                          </div>
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+
+                  <hr className="border-t border-border my-4" />
+
+                  <Button type="submit" className="w-full h-10">
+                    Submit
+                  </Button>
+
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="w-full h-10"
+                    onClick={handleBack}
+                  >
+                    Back
+                  </Button>
+                </form></FormProvider>
+              </>
+            )}
           </div>
         </div>
 
-        {/* Right Section - Slogan with Thumbnail */}
         {!isMobile && (
         <div
           style={{
             width: '50%',
-            background: `linear-gradient(135deg, ${themeToken.colorPrimary} 0%, ${themeToken.colorPrimary}cc 100%)`,
+            background: `linear-gradient(135deg, var(--primary) 0%, color-mix(in srgb, var(--primary) 80%, transparent) 100%)`,
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',

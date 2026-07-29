@@ -1,48 +1,53 @@
 'use client';
 
-import { Layout, theme } from 'antd';
-import Sidebar from '@/components/layout/Sidebar';
 import SidebarAlternative from '@/components/layout/SidebarAlternative';
 import Header from '@/components/layout/Header';
 import HistoryProvider from '@/components/provider/HistoryProvider';
 import { useState } from 'react';
-
-const { Content } = Layout;
-const { useToken } = theme;
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const { token } = useToken();
   const [collapsed, setCollapsed] = useState(false);
-  
-  // Konfigurasi sidebar:
-  // - useAlternative: true = menggunakan SidebarAlternative, false = menggunakan Sidebar original
-  // - variant: 'tailwind' = styling Tailwind CSS, 'antd' = menggunakan Antd component
+
   const useAlternative = true;
   const variant: 'antd' | 'tailwind' = 'tailwind';
 
-  // Untuk tailwind variant, perlu margin karena menggunakan fixed positioning
-  const needsMargin = useAlternative && variant === 'tailwind';
-  const marginLeft = needsMargin ? (collapsed ? '80px' : '300px') : '0';
+  const showSidebar = useAlternative && variant === 'tailwind'
 
   return (
-    <Layout hasSider style={{ minHeight: '100vh' }}>
-      {useAlternative ? (
-        <SidebarAlternative collapsed={collapsed} variant={variant} />
-      ) : (
-        <Sidebar collapsed={collapsed} />
-      )}
-      <Layout style={{ marginLeft, transition: 'margin-left 0.3s ease-in-out' }}>
+    <div className="min-h-screen">
+      <div
+        className={`fixed left-0 top-0 z-40 h-screen transition-all duration-300 ease-in-out ${
+          showSidebar
+            ? collapsed
+              ? 'w-20'
+              : 'w-[300px]'
+            : 'w-0 overflow-hidden'
+        }`}
+      >
+        {showSidebar && (
+          <SidebarAlternative collapsed={collapsed} variant={variant} />
+        )}
+      </div>
+      <div
+        className={`flex flex-col min-h-screen transition-all duration-300 ease-in-out ${
+          showSidebar
+            ? collapsed
+              ? 'ml-20'
+              : 'ml-[300px]'
+            : 'ml-0'
+        }`}
+      >
         <Header collapsed={collapsed} onCollapsedChange={setCollapsed} />
-        <Content style={{ background: token.colorBgContainer }}>
+        <main className="flex-1 bg-muted/30 overflow-y-auto overflow-x-auto min-h-0">
           <HistoryProvider>
             {children}
           </HistoryProvider>
-        </Content>
-      </Layout>
-    </Layout>
+        </main>
+      </div>
+    </div>
   );
 }

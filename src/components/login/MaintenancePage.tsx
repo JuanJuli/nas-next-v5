@@ -1,15 +1,12 @@
 'use client';
 
-import { theme, Button } from 'antd';
-import { ToolOutlined, ReloadOutlined } from '@ant-design/icons';
+import { Button } from 'antd';
+import { Wrench, RefreshCw } from 'lucide-react';
 import { useRouter } from '@/i18n/navigation';
 import Image from 'next/image';
 import logo from '../../../public/logo/nas-small.png';
 
-const { useToken } = theme;
-
 export default function MaintenancePage() {
-  const { token } = useToken();
   const router = useRouter();
 
   const handleRefresh = () => {
@@ -23,7 +20,7 @@ export default function MaintenancePage() {
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        background: `linear-gradient(135deg, ${token.colorPrimary}15 0%, ${token.colorBgContainer} 100%)`,
+        background: `linear-gradient(135deg, color-mix(in srgb, var(--primary) 8%, transparent) 0%, var(--background) 100%)`,
         padding: '16px',
       }}
     >
@@ -31,7 +28,7 @@ export default function MaintenancePage() {
         style={{
           width: '100%',
           maxWidth: '600px',
-          backgroundColor: token.colorBgContainer,
+          backgroundColor: 'var(--background)',
           borderRadius: '16px',
           boxShadow: '0 8px 32px rgba(0, 0, 0, 0.12)',
           padding: '48px 32px',
@@ -49,7 +46,7 @@ export default function MaintenancePage() {
             width: '200px',
             height: '200px',
             borderRadius: '50%',
-            backgroundColor: token.colorPrimary,
+            backgroundColor: 'var(--primary)',
             opacity: 0.05,
           }}
         />
@@ -61,7 +58,7 @@ export default function MaintenancePage() {
             width: '250px',
             height: '250px',
             borderRadius: '50%',
-            backgroundColor: token.colorPrimary,
+            backgroundColor: 'var(--primary)',
             opacity: 0.05,
           }}
         />
@@ -99,17 +96,15 @@ export default function MaintenancePage() {
               height: '100px',
               margin: '0 auto',
               borderRadius: '50%',
-              backgroundColor: `${token.colorPrimary}15`,
+              backgroundColor: 'color-mix(in srgb, var(--primary) 8%, transparent)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
             }}
           >
-            <ToolOutlined
-              style={{
-                fontSize: '48px',
-                color: token.colorPrimary,
-              }}
+            <Wrench
+              size={48}
+              style={{ color: 'var(--primary)' }}
             />
           </div>
         </div>
@@ -125,7 +120,7 @@ export default function MaintenancePage() {
             style={{
               fontSize: '28px',
               fontWeight: 700,
-              color: token.colorPrimary,
+              color: 'var(--primary)',
               margin: '0 0 16px 0',
             }}
           >
@@ -135,7 +130,7 @@ export default function MaintenancePage() {
           <p
             style={{
               fontSize: '16px',
-              color: token.colorTextSecondary,
+              color: 'var(--muted-foreground)',
               lineHeight: '1.6',
               margin: '0 0 32px 0',
               padding: '0 16px',
@@ -147,14 +142,14 @@ export default function MaintenancePage() {
           <Button
             type="primary"
             size="large"
-            icon={<ReloadOutlined />}
+            icon={<RefreshCw />}
             onClick={handleRefresh}
             style={{
               height: '48px',
               paddingLeft: '32px',
               paddingRight: '32px',
               fontSize: '16px',
-              backgroundColor: token.colorPrimary,
+              backgroundColor: 'var(--primary)',
             }}
           >
             Muat Ulang
@@ -164,10 +159,10 @@ export default function MaintenancePage() {
             style={{
               marginTop: '32px',
               padding: '16px',
-              backgroundColor: `${token.colorPrimary}08`,
+              backgroundColor: 'color-mix(in srgb, var(--primary) 3%, transparent)',
               borderRadius: '8px',
               fontSize: '14px',
-              color: token.colorTextTertiary,
+              color: 'var(--muted-foreground)',
             }}
           >
             <p style={{ margin: 0 }}>

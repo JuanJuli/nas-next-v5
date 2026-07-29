@@ -2,8 +2,8 @@
 
 import TitlePage, { TitleAction } from "@/components/title_page/TitlePage"
 import { useRequirementContext } from "@/context/Requirement";
-import { EyeOutlined } from "@ant-design/icons";
-import { Space } from "antd"
+import { Eye } from "lucide-react";
+
 import PartOne from "./AplTwo/PartOne";
 import PartTwo from "./AplTwo/PartTwo";
 import LastPart from "./AplTwo/LastPart";
@@ -14,7 +14,7 @@ import { useAuthStore } from "@/store/auth";
 import { useModalPreviewEformStore } from "@/store/modalPreviewEform";
 import dayjs from "dayjs";
 import { htmlToPlainText } from "@/helper/stringHtml";
-import { message } from "@/service/antdStatic";
+import { toast } from "sonner";
 import { authFetch } from "@/utils/authFetch";
 import QRCode from 'qrcode';
 import { useTranslations } from 'next-intl';
@@ -172,7 +172,7 @@ export default function Apl2() {
       setIsLoading(false);
     } catch (error) {
       console.error('Error generating PDF:', error);
-      message.error(tm('failed-preview'));
+      toast.error(tm('failed-preview'));
       setIsLoading(false);
     }
   }
@@ -185,18 +185,18 @@ export default function Apl2() {
     {
       key: 'preview',
       label: t('btn-preview-form'),
-      icon: <EyeOutlined />,
+      icon: <Eye />,
       onClick: previewEform,
     }
   ]
   return (
     <>
       <TitlePage title={requirementData?.requirement_name ?? t('persyaratan')} handleBack={handleBack} actions={titleAction} />
-      <Space orientation="vertical" size="large" className="w-full p-6">
+      <div className="flex flex-col gap-6 w-full p-6">
         <PartOne />
         <PartTwo />
         <LastPart />
-      </Space>
+      </div>
     </>
   )
 }

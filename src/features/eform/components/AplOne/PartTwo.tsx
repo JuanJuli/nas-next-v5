@@ -1,9 +1,10 @@
 "use client"
 
-import RegularTable from "@/components/table/RegularTable";
-import { Card, Descriptions, Checkbox } from "antd";
-import type { DescriptionsProps } from 'antd';
-import { useMemo, useState } from "react";
+import { DataTable } from "@/components/ui/data-table";
+import { Card, CardContent } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { useTableQuery } from "@/hooks/useTableQuery";
+import { useMemo } from "react";
 import columnUnitCompetence from "./ColumnUnitcompetence";
 import { useRequirementContext } from "@/context/Requirement";
 import { useEformApl1Store } from "@/store/eformApl1";
@@ -12,20 +13,23 @@ import { useTranslations } from 'next-intl';
 export default function PartTwo() {
   const t = useTranslations('form');
   const tc = useTranslations('common');
-  const [currentPage, setCurrentPage] = useState(1);
   const { requirement } = useRequirementContext();
   const { partTwo, setTujuanAsesmen } = useEformApl1Store();
 
-  const itemSkemaData: DescriptionsProps['items'] = [
+  const { data: unitData, isLoading } = useTableQuery(
+    "core/competency_units",
     {
-      label: t('label-judul'),
-      children: 'Teknisi Komputer',
+      sort: "competency_unit.sequence,competency_unit.row_id,competency_unit_code",
+      schema_id: requirement?.schema_id,
     },
-    {
-      label: t('label-nomor'),
-      children: 'TK-002',
-    }
-  ]
+    {},
+    !!requirement?.schema_id
+  );
+
+  const listData = useMemo(() => {
+    if (unitData && unitData.status === "OK" && unitData.data) return unitData.data;
+    return [];
+  }, [unitData]);
 
   const handleTujuanAsesmenChange = (key: keyof typeof partTwo.tujuanAsesmen, checked: boolean) => {
     if (checked) {
@@ -38,76 +42,66 @@ export default function PartTwo() {
     }
   }
 
-  const itemPurpose: DescriptionsProps['items'] = [
-    {
-      label: <Checkbox checked={partTwo.tujuanAsesmen.sertifikasi} onChange={(e) => handleTujuanAsesmenChange('sertifikasi', e.target.checked)} />,
-      children: t('label-sertifikasi'),
-    },
-    {
-      label: <Checkbox checked={partTwo.tujuanAsesmen.pkt} onChange={(e) => handleTujuanAsesmenChange('pkt', e.target.checked)} />,
-      children: t('label-pkt'),
-    },
-    {
-      label: <Checkbox checked={partTwo.tujuanAsesmen.rpl} onChange={(e) => handleTujuanAsesmenChange('rpl', e.target.checked)} />,
-      children: t('label-rpl'),
-    },
-    {
-      label: <Checkbox checked={partTwo.tujuanAsesmen.lainnya} onChange={(e) => handleTujuanAsesmenChange('lainnya', e.target.checked)} />,
-      children: t('label-lainnya'),
-    }
-  ]
-
-  const itemSkema: DescriptionsProps['items'] = [
-    {
-      label: t('label-skema-sertifikasi'),
-      children: <Descriptions items={itemSkemaData} colon column={1} className="w-full" styles={{ label: { width: '30%' } }} />,
-    },
-    {
-      label: t('label-tujuan-asesmen'),
-      children: <Descriptions items={itemPurpose} colon={false} column={1} className="w-full" styles={{ label: { width: '5%' } }} />,
-    },
-  ]
-
-  const column = useMemo(() => columnUnitCompetence({ currentPage }), [currentPage]);
-
-  const handleChangeParams = (params: any) => {
-    if (params.page) {
-      setCurrentPage(params.page);
-    }
-  }
+  const column = useMemo(() => columnUnitCompetence(), []);
 
   return (
     <Card>
-      <h1 className="text-[2em]! font-bold">{t('heading-bagian-2')}</h1>
-      <p className="mb-4">{t('desc-bagian-2')}</p>
+      <CardContent className="p-6">
+        <h1 className="text-[2em]! font-bold">{t('heading-bagian-2')}</h1>
+        <p className="mb-4">{t('desc-bagian-2')}</p>
 
-      <Descriptions
-        items={itemSkema}
-        colon={true}
-        column={1} 
-        className="w-full mt-4"
-        styles={{
-          label: { 
-            width: '30%',
-            display: 'flex',
-            justifyContent: 'space-between',
-          },
-        }}
-      />
+        <div className="mt-4 space-y-2">
+          <div className="flex">
+            <span className="font-medium min-w-[30%]">{t('label-skema-sertifikasi')}</span>
+            <span className="mx-2">:</span>
+            <div className="space-y-1">
+              <p><span className="text-muted-foreground">{t('label-judul')}:</span> Teknisi Komputer</p>
+              <p><span className="text-muted-foreground">{t('label-nomor')}:</span> TK-002</p>
+            </div>
+          </div>
+          <div className="flex">
+            <span className="font-medium min-w-[30%]">{t('label-tujuan-asesmen')}</span>
+            <span className="mx-2">:</span>
+            <div className="space-y-1">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <Checkbox
+                  checked={partTwo.tujuanAsesmen.sertifikasi}
+                  onCheckedChange={(checked) => handleTujuanAsesmenChange('sertifikasi', checked === true)}
+                />
+                <span>{t('label-sertifikasi')}</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <Checkbox
+                  checked={partTwo.tujuanAsesmen.pkt}
+                  onCheckedChange={(checked) => handleTujuanAsesmenChange('pkt', checked === true)}
+                />
+                <span>{t('label-pkt')}</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <Checkbox
+                  checked={partTwo.tujuanAsesmen.rpl}
+                  onCheckedChange={(checked) => handleTujuanAsesmenChange('rpl', checked === true)}
+                />
+                <span>{t('label-rpl')}</span>
+              </label>
+              <label className="flex items-center gap-2 cursor-pointer">
+                <Checkbox
+                  checked={partTwo.tujuanAsesmen.lainnya}
+                  onCheckedChange={(checked) => handleTujuanAsesmenChange('lainnya', checked === true)}
+                />
+                <span>{t('label-lainnya')}</span>
+              </label>
+            </div>
+          </div>
+        </div>
 
-      <p>{t('label-daftar-unit')}</p>
-      <RegularTable
-        url="core/competency_units"
-        queryParams={
-          {
-            sort: "competency_unit.sequence,competency_unit.row_id,competency_unit_code",
-            schema_id: requirement?.schema_id,
-          }
-        }
-        columns={column}
-        rowKey="row_id"
-        onChangeParams={handleChangeParams}
-      />
+        <p className="mt-6">{t('label-daftar-unit')}</p>
+        <DataTable
+          columns={column}
+          data={listData}
+          loading={isLoading}
+        />
+      </CardContent>
     </Card>
   )
 }

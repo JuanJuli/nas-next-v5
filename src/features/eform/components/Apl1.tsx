@@ -1,16 +1,16 @@
 "use client"
 
 import TitlePage, { TitleAction } from "@/components/title_page/TitlePage";
-import { EyeOutlined } from "@ant-design/icons";
+import { Eye } from "lucide-react";
 import { useEformApl1Store } from "@/store/eformApl1";
 import { useTableQuery } from "@/hooks/useTableQuery";
 import { useAuthStore } from "@/store/auth";
 import { useModalPreviewEformStore } from "@/store/modalPreviewEform";
 import dayjs from "dayjs";
 import { htmlToPlainText } from "@/helper/stringHtml";
-import { message } from "@/service/antdStatic";
+import { toast } from "sonner";
 import { switchGenderToLabel } from "@/helper/gender";
-import { Space } from "antd"
+
 import PartOne from "./AplOne/PartOne"
 import PartTwo from "./AplOne/PartTwo"
 import PartTree from "./AplOne/PartTree"
@@ -229,7 +229,7 @@ export default function Apl1() {
       setIsLoading(false);
     } catch (error) {
       console.error('Error generating PDF:', error);
-      message.error(tm('failed-preview'));
+      toast.error(tm('failed-preview'));
       setIsLoading(false);
     }
   }
@@ -238,7 +238,7 @@ export default function Apl1() {
     {
       key: 'preview',
       label: t('btn-preview-form'),
-      icon: <EyeOutlined />,
+      icon: <Eye />,
       onClick: previewEform,
     }
   ]
@@ -247,12 +247,12 @@ export default function Apl1() {
     <>
       <TitlePage title={requirementData?.requirement_name ?? t('persyaratan')} handleBack={handleBack} actions={titleAction} />
       <div className="p-6">
-        <Space orientation="vertical" size="large" className="w-full">
+        <div className="flex flex-col gap-6 w-full">
           <PartOne />
           <PartTwo />
           <PartTree />
           <LastPart />
-        </Space>
+        </div>
       </div>
     </>
   )

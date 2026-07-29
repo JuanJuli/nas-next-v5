@@ -1,7 +1,7 @@
 'use client';
 
-import { Form, Input, Button, theme, Carousel, Alert } from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { Carousel } from 'antd';
+import { User, Lock } from 'lucide-react';
 import { useRouter } from '@/i18n/navigation';
 import Image from 'next/image';
 import { useIsMobile } from '@/hooks/useIsMobile';
@@ -11,8 +11,13 @@ import thumbnailOne from '../../../public/thumbnail/kantoran1.jpg';
 import thumbnailTwo from '../../../public/thumbnail/kantoran2.webp';
 import logo from '../../../public/logo/nas-small.png';
 import { useTranslations } from 'next-intl';
-
-const { useToken } = theme;
+import { useForm, FormProvider } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { loginSchema, type LoginFormValues } from '@/lib/schemas/login';
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 
 interface iPayloadGenerateToken {
   lsp_id: string;
@@ -38,13 +43,14 @@ export default function LoginType3({
   errorMessage?: string;
   headerActions?: React.ReactNode;
 }) {
-  const { token: themeToken } = useToken();
   const router = useRouter();
   const isMobile = useIsMobile();
-
   const t = useTranslations('common');
 
-  // Show LSP selection UI if listLsp has items
+  const form = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+  });
+
   if (listLsp.length > 0) {
     return (
       <div style={{ position: 'relative', minHeight: '100vh' }}>
@@ -105,11 +111,10 @@ export default function LoginType3({
           width: '100%',
         }}
       >
-      {/* Left Section - Form (20-30vw) */}
       <div
         style={{
           width: isMobile ? '100%' : '30vw',
-          backgroundColor: themeToken.colorBgContainer,
+          backgroundColor: 'var(--background)',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -123,7 +128,6 @@ export default function LoginType3({
               {headerActions}
             </div>
           )}
-          {/* Logo - Top */}
           <div
             style={{
               width: '100%',
@@ -144,86 +148,73 @@ export default function LoginType3({
 
           <div style={{ width: '100%' }}>
             <div style={{ marginBottom: '24px' }}>
-              <h1 style={{ fontSize: '24px', fontWeight: 700, margin: 0, color: themeToken.colorPrimary }}>
-                Selamat Datang
+              <h1 style={{ fontSize: '24px', fontWeight: 700, margin: 0, color: 'var(--primary)' }}>
+                {t('welcome')}
               </h1>
               <p style={{ fontSize: '14px', color: '#8c8c8c', marginTop: '8px' }}>
-                Masukkan informasi dibawah ini untuk melakukan login.
+                {t('below-welcome')}
               </p>
             </div>
 
             {errorMessage && (
-              <Alert
-                title="Error"
-                description={errorMessage}
-                type="error"
-                showIcon
-                closable
-                style={{ marginBottom: '16px' }}
-              />
+              <Alert variant="destructive" className="mb-4">
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{errorMessage}</AlertDescription>
+              </Alert>
             )}
 
-            <Form
-              layout="vertical"
-              onFinish={handleLogin}
-            >
-              <Form.Item
+            <FormProvider {...form}><form onSubmit={form.handleSubmit(handleLogin)} className="space-y-4">
+              <FormField
+                control={form.control}
                 name="username"
-                label="Username"
-                rules={[{ required: true, message: 'Please input your username!' }]}
-              >
-                <Input
-                  prefix={<UserOutlined />}
-                  placeholder="Enter your username"
-                  size="large"
-                />
-              </Form.Item>
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('username')}</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <User className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                        <Input placeholder="Enter your username" className="pl-9 h-10" {...field} />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-              <Form.Item
+              <FormField
+                control={form.control}
                 name="password"
-                label="Password"
-                rules={[{ required: true, message: 'Please input your password!' }]}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('password')}</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                        <Input type="password" placeholder="Enter your password" className="pl-9 h-10" {...field} />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <Button type="submit" className="w-full h-10 mt-6" disabled={loading}>
+                {loading ? "Loading..." : "Login"}
+              </Button>
+
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full h-10"
+                onClick={() => router.push('/register')}
+                disabled={loading}
               >
-                <Input.Password
-                  prefix={<LockOutlined />}
-                  placeholder="Enter your password"
-                  size="large"
-                />
-              </Form.Item>
-
-              <Form.Item style={{ marginTop: '24px' }}>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  block
-                  size="large"
-                  loading={loading}
-                  style={{ backgroundColor: themeToken.colorPrimary }}
-                >
-                  Login
-                </Button>
-              </Form.Item>
-
-              <Form.Item style={{ marginBottom: 0 }}>
-                <Button
-                  type="default"
-                  block
-                  size="large"
-                  onClick={() => router.push('/register')}
-                  loading={loading}
-                  style={{
-                    color: themeToken.colorPrimary,
-                    borderColor: themeToken.colorPrimary,
-                  }}
-                >
-                  Register
-                </Button>
-              </Form.Item>
-            </Form>
+                Register
+              </Button>
+            </form></FormProvider>
           </div>
       </div>
 
-      {/* Right Section - Carousel (70vw) */}
       {!isMobile && (
         <div
           style={{

@@ -1,9 +1,13 @@
 'use client';
 
 import { useFormSchemaContext } from "@/context/FormSchema";
-import { Button, Collapse, CollapseProps, Descriptions, DescriptionsProps, Form, Switch, theme } from "antd";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
+import { FormField, FormItem, FormControl } from "@/components/ui/form";
 import { useTranslations } from 'next-intl';
 import { useMemo } from "react";
+import { FormProvider } from "react-hook-form";
 
 interface AssessmentTool {
   code: string;
@@ -108,80 +112,106 @@ const defaultAssessmentTools: AssessmentCategory[] = [
 ];
 
 export default function FormAssessmentTools() {
-  const { token } = theme.useToken();
   const t = useTranslations('form');
   const tc = useTranslations('common');
   const { schema, formAssessmentTools, formAssessmentToolsFinish, onBack } = useFormSchemaContext();
-
-  const itemSchema: DescriptionsProps['items'] = useMemo(() => [
-    { key: 'schema_code', label: t('scheme-code'), children: schema?.schema_code },
-    { key: 'schema_name', label: t('scheme-name'), children: schema?.schema_name },
-    { key: 'schema_license', label: t('scheme-license'), children: schema?.schema_license },
-    { key: 'schema_skkni', label: t('scheme-type'), children: schema?.schema_skkni },
-    { key: 'schema_year', label: t('scheme-year'), children: schema?.schema_year },
-  ], [schema, t]);
-
-  const collapseItems: CollapseProps['items'] = useMemo(() => defaultAssessmentTools.map((category, catIndex) => ({
-    key: String(catIndex),
-    label: category.label,
-    children: (
-      <>
-        {category.groups.map((group) => (
-          <div key={group.label} className="mb-4">
-            <h4 className="text-base font-medium mb-2">{group.label}</h4>
-            <table className="w-full border-collapse">
-              <thead>
-                <tr style={{ background: token.colorBgElevated }}>
-                  <th className="text-left p-2 text-sm font-medium" style={{ border: `1px solid ${token.colorBorderSecondary}` }}>{t('heading-assessment-tool')}</th>
-                  <th className="text-center p-2 text-sm font-medium w-24" style={{ border: `1px solid ${token.colorBorderSecondary}` }}>{t('heading-asesi')}</th>
-                </tr>
-              </thead>
-              <tbody>
-                {group.tools.map((tool) => (
-                  <tr key={tool.code}>
-                    <td className="p-2 text-sm" style={{ border: `1px solid ${token.colorBorderSecondary}` }}>{tool.name}</td>
-                    <td className="p-2 text-center" style={{ border: `1px solid ${token.colorBorderSecondary}` }}>
-                      <Form.Item
-                        name={[category.label.toLowerCase(), group.label.toLowerCase(), tool.code]}
-                        valuePropName="checked"
-                        noStyle
-                      >
-                        <Switch size="small" />
-                      </Form.Item>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        ))}
-        <p className="text-xs mt-2" style={{ color: token.colorTextTertiary }}>{t('hint-show-asesi')}</p>
-      </>
-    ),
-  })), [token, t]);
+  const control = formAssessmentTools!.control;
 
   return (
-    <>
-      <div className="p-4 rounded-lg shadow-md" style={{ background: token.colorBgContainer }}>
+    <FormProvider {...formAssessmentTools!}>
+      <div className="p-4 rounded-lg shadow-md bg-card">
         <h2 className="text-xl font-semibold mb-4">{tc('heading-data-skema')}</h2>
-        <Descriptions column={2} layout="vertical" colon={false} items={itemSchema} />
+        <div className="grid grid-cols-2 gap-4">
+          <div className="flex">
+            <span className="font-medium min-w-[30%]">{t('scheme-code')}</span>
+            <span className="mx-2">:</span>
+            <span>{schema?.schema_code}</span>
+          </div>
+          <div className="flex">
+            <span className="font-medium min-w-[30%]">{t('scheme-name')}</span>
+            <span className="mx-2">:</span>
+            <span>{schema?.schema_name}</span>
+          </div>
+          <div className="flex">
+            <span className="font-medium min-w-[30%]">{t('scheme-license')}</span>
+            <span className="mx-2">:</span>
+            <span>{schema?.schema_license}</span>
+          </div>
+          <div className="flex">
+            <span className="font-medium min-w-[30%]">{t('scheme-type')}</span>
+            <span className="mx-2">:</span>
+            <span>{schema?.schema_skkni}</span>
+          </div>
+          <div className="flex">
+            <span className="font-medium min-w-[30%]">{t('scheme-year')}</span>
+            <span className="mx-2">:</span>
+            <span>{schema?.schema_year}</span>
+          </div>
+        </div>
       </div>
 
-      <div className="mt-4 p-4 rounded-lg shadow-md" style={{ background: token.colorBgContainer }}>
+      <div className="mt-4 p-4 rounded-lg shadow-md bg-card">
         <h2 className="text-xl font-semibold mb-4">{t('heading-assessment-tools')}</h2>
-        <Form form={formAssessmentTools} layout="vertical" onFinish={formAssessmentToolsFinish}>
-          <Collapse
-            defaultActiveKey={defaultAssessmentTools.map((_, i) => String(i))}
-            destroyOnHidden={false}
-            items={collapseItems}
-          />
-        </Form>
+
+        <Accordion defaultValue={defaultAssessmentTools.map((_, i) => String(i))}>
+          {defaultAssessmentTools.map((category, catIndex) => (
+            <AccordionItem key={String(catIndex)} value={String(catIndex)}>
+              <AccordionTrigger>{category.label}</AccordionTrigger>
+              <AccordionContent>
+                {category.groups.map((group) => {
+                  const catKey = category.label.toLowerCase();
+                  const groupKey = group.label.toLowerCase();
+                  return (
+                    <div key={group.label} className="mb-4">
+                      <h4 className="text-base font-medium mb-2">{group.label}</h4>
+                      <table className="w-full border-collapse">
+                        <thead>
+                          <tr className="bg-muted">
+                            <th className="text-left p-2 text-sm font-medium border border-border">{t('heading-assessment-tool')}</th>
+                            <th className="text-center p-2 text-sm font-medium w-24 border border-border">{t('heading-asesi')}</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {group.tools.map((tool) => (
+                            <tr key={tool.code}>
+                              <td className="p-2 text-sm border border-border">{tool.name}</td>
+                              <td className="p-2 text-center border border-border">
+                                <FormField
+                                  control={control}
+                                  name={`${catKey}.${groupKey}.${tool.code}`}
+                                  render={({ field }) => (
+                                    <FormItem>
+                                      <FormControl>
+                                        <Switch
+                                          checked={field.value ?? false}
+                                          onCheckedChange={field.onChange}
+                                          size="sm"
+                                        />
+                                      </FormControl>
+                                    </FormItem>
+                                  )}
+                                />
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  );
+                })}
+                <p className="text-xs mt-2 text-muted-foreground">{t('hint-show-asesi')}</p>
+              </AccordionContent>
+            </AccordionItem>
+          ))}
+        </Accordion>
       </div>
 
-      <div className="fixed bottom-0 left-0 w-full p-4 border-t-[2px] flex justify-end gap-2" style={{ background: token.colorBgContainer, borderTopColor: token.colorBorderSecondary }}>
-        <Button onClick={onBack}>{tc('btn-kembali')}</Button>
-        <Button type="primary" onClick={() => formAssessmentTools?.submit()}>{tc('btn-simpan')}</Button>
+      <div className="fixed bottom-0 left-0 w-full p-4 border-t-2 flex justify-end gap-2 bg-background border-border">
+        <Button variant="outline" onClick={onBack}>{tc('btn-kembali')}</Button>
+        <Button onClick={() => formAssessmentTools!.handleSubmit(formAssessmentToolsFinish!)()}>
+          {tc('btn-simpan')}
+        </Button>
       </div>
-    </>
+      </FormProvider>
   );
 }

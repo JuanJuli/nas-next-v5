@@ -1,8 +1,9 @@
 "use client";
 
-import RegularTable from "@/components/table/RegularTable";
-import { Card } from "antd";
-import { useMemo, useState } from "react";
+import { DataTable } from "@/components/ui/data-table";
+import { Card, CardContent } from "@/components/ui/card";
+import { useTableQuery } from "@/hooks/useTableQuery";
+import { useMemo } from "react";
 import columnBaseReq from "./ColumnBaseReq";
 import columnBam from "./ColumnBam";
 import { useRequirementContext } from "@/context/Requirement";
@@ -13,8 +14,6 @@ import { useTranslations } from 'next-intl';
 
 export default function PartTree() {
   const t = useTranslations('form');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [currentPageBams, setCurrentPageBams] = useState(1);
   const { requirement } = useRequirementContext();
   const { user } = useAuthStore();
   const { setRequirementID } = useModalAttachmentStore((state) => state);
@@ -24,49 +23,61 @@ export default function PartTree() {
     setRequirementID(requirementID);
   }
 
-  const columnBase = useMemo(() => columnBaseReq({ 
-    currentPage, 
-    handleAttachment, 
-    requirementsStatus: partTree.requirementsStatus, 
-    setRequirementStatus 
-  }), [currentPage, partTree.requirementsStatus, setRequirementStatus]);
-  
-  const columnBams = useMemo(() => columnBam({ 
-    currentPage: currentPageBams, 
-    handleAttachment, 
-    requirementsStatus: partTree.requirementsStatus, 
-    setRequirementStatus 
-  }), [currentPageBams, partTree.requirementsStatus, setRequirementStatus]);
-  
+  const { data: dasarData, isLoading: dasarLoading } = useTableQuery(
+    "core/requirements",
+    { schema_id: requirement?.schema_id, requirement_category: "DASAR", applicant_id: user?.applicant?.applicant_id },
+    {},
+    !!requirement?.schema_id && !!user?.applicant?.applicant_id
+  );
+
+  const { data: bamData, isLoading: bamLoading } = useTableQuery(
+    "core/requirements",
+    { schema_id: requirement?.schema_id, requirement_category: "BAM", applicant_id: user?.applicant?.applicant_id },
+    {},
+    !!requirement?.schema_id && !!user?.applicant?.applicant_id
+  );
+
+  const dasarList = useMemo(() => {
+    if (dasarData && dasarData.status === "OK" && dasarData.data) return dasarData.data;
+    return [];
+  }, [dasarData]);
+
+  const bamList = useMemo(() => {
+    if (bamData && bamData.status === "OK" && bamData.data) return bamData.data;
+    return [];
+  }, [bamData]);
+
+  const columnBase = useMemo(() => columnBaseReq({
+    handleAttachment,
+    requirementsStatus: partTree.requirementsStatus,
+    setRequirementStatus
+  }), [partTree.requirementsStatus, setRequirementStatus]);
+
+  const columnBams = useMemo(() => columnBam({
+    handleAttachment,
+    requirementsStatus: partTree.requirementsStatus,
+    setRequirementStatus
+  }), [partTree.requirementsStatus, setRequirementStatus]);
+
   return (
     <Card>
-      <h1 className="text-[2em]! font-bold">{t('heading-bagian-3')}</h1>
-      <p className="mb-4">{t('desc-bagian-3')}</p>
-    
-      <h4>{t('heading-3-1')}</h4>
-      <RegularTable
-        columns={columnBase}
-        url="core/requirements"
-        queryParams={{ schema_id: requirement?.schema_id, requirement_category: "DASAR", applicant_id: user?.applicant?.applicant_id }}
-        rowKey="requirement_id"
-        onChangeParams={(params: any) => {
-          if (params.page) {
-            setCurrentPage(params.page);
-          }
-        }}
-      />
-      <h4>{t('heading-3-2')}</h4>
-      <RegularTable
-        columns={columnBams}
-        url="core/requirements"
-        queryParams={{ schema_id: requirement?.schema_id, requirement_category: "BAM", applicant_id: user?.applicant?.applicant_id }}
-        rowKey="requirement_id"
-        onChangeParams={(params: any) => {
-          if (params.page) {
-            setCurrentPageBams(params.page);
-          }
-        }}
-      />
+      <CardContent className="p-6">
+        <h1 className="text-[2em]! font-bold">{t('heading-bagian-3')}</h1>
+        <p className="mb-4">{t('desc-bagian-3')}</p>
+
+        <h4 className="font-semibold mb-2">{t('heading-3-1')}</h4>
+        <DataTable
+          columns={columnBase}
+          data={dasarList}
+          loading={dasarLoading}
+        />
+        <h4 className="font-semibold mt-6 mb-2">{t('heading-3-2')}</h4>
+        <DataTable
+          columns={columnBams}
+          data={bamList}
+          loading={bamLoading}
+        />
+      </CardContent>
     </Card>
   )
 }

@@ -1,43 +1,39 @@
 'use client';
 
-import CustomTable from "@/components/table/CustomTable";
+import { DataTable } from "@/components/ui/data-table";
 import TitlePage from "@/components/title_page/TitlePage";
-import { HomeOutlined } from "@ant-design/icons";
-import { theme } from "antd";
+import { Home } from "lucide-react";
+import { useRouter } from "@/i18n/navigation";
 import columns from "./Column";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useTranslations } from 'next-intl';
-import { useRouter } from "next/dist/client/components/navigation";
-const { useToken } = theme;
-  
+import { useTableQuery } from "@/hooks/useTableQuery";
+import { useTableUrlState } from "@/hooks/useTableUrlState";
+
 export default function DashboardApl() {
-  const { token } = useToken();
   const router = useRouter();
   const t = useTranslations('common');
-
+  const { params, setParams } = useTableUrlState();
+  const { data, isLoading } = useTableQuery("assessment/assessment/applicant", params, {
+    "-last_activity_state": "completed,archived",
+  });
 
   const handleLinkVirtual = (data: any) => {
-
   };
 
   const handleReq = (id: string) => {
-
   };
 
   const handleOpenNoteAsesmen = (note: string) => {
-
   };
 
   const handleAppeal = (id: string, assessmentID: string) => {
-
   };
 
   const handleDocumentAsesmen = (id: string, aaID: string) => {
-
   };
 
   const handleSupDocumentApl = (aaID: string, assessmentState: string) => {
-
   };
 
   const column = useMemo(() => {
@@ -49,36 +45,41 @@ export default function DashboardApl() {
       handleDocumentAsesmen,
       handleSupDocumentApl,
       t,
-    }) 
+    })
   }, [t])
 
   return (
     <>
       <TitlePage
         title={t('dashboard')}
-        icon={<HomeOutlined style={{ fontSize: '24px', color: token.colorPrimary }} />}
+        icon={<Home size={24} />}
         actions={[
           {
             key: 'refresh',
             label: t('btn-refresh'),
             type: 'primary',
             onClick: () => {
-              // Implement refresh logic here
             }
           }
         ]}
       />
 
       <div className="p-6">
-        <CustomTable
-          id="dashboard-apl-table"
+        <DataTable
           columns={column}
-          url="assessment/assessment/applicant"
-          queryParams={{
-            "-last_activity_state": "completed,archived",
+          data={data?.data || []}
+          loading={isLoading}
+          total={data?.count || 0}
+          pageSize={params.limit}
+          pageIndex={params.page ? params.page - 1 : 0}
+          searchKey="title"
+          onPaginationChange={(pagination) => {
+            setParams({
+              limit: pagination.pageSize,
+              offset: pagination.pageIndex * pagination.pageSize,
+              page: pagination.pageIndex + 1,
+            })
           }}
-          rowKey="assessment_id"
-          width="1950px"
         />
       </div>
     </>

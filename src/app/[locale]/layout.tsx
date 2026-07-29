@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { cookies, headers } from "next/headers";
-import { AntdRegistry } from "@ant-design/nextjs-registry";
 import ThemeProvider from "@/components/provider/ThemeProvider";
 import {NextIntlClientProvider} from 'next-intl';
 
@@ -8,6 +7,7 @@ import { getTenant } from "@/service/tenant";
 import { TenantProvider } from "@/components/provider/TenantProvider";
 import TanstackProvider from "@/components/provider/TanstackProvider";
 import AuthProvider from "@/components/provider/AuthProvider";
+import { Toaster } from "@/components/ui/sonner";
 import { getMessages } from "next-intl/server";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -63,17 +63,16 @@ const MainLayout = async ({ children }: { children: React.ReactNode }) => {
   const lsp_id = cookieStore.get('xt-id') ?? null;
   
   return (
-    <AntdRegistry>
-      <TanstackProvider>
-        <ThemeProvider primaryColor={defaultColor}>
-          <TenantProvider value={lspData?.data || null} lsp_id={lsp_id?.value}>
-            <AuthProvider roleCode={roleCode?.value}>
-              {children}
-            </AuthProvider>
-          </TenantProvider>
-        </ThemeProvider>
-      </TanstackProvider>
-    </AntdRegistry> 
+    <TanstackProvider>
+      <ThemeProvider primaryColor={defaultColor}>
+        <TenantProvider value={lspData?.data || null} lsp_id={lsp_id?.value}>
+          <AuthProvider roleCode={roleCode?.value}>
+            {children}
+            <Toaster />
+          </AuthProvider>
+        </TenantProvider>
+      </ThemeProvider>
+    </TanstackProvider>
   )
 }
 

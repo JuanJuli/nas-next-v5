@@ -2,7 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { Card, Row, Col, Statistic } from 'antd';
-import { TeamOutlined, FileTextOutlined, CheckCircleOutlined } from '@ant-design/icons';
+import { Users, FileText, CheckCircle } from 'lucide-react';
 
 export default function Dashboard() {
   const t = useTranslations('common');
@@ -16,7 +16,7 @@ export default function Dashboard() {
             <Statistic
               title={t('total-users')}
               value={1128}
-              prefix={<TeamOutlined />}
+              prefix={<Users />}
             />
           </Card>
         </Col>
@@ -26,7 +26,7 @@ export default function Dashboard() {
             <Statistic
               title={t('total-assessments')}
               value={93}
-              prefix={<FileTextOutlined />}
+              prefix={<FileText />}
             />
           </Card>
         </Col>
@@ -36,7 +36,7 @@ export default function Dashboard() {
             <Statistic
               title={t('completed')}
               value={68}
-              prefix={<CheckCircleOutlined />}
+              prefix={<CheckCircle />}
             />
           </Card>
         </Col>

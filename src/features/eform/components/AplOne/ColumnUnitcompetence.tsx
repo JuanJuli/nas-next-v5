@@ -1,46 +1,28 @@
+import { ColumnDef } from "@tanstack/react-table"
 import { useTranslations } from 'next-intl';
-import { type TableColumnsType } from 'antd';
 
-export default function columnUnitCompetence({ currentPage }: { currentPage: number }) {
+export default function columnUnitCompetence({ currentPage }: { currentPage?: number } = {}): ColumnDef<any>[] {
   const t = useTranslations('form');
-  const column: TableColumnsType<any> = [
+  return [
     {
-      title: 'No.',
-      dataIndex: 'competency_unit_id',
-      key: 'u-competency_unit_id',
-      render: (value: any, record: any, index: number) => {
-        const rowNumber = (currentPage - 1) * 10 + index + 1;
-        return rowNumber;
-      }
+      id: 'no',
+      header: 'No.',
+      cell: ({ row }) => row.index + 1,
     },
     {
-      title: t('unit-code'),
-      dataIndex: 'competency_unit_code',
-      key: 'u-competency_unit_code',
-      render: (value: any) => {
-        if (value) return value;
-        return '-';
-      },
+      accessorKey: 'competency_unit_code',
+      header: t('unit-code'),
+      cell: ({ row }) => row.getValue('competency_unit_code') || '-',
     },
     {
-      title: t('label-unit-title'),
-      dataIndex: 'competency_unit_name',
-      key: 'u-competency_unit_name',
-      render: (value: any) => {
-        if (value) return value;
-        return '-';
-      },
+      accessorKey: 'competency_unit_name',
+      header: t('label-unit-title'),
+      cell: ({ row }) => row.getValue('competency_unit_name') || '-',
     },
     {
-      title: t('label-standar-kompetensi'),
-      dataIndex: 'competency_unit_skkni',
-      key: 'u-competency_unit_skkni',
-      render: (value: any) => {
-        if (value) return value;
-        return '-';
-      },
+      accessorKey: 'competency_unit_skkni',
+      header: t('label-standar-kompetensi'),
+      cell: ({ row }) => row.getValue('competency_unit_skkni') || '-',
     },
   ];
-
-  return column;
 }

@@ -1,7 +1,10 @@
 import { Suspense } from 'react';
 import './globals.css';
-import 'antd/dist/antd.css';
 import NextTopLoader from 'nextjs-toploader';
+import { Geist } from "next/font/google";
+import { cn } from "@/lib/utils";
+
+const geist = Geist({subsets:['latin'],variable:'--font-sans'});
 
 const themeScript = `
 (function(){
@@ -24,7 +27,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html suppressHydrationWarning={true}>
+    <html suppressHydrationWarning={true} className={cn("font-sans", geist.variable)}>
       <body>
         <script dangerouslySetInnerHTML={{ __html: themeScript }} />
         <NextTopLoader />

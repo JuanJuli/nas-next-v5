@@ -1,5 +1,5 @@
+import { ColumnDef } from '@tanstack/react-table';
 import ActionButtonTable from '@/components/button/ActionButton';
-import { Flex, type TableColumnsType } from 'antd';
 
 export default function columnsReq({
   handleEdit,
@@ -13,55 +13,50 @@ export default function columnsReq({
   handleDelete?(id: string): void;
   handleDetail?(id: string): void;
   t?: (key: string) => string;
-}) {
+}): ColumnDef<any>[] {
   const c = t || ((key: string) => key);
-  const columnsDasar: TableColumnsType<any> = [
+  return [
     {
-      title: c('column-no'),
-      dataIndex: 'requirement_id',
-      key: 'u-requirement_id',
-      width: 80,
-      render: (value: any, record: any, index: number) => {
-        // Menghitung nomor berdasarkan halaman saat ini dan indeks baris
-        const rowNumber = (currentPage - 1) * 10 + index + 1;
+      id: 'u-requirement_id',
+      header: c('column-no'),
+      accessorKey: 'requirement_id',
+      cell: ({ row }) => {
+        const rowNumber = (currentPage - 1) * 10 + row.index + 1;
         return rowNumber;
-      }
-    },
-    {
-      title: c('column-document-name'),
-      dataIndex: 'requirement_name',
-      key: 'requirement_name',
-      render(value: string) {
-        if (!value) {
-          return '-';
-        }
-
-        return <div dangerouslySetInnerHTML={{ __html: value }} />;
       },
     },
     {
-      title: c('column-aksi'),
-      dataIndex: 'requirement_master_id',
-      key: 'requirement_master_id',
-      width: '350px',
-      render: (value: string, record: any) => {
+      id: 'requirement_name',
+      header: c('column-document-name'),
+      accessorKey: 'requirement_name',
+      cell: ({ row }) => {
+        const value = row.getValue('requirement_name');
+        if (!value) return '-';
+        return <div dangerouslySetInnerHTML={{ __html: value as string }} />;
+      },
+    },
+    {
+      id: 'requirement_master_id',
+      header: c('column-aksi'),
+      accessorKey: 'requirement_master_id',
+      cell: ({ row }) => {
+        const value = row.getValue('requirement_master_id') as string;
+        const record = row.original;
         let type = 'all';
         if (record.current_schema) {
           type = record.current_schema;
         }
         return (
-          <Flex gap={10}>
+          <div className="flex gap-2.5">
             <ActionButtonTable
               id={value}
               onEdit={handleEdit ? id => handleEdit(id, record) : undefined }
               onDelete={handleDelete ? id => handleDelete(id) : undefined}
               onDetail={handleDetail}
             />
-          </Flex>
+          </div>
         );
       },
     },
   ];
-
-  return columnsDasar;
 }

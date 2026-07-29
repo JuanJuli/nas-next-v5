@@ -1,14 +1,18 @@
 'use client';
 
-import { Form, Input, Button, theme, Divider, Alert } from 'antd';
-import { UserOutlined, LockOutlined } from '@ant-design/icons';
+import { User, Lock } from 'lucide-react';
 import { useRouter } from '@/i18n/navigation';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import { LspLoginResponse } from '@/types/login';
 import SelectLspRole from './SelectLspRole';
 import { useTranslations } from 'next-intl';
-
-const { useToken } = theme;
+import { useForm, FormProvider } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { loginSchema, type LoginFormValues } from '@/lib/schemas/login';
+import { FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Alert, AlertTitle, AlertDescription } from '@/components/ui/alert';
 
 interface iPayloadGenerateToken {
   lsp_id: string;
@@ -34,13 +38,14 @@ export default function LoginType1({
   errorMessage?: string;
   headerActions?: React.ReactNode;
 }) {
-  const { token: themeToken } = useToken();
   const router = useRouter();
   const isMobile = useIsMobile();
-
   const t = useTranslations('common');
 
-  // Show LSP selection UI if listLsp has items
+  const form = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+  });
+
   if (listLsp.length > 0) {
     return (
       <div style={{ position: 'relative', minHeight: '100vh' }}>
@@ -68,7 +73,7 @@ export default function LoginType1({
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
-        backgroundColor: themeToken.colorBgContainer,
+        backgroundColor: 'var(--background)',
         padding: '16px',
       }}
     >
@@ -83,12 +88,11 @@ export default function LoginType1({
           overflow: 'hidden',
         }}
       >
-        {/* Left Section - Slogan */}
         {!isMobile && (
         <div
           style={{
             flex: 1,
-            backgroundColor: themeToken.colorPrimary,
+            backgroundColor: 'var(--primary)',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -99,7 +103,6 @@ export default function LoginType1({
             overflow: 'hidden',
           }}
         >
-          {/* Top-left decoration */}
           <div
             style={{
               position: 'absolute',
@@ -111,7 +114,6 @@ export default function LoginType1({
               backgroundColor: 'rgba(255, 255, 255, 0.1)',
             }}
           />
-          {/* Bottom-right decoration */}
           <div
             style={{
               position: 'absolute',
@@ -133,11 +135,10 @@ export default function LoginType1({
         </div>
         )}
 
-        {/* Right Section - Form */}
         <div
           style={{
             flex: 1,
-            backgroundColor: themeToken.colorBgContainer,
+            backgroundColor: 'var(--background)',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
@@ -152,7 +153,6 @@ export default function LoginType1({
               {headerActions}
             </div>
           )}
-          {/* Top-right decoration */}
           <div
             style={{
               position: 'absolute',
@@ -161,11 +161,10 @@ export default function LoginType1({
               width: '120px',
               height: '120px',
               borderRadius: '50%',
-              backgroundColor: themeToken.colorPrimary,
+              backgroundColor: 'var(--primary)',
               opacity: 0.1,
             }}
           />
-          {/* Bottom-left decoration */}
           <div
             style={{
               position: 'absolute',
@@ -174,88 +173,76 @@ export default function LoginType1({
               width: '120px',
               height: '120px',
               borderRadius: '50%',
-              backgroundColor: themeToken.colorPrimary,
+              backgroundColor: 'var(--primary)',
               opacity: 0.1,
             }}
           />
           
           <div style={{ width: '100%', position: 'relative', zIndex: 1 }}>
             <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-              <h1 style={{ fontSize: '24px', fontWeight: 700, margin: 0, color: themeToken.colorPrimary }}>
+              <h1 style={{ fontSize: '24px', fontWeight: 700, margin: 0, color: 'var(--primary)' }}>
                 Login
               </h1>
             </div>
 
             {errorMessage && (
-              <Alert
-                title="Error"
-                description={errorMessage}
-                type="error"
-                showIcon
-                closable
-                style={{ marginBottom: '16px' }}
-              />
+              <Alert variant="destructive" className="mb-4">
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{errorMessage}</AlertDescription>
+              </Alert>
             )}
 
-            <Form
-              layout="vertical"
-              onFinish={handleLogin}
-            >
-              <Form.Item
+            <FormProvider {...form}><form onSubmit={form.handleSubmit(handleLogin)} className="space-y-4">
+              <FormField
+                control={form.control}
                 name="username"
-                label="Username"
-                rules={[{ required: true, message: 'Please input your username!' }]}
-              >
-                <Input
-                  prefix={<UserOutlined />}
-                  placeholder="Enter your username"
-                  size="large"
-                />
-              </Form.Item>
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('username')}</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <User className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                        <Input placeholder="Enter your username" className="pl-9 h-10" {...field} />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-              <Form.Item
+              <FormField
+                control={form.control}
                 name="password"
-                label="Password"
-                rules={[{ required: true, message: 'Please input your password!' }]}
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>{t('password')}</FormLabel>
+                    <FormControl>
+                      <div className="relative">
+                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                        <Input type="password" placeholder="Enter your password" className="pl-9 h-10" {...field} />
+                      </div>
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+
+              <hr className="border-t border-border my-4" />
+
+              <Button type="submit" className="w-full h-10" disabled={loading}>
+                {loading ? "Loading..." : "Login"}
+              </Button>
+
+              <Button
+                type="button"
+                variant="outline"
+                className="w-full h-10"
+                onClick={() => router.push('/register')}
+                disabled={loading}
               >
-                <Input.Password
-                  prefix={<LockOutlined />}
-                  placeholder="Enter your password"
-                  size="large"
-                />
-              </Form.Item>
-
-              <Divider />
-
-              <Form.Item>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  block
-                  size="large"
-                  loading={loading}
-                  style={{ backgroundColor: themeToken.colorPrimary }}
-                >
-                  Login
-                </Button>
-              </Form.Item>
-
-              <Form.Item>
-                <Button
-                  type="default"
-                  block
-                  size="large"
-                  onClick={() => router.push('/register')}
-                  loading={loading}
-                  style={{
-                    color: themeToken.colorPrimary,
-                    borderColor: themeToken.colorPrimary,
-                  }}
-                >
-                  Register
-                </Button>
-              </Form.Item>
-            </Form>
+                Register
+              </Button>
+            </form></FormProvider>
           </div>
         </div>
       </div>

@@ -1,12 +1,11 @@
 'use client';
 
 import { parseAPL02, SchemePreview } from "@/utils/parseApl02MasterData";
-import { InboxOutlined } from "@ant-design/icons";
-import { Modal, Spin, Upload } from "antd";
+import { Upload, Loader2 } from "lucide-react";
+import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
 import { useTranslations } from 'next-intl';
-import { useState } from "react";
-
-const { Dragger } = Upload;
+import { useState, useRef } from "react";
 
 function mapToFormSchema(data: SchemePreview) {
   return {
@@ -37,7 +36,8 @@ function mapToFormSchema(data: SchemePreview) {
 export default function ModalImporSchema({ open, onClose, onImport }: { open: boolean, onClose: () => void, onImport?: (data: any) => void }) {
   const [loading, setLoading] = useState(false);
   const tc = useTranslations('common');
-  
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const handleUpload = async (file: File) => {
     setLoading(true);
     const result = await parseAPL02(file);
@@ -48,29 +48,44 @@ export default function ModalImporSchema({ open, onClose, onImport }: { open: bo
     onImport?.(formData);
     onClose();
     setLoading(false);
-    return false;
+  }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      handleUpload(file);
+    }
   }
 
   return (
-    <Modal open={open} onCancel={onClose} title={tc('btn-import-skema')} footer={null}>
-      {/* Form Input File Dragger Antd */}
-      <Spin description={tc('loading')} size="small" spinning={loading}>
-        <Dragger
-          name="file"
-          multiple={false}
-          accept=".doc,.docx"
-          customRequest={({ file }) => handleUpload(file as File)}
-          showUploadList={false}
-        >
-          <p className="ant-upload-drag-icon">
-            <InboxOutlined />
-          </p>
-          <p className="ant-upload-text">{tc('label-upload-click-drag')}</p>
-          <p className="ant-upload-hint">
-            {tc('label-upload-click-drag')}
-          </p>
-        </Dragger>
-      </Spin>
-    </Modal>
+    <Dialog open={open} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent>
+        <DialogTitle>{tc('btn-import-skema')}</DialogTitle>
+        <div className="py-4">
+          {loading ? (
+            <div className="flex flex-col items-center justify-center gap-2 py-8">
+              <Loader2 className="size-8 animate-spin text-muted-foreground" />
+              <p className="text-sm text-muted-foreground">{tc('loading')}</p>
+            </div>
+          ) : (
+            <div
+              className="border-2 border-dashed border-border rounded-lg p-8 text-center cursor-pointer hover:border-primary/50 transition-colors"
+              onClick={() => fileInputRef.current?.click()}
+            >
+              <Upload className="size-8 mx-auto mb-2 text-muted-foreground" />
+              <p className="text-sm font-medium">{tc('label-upload-click-drag')}</p>
+              <p className="text-xs text-muted-foreground mt-1">{tc('label-upload-click-drag')}</p>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept=".doc,.docx"
+                className="hidden"
+                onChange={handleFileChange}
+              />
+            </div>
+          )}
+        </div>
+      </DialogContent>
+    </Dialog>
   )
 }

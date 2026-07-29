@@ -1,21 +1,23 @@
 "use client";
 
-import CustomTable from "@/components/table/CustomTable";
-import TitlePage from "@/components/title_page/TitlePage";
+import TitlePage, { BreadcrumbItem } from "@/components/title_page/TitlePage";
 import columnsSubmissionListSchema from "@/features/schema-submission/components/columnSubmissionListSchema";
 import { switchErrorDistributionReq } from "@/features/schema-submission/utils/func";
 import { usePostGet, usePost } from "@/hooks/useMutate";
-import { modal, notification } from "@/service/antdStatic";
-import { TableColumnsType } from "antd";
-import { BreadcrumbItemType } from "antd/es/breadcrumb/Breadcrumb";
-import Table from "antd/es/table/Table";
+import { toast } from "sonner"
 import { useRouter, Link } from "@/i18n/navigation";
 import { useMemo } from "react";
+import { DataTable } from "@/components/ui/data-table";
+import { useTableQuery } from "@/hooks/useTableQuery";
+import { useTableUrlState } from "@/hooks/useTableUrlState";
 
 
 export default function Page() {
   const router = useRouter();
-
+  const { params, setParams } = useTableUrlState();
+  const { data, isLoading } = useTableQuery("core/schemas", params, {
+    "search_fields": "schema_name,schema_code",
+  });
 
   const checkJoinRequests = usePostGet("core/join_requests")
   const distributionReq = usePost("core/requirements/distribute")
@@ -37,35 +39,25 @@ export default function Page() {
       onError: (error) => {
         if (error && error.message) {
           const errorResponse = switchErrorDistributionReq(error.message);
-          if (errorResponse.type === "modal") {
-            modal.warning({
-              title: errorResponse.title,
-              content: errorResponse.message,
-            });
-          } else {
-            notification.error({
-              title: errorResponse.message,
-              className: 'cnotif cerror',
-            });
-          }
+          toast.error(errorResponse.message, {
+            description: errorResponse.title,
+          });
         }
       }
     })
   }
 
   const handleSubmission = (schema_id: string) => {
-    // router.push(`/scheme-submission/submission/${schema_id}`);
     checkJoinRequests.mutate(`?limit=10&offset=10&schema_id=${schema_id}&request_status=REVISION_REQUEST`, {
       onSuccess: (data) => {
         if (data && data.data && data.data.length > 0) {
-          modal.confirm({
-            title: 'Pengajuan sertifikasi Anda direvisi oleh Admin LSP',
-            content: 'Mohon cek pengajuan Anda sebelumnya.',
-            okText: 'Ke Halaman Pengajuan',
-            cancelText: 'Nanti',
-            onOk: () => {
-              router.push('/scheme-submission');
+          toast.info('Pengajuan sertifikasi Anda direvisi oleh Admin LSP', {
+            description: 'Mohon cek pengajuan Anda sebelumnya.',
+            action: {
+              label: 'Ke Halaman Pengajuan',
+              onClick: () => router.push('/scheme-submission'),
             },
+            duration: 10000,
           });
         } else {
           handleDistributionReq(schema_id);
@@ -81,23 +73,7 @@ export default function Page() {
     return columnsSubmissionListSchema({ handleSubmission, loading: false })
   }, [])
 
-  const expandedRowRender = (record: any) => {
-    const colm: TableColumnsType<any> = [
-      {
-        title: 'Kode Unit',
-        dataIndex: 'competency_unit_code',
-        key: 'competency_unit_code',
-      },
-      {
-        title: 'Unit Kompetensi',
-        dataIndex: 'competency_unit_name',
-        key: 'competency_unit_name',
-      },
-    ];
-    return <Table key={record.row_id} rowKey="row_id" columns={colm} dataSource={record.competency_unit} />;
-  };
-
-  const defaultBreadcrumb: BreadcrumbItemType[] = useMemo(() => {
+  const defaultBreadcrumb: BreadcrumbItem[] = useMemo(() => {
     const breadcrumb = [
       {
         title: <Link href="/scheme-submission">Pengajuan Skema Sertifikasi</Link>,
@@ -119,14 +95,20 @@ export default function Page() {
       />
 
       <div className="p-6">
-        <CustomTable
-          id="table-list-schema"
-          rowKey="schema_id"
-          url="core/schemas"
+        <DataTable
           columns={column}
-          expandedRowRender={expandedRowRender}
-          queryParams={{
-            "search_fields": "schema_name,schema_code",
+          data={data?.data || []}
+          loading={isLoading}
+          total={data?.count || 0}
+          pageSize={params.limit}
+          pageIndex={params.page ? params.page - 1 : 0}
+          searchKey="schema_name"
+          onPaginationChange={(pagination) => {
+            setParams({
+              limit: pagination.pageSize,
+              offset: pagination.pageIndex * pagination.pageSize,
+              page: pagination.pageIndex + 1,
+            })
           }}
         />
       </div>

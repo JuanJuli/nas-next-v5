@@ -1,10 +1,22 @@
 'use client'
 
-import { Breadcrumb, Button, Flex, Space, theme } from 'antd'
 import type { ReactNode } from 'react'
-import { ArrowLeftOutlined } from '@ant-design/icons'
-import { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb'
+import { ArrowLeft } from 'lucide-react'
+import { Button } from '@/components/ui/button'
+import {
+  Breadcrumb,
+  BreadcrumbList,
+  BreadcrumbItem,
+  BreadcrumbSeparator,
+  BreadcrumbPage,
+} from '@/components/ui/breadcrumb'
 import { CurveRightIcon } from '../ui/icons'
+
+export interface BreadcrumbItem {
+  title: ReactNode
+  href?: string
+  key?: string
+}
 
 export interface TitleAction {
   key: string
@@ -23,7 +35,7 @@ export interface TitlePageProps {
   className?: string
   children?: ReactNode
   handleBack?: () => void
-  breadCrumb?: BreadcrumbItemType[];
+  breadCrumb?: BreadcrumbItem[];
   border?: boolean
 }
 
@@ -37,91 +49,79 @@ export default function TitlePage({
   breadCrumb,
   border = true,
 }: TitlePageProps) {
-  const { token } = theme.useToken()
-
   return (
     <div>
       <div
         className={`flex items-center justify-between px-6 py-5 ${className} min-h-[100px] ${border ? 'rounded-lg' : ''}`}
         style={{
-          backgroundColor: border ? token.colorBgContainer : 'transparent',
-          borderBottom: border ? `2px solid ${token.colorBorderSecondary}` : 'none',
+          backgroundColor: border ? 'hsl(var(--card))' : 'transparent',
+          borderBottom: border ? '2px solid hsl(var(--border))' : 'none',
           boxShadow: border ? '0 1px 2px 0 rgba(0, 0, 0, 0.03)' : 'none',
         }}
       >
-        {/* Left Section - Icon & Title */}
-        <Flex gap={16} align="center" className="flex-1">
-          <Flex vertical gap={4}>
+        <div className="flex items-center gap-4 flex-1">
+          <div className="flex flex-col gap-1">
             {icon && !handleBack && (
-              <div 
-                className="flex items-center justify-center w-12 h-12 rounded-lg"
-                style={{
-                  backgroundColor: token.colorPrimaryBg,
-                  color: token.colorPrimary,
-                  fontSize: '24px',
-                }}
-              >
+              <div className="flex items-center justify-center w-12 h-12 rounded-lg bg-primary/10 text-primary text-2xl">
                 {icon}
               </div>
             )}
             {handleBack && (
-              <Button 
-                shape="circle" 
-                size="large" 
-                icon={<ArrowLeftOutlined />} 
+              <Button
+                variant="outline"
+                size="icon"
                 onClick={handleBack}
-                style={{
-                  borderColor: token.colorBorder,
-                }}
-              />
+              >
+                <ArrowLeft className="size-5" />
+              </Button>
             )}
             {breadCrumb && (
-              <div className="p-0 mt-[-10px] pl-[5px] mr-[-18px]" style={{ color: token.colorTextSecondary }}>
+              <div className="p-0 mt-[-10px] pl-[5px] mr-[-18px] text-muted-foreground">
                 <CurveRightIcon size={42} />
               </div>
             )}
-          </Flex>
-          <Space orientation="vertical" className="w-full" size={16}>
-            <h3 
-              className="font-semibold text-xl m-0"
-              style={{ color: token.colorText }}
-            >
+          </div>
+          <div className="w-full">
+            <h3 className="font-semibold text-xl m-0 text-foreground">
               {title}
             </h3>
             {breadCrumb && (
-              <Breadcrumb 
-                items={breadCrumb}
-                style={{ 
-                  fontSize: token.fontSizeSM,
-                  color: token.colorTextSecondary,
-                  marginLeft: '-5px',
-                  marginTop: '5px'
-                }}
-              />
+              <Breadcrumb>
+                <BreadcrumbList>
+                  {breadCrumb.map((item, index) => (
+                    <span key={item.key || index} className="inline-flex items-center gap-1">
+                      <BreadcrumbItem>
+                        <BreadcrumbPage className="text-xs text-muted-foreground [&_a]:hover:text-foreground [&_a]:transition-colors">
+                          {item.title}
+                        </BreadcrumbPage>
+                      </BreadcrumbItem>
+                      {index < breadCrumb.length - 1 && <BreadcrumbSeparator />}
+                    </span>
+                  ))}
+                </BreadcrumbList>
+              </Breadcrumb>
             )}
-          </Space>
-        </Flex>
+          </div>
+        </div>
 
-        {/* Right Section - Actions */}
         {actions.length > 0 && (
-          <Space size="small">
+          <div className="flex items-center gap-2">
             {actions.map((action) => (
               <Button
                 key={action.key}
-                type={action.type || 'default'}
-                danger={action.danger}
-                loading={action.loading}
+                variant={action.type === 'primary' ? 'default' : 'outline'}
                 onClick={action.onClick}
-                icon={action.icon}
+                disabled={action.loading}
+                className={action.danger ? 'text-destructive border-destructive hover:bg-destructive/10' : ''}
               >
+                {action.icon}
                 {action.label}
               </Button>
             ))}
-          </Space>
+          </div>
         )}
       </div>
 
-      {/* Children Content */}
       {children && (
         <div className="mt-6">
           {children}

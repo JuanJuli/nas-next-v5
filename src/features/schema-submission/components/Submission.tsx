@@ -1,10 +1,9 @@
 "use client";
 
 import RequirementList from '@/components/requirement/RequirementList';
-import TitlePage from '@/components/title_page/TitlePage'
+import TitlePage, { BreadcrumbItem } from '@/components/title_page/TitlePage'
 import { RequirementListContext } from '@/context/RequirementList';
 import { useAuthStore } from '@/store/auth';
-import { BreadcrumbItemType } from 'antd/es/breadcrumb/Breadcrumb';
 import { useRouter, Link } from '@/i18n/navigation';
 import { useEffect, useMemo } from 'react';
 import { useTranslations } from 'next-intl';
@@ -43,7 +42,7 @@ export default function Submission({
     console.log("User in Submission component:", user);
   }, [user]);
 
-  const defaultBreadcrumb: BreadcrumbItemType[] = useMemo(() => {
+  const defaultBreadcrumb: BreadcrumbItem[] = useMemo(() => {
     const breadcrumb = [
       {
         title: <Link href="/scheme-submission">{t('breadcrumb-pengajuan-skema')}</Link>,

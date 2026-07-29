@@ -1,6 +1,6 @@
 'use client';
 
-import { DeleteOutlined, EditOutlined, EyeOutlined } from '@ant-design/icons';
+import { Pencil, Eye, Trash2 } from 'lucide-react';
 import { Button } from 'antd';
 import React from 'react';
 import { useTranslations } from 'next-intl';
@@ -24,7 +24,7 @@ const ActionButtonTable = (props: IPropsActionBtnTable) => {
         <Button
           className={`${simple ? '' : 'w-[100px]'} btn-w-icon`}
           onClick={() => onEdit(id)}
-          icon={<EditOutlined className="min-w-[15px]" />}
+          icon={<Pencil className="min-w-[15px]" />}
           title={t('btn-edit')}
         >
           {simple ? '' : t('btn-edit')}
@@ -39,7 +39,7 @@ const ActionButtonTable = (props: IPropsActionBtnTable) => {
               className={`${simple ? '' : 'w-[105px]'} btn-w-icon`}
               onClick={() => onDetail(id)}
               title={t('btn-detail')}
-              icon={<EyeOutlined className="min-w-[15px]" />}
+              icon={<Eye className="min-w-[15px]" />}
             >
               {simple ? '' : t('btn-detail')}
             </Button>
@@ -52,7 +52,7 @@ const ActionButtonTable = (props: IPropsActionBtnTable) => {
           onClick={() => onDelete(id)}
           title={t('btn-delete')}
           danger
-          icon={<DeleteOutlined className="min-w-[15px]" />}
+          icon={<Trash2 className="min-w-[15px]" />}
         >
           {simple ? '' : t('btn-delete')}
         </Button>
