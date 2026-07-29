@@ -44,6 +44,7 @@ export default function LoginType1({
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
+    defaultValues: { username: '', password: '' }
   });
 
   if (listLsp.length > 0) {

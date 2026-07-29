@@ -12,7 +12,7 @@ export default function FloatChangeLogin() {
   const router = useRouter();
 
   const fixLoginType = useMemo(() => {
-    let currLoginType = 1;
+    let currLoginType = 3;
     const loginTypeParams = searchParams.get('loginType')
     if (loginTypeParams) {
       const parseLtp = parseInt(loginTypeParams);

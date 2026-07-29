@@ -4,7 +4,6 @@ import { checkMaintenance } from '@/service/maintenance';
 
 export default async function Page() {
   // TODO: nanti login type nya bisa diambil dari database/cookie, untuk sementara hardcode dulu
-  const loginType: number = 3;
 
   const maintenanceConfig = await checkMaintenance();
 
@@ -14,5 +13,5 @@ export default async function Page() {
     return <MaintenancePage />;
   }
 
-  return <LoginPage loginType={loginType}  />;
+  return <LoginPage />;
 }

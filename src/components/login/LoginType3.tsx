@@ -49,6 +49,7 @@ export default function LoginType3({
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
+    defaultValues: { username: '', password: '' }
   });
 
   if (listLsp.length > 0) {
@@ -163,55 +164,57 @@ export default function LoginType3({
               </Alert>
             )}
 
-            <FormProvider {...form}><form onSubmit={form.handleSubmit(handleLogin)} className="space-y-4">
-              <FormField
-                control={form.control}
-                name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('username')}</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <User className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-                        <Input placeholder="Enter your username" className="pl-9 h-10" {...field} />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <FormProvider {...form}>
+              <form onSubmit={form.handleSubmit(handleLogin)} className="space-y-4">
+                <FormField
+                  control={form.control}
+                  name="username"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t('username')}</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <User className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                          <Input placeholder="Enter your username" className="pl-9 h-10" {...field} />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <FormField
-                control={form.control}
-                name="password"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('password')}</FormLabel>
-                    <FormControl>
-                      <div className="relative">
-                        <Lock className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-                        <Input type="password" placeholder="Enter your password" className="pl-9 h-10" {...field} />
-                      </div>
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>{t('password')}</FormLabel>
+                      <FormControl>
+                        <div className="relative">
+                          <Lock className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
+                          <Input type="password" placeholder="Enter your password" className="pl-9 h-10" {...field} />
+                        </div>
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
 
-              <Button type="submit" className="w-full h-10 mt-6" disabled={loading}>
-                {loading ? "Loading..." : "Login"}
-              </Button>
+                <Button type="submit" className="w-full h-10 mt-6" disabled={loading}>
+                  {loading ? "Loading..." : "Login"}
+                </Button>
 
-              <Button
-                type="button"
-                variant="outline"
-                className="w-full h-10"
-                onClick={() => router.push('/register')}
-                disabled={loading}
-              >
-                Register
-              </Button>
-            </form></FormProvider>
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full h-10"
+                  onClick={() => router.push('/register')}
+                  disabled={loading}
+                >
+                  Register
+                </Button>
+              </form>
+            </FormProvider>
           </div>
       </div>
 
