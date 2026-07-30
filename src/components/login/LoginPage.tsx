@@ -19,7 +19,7 @@ interface iPayloadGenerateToken {
   institution_id?: string;
 }
 
-export default function LoginPage({ loginType = 3 }: { loginType?: number }) {
+export default function LoginPage({ loginType = 1 }: { loginType?: number }) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirectTo = searchParams.get('redirect') || '/dashboard';

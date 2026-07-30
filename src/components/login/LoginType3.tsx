@@ -200,7 +200,7 @@ export default function LoginType3({
                   )}
                 />
 
-                <Button type="submit" className="w-full h-10 mt-6" disabled={loading}>
+                <Button type="submit" className="w-full h-10 mt-6 dark:text-white!" disabled={loading}>
                   {loading ? "Loading..." : "Login"}
                 </Button>
 

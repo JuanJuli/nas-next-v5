@@ -31,12 +31,14 @@ export default function ThemeLangButtons() {
         size="small"
         icon={isDark ? <Moon /> : <Sun />}
         onClick={toggleTheme}
+        className='dark:text-white!'
       />
       <Button
         type="text"
         size="small"
         icon={<Globe />}
         onClick={handleLangToggle}
+        className='dark:text-white!'
       >
         {locale === 'id' ? 'ID' : 'ENG'}
       </Button>
