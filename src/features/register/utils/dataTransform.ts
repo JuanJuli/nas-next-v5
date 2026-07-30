@@ -61,8 +61,9 @@ export function buildRegisterFormData(values: Record<string, string | File | und
     }
   }
 
-  if (values.date_of_birth) {
-    fd.append("date_of_birth", formatDate(values.date_of_birth));
+  if (values.date_of_birth && typeof values.date_of_birth === 'string') {
+    const newDateOfBirth = new Date(values.date_of_birth)
+    fd.append("date_of_birth", formatDate(newDateOfBirth));
   }
 
   if (values.signature && values.signature instanceof File) {
