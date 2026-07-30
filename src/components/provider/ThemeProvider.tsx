@@ -1,7 +1,7 @@
 'use client';
 
 import { useThemeStore } from "@/store/theme";
-import { useEffect, useMemo } from "react";
+import { useEffect } from "react";
 
 export default function ThemeProvider({
   primaryColor,
@@ -12,6 +12,7 @@ export default function ThemeProvider({
 }) {
   const mode = useThemeStore((s) => s.mode);
   const setMode = useThemeStore((s) => s.setMode);
+  const setPrimaryColor = useThemeStore((s) => s.setPrimaryColor)
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -51,6 +52,11 @@ export default function ThemeProvider({
   useEffect(() => {
     const html = document.documentElement;
     html.style.setProperty("--primary", primaryColor);
+    const setPrimaryColorC = (color: string) => {
+      setPrimaryColor(color)
+    }
+  
+    setPrimaryColorC(primaryColor)
   }, [primaryColor]);
 
   return <>{children}</>;
