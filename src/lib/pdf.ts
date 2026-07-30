@@ -35,7 +35,7 @@ export async function generatePDF(html: string) {
   const page = await browser.newPage();
 
   await page.setContent(html, {
-    waitUntil: "networkidle0",
+    waitUntil: 'domcontentloaded'
   });
 
   const pdf = await page.pdf({
